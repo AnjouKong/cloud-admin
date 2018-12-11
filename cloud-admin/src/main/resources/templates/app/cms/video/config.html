@@ -1,0 +1,76 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/cms/video" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/cms/video/configDo" method="post">
+                <input type="hidden" name="id" value="${id}" >
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <% for(l in language){ %>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">上传视频
+                                (${l.language})
+                                </label>
+
+                            <div class="col-sm-6">
+                                <#upload id="${l.id}1" name="attMains${l.num}" modelName="${modelName}" modelId="${id}" method="edit"  exts=".rm,.rmvb,.wmv,.avi,.mp4,.3gp,.mkv,.ts" fdKey="${l.language}"  btnText="上传"  multi="true" showUploadInfo="true"/>
+                            </div>
+                        </div>
+
+                        <% } %>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-center">
+                            <label></label>
+
+                            <div>
+                                <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+
+    $(document).ready(function () {
+        myForm.init();
+        $("#save").on("click",function(){
+            $('#addForm').submit();
+        });
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code==0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+
+<%}%>

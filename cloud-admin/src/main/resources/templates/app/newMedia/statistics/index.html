@@ -1,0 +1,145 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="" method="post">
+                <input type="hidden" name="id" value="${obj.id!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="tagId" class="col-sm-2 control-label">分类</label>
+                            <div class="col-sm-8" style="margin-top: 6px;">
+                                <% for(o in catalog){
+                                %>
+                                <input type="checkbox" name="tagId" value="${o.id}" > ${o.tagName}
+                                <%}%>
+                            </div>
+                            <input type="hidden" id="tagId"  onclick="this.value=''" class="form-control" placeholder="" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelId" class="col-sm-2 control-label">级别</label>
+                            <div class="col-sm-8" style="margin-top: 6px;">
+                                <% for(o in levelObj){
+                                %>
+                                <input type="checkbox" name="levelId" value="${o.id}" > ${o.levelName}
+                                <%}%>
+                            </div>
+                            <input type="hidden" id="levelId"  onclick="this.value=''" class="form-control" placeholder="" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="releaseYear" class="col-sm-2 control-label">上映时间</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="releaseYear" name="releaseYear" onclick="this.value=''" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="charge" class="col-sm-2 control-label">价格</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="charge" name="charge" onclick="this.value=''" class="form-control" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="score" class="col-sm-2 control-label">评分</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="score" name="score" onclick="this.value=''" class="form-control" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 80px;">
+                            <button id="searchBtn" type="button" class="btn btn-primary col-sm-offset-4 col-sm-1">查询</button>
+                        </div>
+                        <div class="form-group">
+                            <div  class="col-sm-offset-4" id="noticeArea"> </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<!-- 确认操作 -->
+<div id="confirmModel" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">正在转换，请稍后！</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    $("#searchBtn").on('click', function () {
+
+        var obj = document.getElementsByName("tagId");
+        var check_val = [];
+        for(k in obj){
+            if(obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        $('#tagId').val(check_val);
+        if(check_val.length == 0){
+            Toast.warning("请选择分类！");
+            return ;
+        }
+
+    var obj2 = document.getElementsByName("levelId");
+        var check_val2 = [];
+        for(k in obj2){
+            if(obj2[k].checked)
+                check_val2.push(obj2[k].value);
+        }
+        $('#levelId').val(check_val2);
+        if(check_val2.length == 0){
+            Toast.warning("请选择分级！");
+            return ;
+        }
+        $(this).ajaxSubmit({
+            type: 'post',
+            url: '${base}/platform/media/statistics/search',
+            data: {
+                'releaseYear': $('#releaseYear').val(),
+                'charge': $('#charge').val(),
+                'score': $('#score').val(),
+                'levelId': $('#levelId').val(),
+                'tagId' : $('#tagId').val()
+            },
+            success: function(data) {
+                 $("#noticeArea").html("当前条件下共 "+data+" 条数据");
+            }
+        });
+
+    });
+    $(function () {
+        //时间插件
+        $("#sreleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sreleaseYear").datetimepicker("setEndDate",$("#ereleaseYear").val())
+        });
+        $("#ereleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ereleaseYear").datetimepicker("setStartDate",$("#sreleaseYear").val())
+        });
+    })
+
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+    .line{text-align: center;margin-top: 10px;  width: 20px; float: left;}
+</style>
+<%}%>

@@ -1,0 +1,169 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>设备ID</th>
+                    <th>房间号</th>
+                    <th>事件标识</th>
+                    <th>事件名称</th>
+                    <th>数据时间</th>
+                    <th>商户名称</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="eventCode" >事件标识</label>
+                    <select class="form-control" name="eventCode" id="eventCode" >
+                        <option value="">无</option>
+                        <% for (o in eventMap) {%>
+                        <option value="${o.value}">${o.key}</option>
+                        <%}%>
+
+                    </select>
+            </div>
+            <div class="form-group">
+                <label for="screateDay">数据时间</label>
+                <input type="text" id="screateDay" name="screateDay" onclick="this.value=''" class="form-control" placeholder=""  data-date-format="dd MM yyyy - HH:ii p" >
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="ecreateDay"></label>
+                <input type="text" id="ecreateDay" name="ecreateDay" onclick="this.value=''" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="tenantName">商户名称</label>
+
+                <select class="form-control" name="tenantName" id="tenantName" >
+                    <option value="">无</option>
+                    <% for (o in tenancyList) {%>
+                    <option value="${o.tenancyName}">${o.tenancyName}</option>
+                    <%}%>
+
+                </select>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/dataAnalysis/order/data",
+                "type": "post",
+                "data": function (d) {
+                    d.eventCode = $('#eventCode').val();
+                    d.eventBody = $('#eventBody').val();
+                    d.screateDay = $('#screateDay').val();
+                    d.ecreateDay = $('#ecreateDay').val();
+                    d.tenantName = $('#tenantName').val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "deviceId", "bSortable": false},
+                {"data": "roomId", "bSortable": false},
+                {"data": "eventCode", "bSortable": false},
+                {"data": "eventBody", "bSortable": false},
+                {"data": "createDay", "bSortable": false},
+                {"data": "tenantName", "bSortable": false}
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+
+        //时间插件
+        $("#screateDay").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#screateDay").datetimepicker("setEndDate",$("#screateDay").val())
+        });
+        $("#ecreateDay").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ecreateDay").datetimepicker("setStartDate",$("#ecreateDay").val())
+        });
+    }
+
+
+
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+
+
+
+</script>
+<%}%>

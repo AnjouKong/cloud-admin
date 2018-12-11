@@ -1,0 +1,176 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/deviceGroup" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-primary no-b">
+            <div class="list-group">
+                <a href="javascript:;" class="list-group-item" title="设备组">
+                    终端组名：${obj.groupName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="设备厂商">
+                    商户名称：${obj.tenantName!}
+                </a>
+            </div>
+            <!-- 其他信息整合   -->
+            <ul id="myTab" class="nav nav-tabs">
+                <li  class="active">
+                    <a href="#deviceUerGroup" data-toggle="tab">
+                        终端信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="deviceUerGroup">
+                    <div>
+                        <section class="content-wrap bg-white">
+                            <div class=panel-body>
+                                <div class="table-responsive no-border">
+                                    <table class="table table-bordered table-striped mg-t datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>商户名称</th>
+                                            <th>设备名</th>
+                                            <th>设备ID</th>
+                                            <th>设备型号</th>
+                                            <th>版本号</th>
+                                            <th>房间号</th>
+                                            <th>服务IP</th>
+                                            <th>省份</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 删除用户 -->
+<div id="dialogDeleteDevice" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">移除终端</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                       确定要移除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+   var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/deviceuser/data",
+                "type": "post",
+                "data": function (d) {
+                    d.tenantId = "${obj.tenantId!}";
+                    d.deviceGroupCode = "${obj.id!}";
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "tenantName", "bSortable": false},
+                {"data": "deviceSystem", "bSortable": false},
+                {"data": "deviceId", "bSortable": false},
+                {"data": "deviceModel", "bSortable": false},
+                {"data": "versionId", "bSortable": false},
+                {"data": "roomId", "bSortable": false},
+                {"data": "serverIp", "bSortable": false},
+                {"data": "province", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+
+                         return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                                '<li class="divider"></li>' +
+                                '<li><a href="javascript:;" onclick="del(\'' + row.id + '\')">移除</a></li>' +
+                                '</ul></div>';
+
+                    },
+                    "targets": 8
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+    function del(id) {
+        var dialog = $("#dialogDeleteDevice");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/operate/deviceuser/removeGroup/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="deleteCaseCade">
+        <![CDATA[
+		delete from cms_article where channelId=:channelId or channelId in(SELECT id FROM cms_channel WHERE path like :path)
+	]]>
+    </sql-query>
+</dynamic-hibernate-statement>

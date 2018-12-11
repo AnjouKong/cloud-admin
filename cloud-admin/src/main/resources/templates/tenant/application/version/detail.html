@@ -1,0 +1,32 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">${obj.tacticsName!}</a>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" title="策略类型">
+                        策略类型：${obj.tactics!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="策略值">
+                        策略值：${obj.tacticsFirstValue!}
+                    </a>
+                    <% if(obj.tacticsSecondValue!=null){ %>
+                    <a href="javascript:;" class="list-group-item" title="策略值">
+                        &nbsp;&nbsp;&nbsp;&nbsp;${obj.tacticsSecondValue!}
+                    </a>
+                    <% } %>
+                    <a href="javascript:;" class="list-group-item" title="是否强制更新">
+                        是否强制更新：${obj.forceUpdate!}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

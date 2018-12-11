@@ -1,0 +1,190 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<aside class="sidebar-250 canvas-right bg-default ">
+    <header class="header navbar clearfix bb bg-default pl0 pr0">
+        <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 所属品牌</p>
+    </header>
+    <div class="content-wrap no-p">
+        <div class="wrapper2">
+            <div class="m5">
+                <div id="jsTreeUnit"></div>
+            </div>
+        </div>
+    </div>
+</aside>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/deviceuser" id="goback" data-pjax><i class="ti-angle-left"></i> 返回</a>
+
+            <button class="btn btn-primary navbar-btn" onclick="addVersionDo()"><i class="ti-close"></i> 确定添加</button>
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <input type="hidden" id="levelId" value="">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>型号名称</th>
+                    <th>功能描述</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="specificationName">设备型号</label>
+                <input type="text" id="specificationName" name="specificationName" onclick="this.value=''" class="form-control" placeholder="设备型号" autofocus>
+                <input type="hidden" id="brandId">
+                <input type="hidden" id="deviceId" value="${deviceId}">
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+
+
+<script language="JavaScript">
+   var selected = [];
+    function initLevelTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/device/brand/brandTree" : "${base!}/platform/device/brand/brandTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            var id = selected.selected;
+            if(id=='root'){
+             $("#brandId").val("");
+             }else{
+             $("#brandId").val(id);
+             }
+            $("#add").attr("href","${base!}/platform/device/brandVersion/add?brandId="+id);
+
+            if (datatable) {
+                datatable.ajax.reload();
+            } else {
+                initDatatable();
+            }
+
+        }).on("loaded.jstree", function (node, jstree) {
+            $(node.target).find("li:first div").addClass("jstree-wholerow-clicked");
+        });
+    }
+
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base!}/platform/device/brandVersion/data",
+                "type": "post",
+                "data": function (d) {
+                    d.specificationName = $('#specificationName').val();
+                    d.brandId = $('#brandId').val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "specificationName", "bSortable": false},
+                {"data": "funcIds", "bSortable": false}
+            ],
+            "columnDefs": [
+             {
+                    "render": function (data, type, row) {
+                       <%for(o in videoFuncs){ %>
+                            if(data !="" && data != null){
+                                data =data.replace("${o.id}","${o.funcName}")
+                            }
+                       <%}%>
+                        <%for(o in audioFuncs){ %>
+                            if(data !="" && data != null){
+                                data =data.replace("${o.id}","${o.funcName}")
+                            }
+                       <%}%>
+                        return  data;
+                    },
+                    "targets":1
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $("tbody tr").removeClass('selected');
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+    function addVersionDo() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(chks, function (i, n) {
+                ids.push(n.id);
+            });
+             $.post("${base!}/platform/operate/deviceuser/addVersionDo", {standardId: ids.toString(),deviceId:$("#deviceId").val()}, function (data) {
+                   if (data.code==0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+
+                } else {
+                    Toast.error(data.msg);
+                }
+            });
+        } else {
+            Toast.warning("尚未选择！");
+            return false;
+        }
+    }
+    $(document).ready(function () {
+        initLevelTreeView();
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

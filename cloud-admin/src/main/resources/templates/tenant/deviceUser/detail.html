@@ -1,0 +1,91 @@
+<script>
+var str1 ="${version!}";
+if(str1 != "" && str1 != null){
+var str ="${version.funcIds!}";
+if(str !="" && str != null){
+    <%for(o in audioFuncs){ %>
+         str = str.replace("${o.id}","${o.funcName}")
+    <%}%>
+    <%for(o in videoFuncs){ %>
+         str = str.replace("${o.id}","${o.funcName}")
+    <%}%>
+}
+ $("#funcNames").html("设备功能:"+str)
+}
+</script>
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">设备信息</a>
+                        <small>${obj.deviceId!}</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item">
+                        <b>基础信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="所属商户">
+                        设备系统：${obj.deviceSystem!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备组">
+                        设备组：${obj.deviceGroupCode!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备厂商">
+                        设备厂商：${obj.deviceManufacturer!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备型号">
+                        设备型号：${obj.deviceModel!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备IP">
+                        设备Ip：${obj.deviceIp!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备Mac">
+                        设备Mac：${obj.deviceMac!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备版本号">
+                        设备版本号：${obj.versionId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="房间号">
+                        房间号：${obj.roomId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="对应的服务IP">
+                        对应的服务IP：${obj.serverIp!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="省份">
+                        省份：${obj.province!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="城市">
+                        城市：${obj.city!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="城市编码">
+                        城市编码：${obj.cityCode!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="定位地址">
+                        定位地址：${obj.address!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="经度">
+                        经度：${obj.longitude!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="纬度">
+                        纬度：${obj.latitude!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item">
+                        <b>扩展信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备型号">
+                        设备型号：${version.specificationName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="型号功能" id="funcNames">
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+

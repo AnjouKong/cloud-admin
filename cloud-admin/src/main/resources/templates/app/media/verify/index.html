@@ -1,0 +1,352 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="checkEdit btn-primary" id="checkAll">全部选中</a>
+            <a class="checkEdit btn-primary" id="piliang" href="#">批量设置</a>
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')">
+                <i class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input id="unitid" type="hidden">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>来源（网站）</th>
+                    <th>年份</th>
+                    <th>价格</th>
+                    <th>评分</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="categoryId">名称</label><br />
+
+                <input type="text" name="seriesName" id="seriesName" onclick="this.value=''" class="form-control" placeholder="请输入电影名称" autofocus>
+
+            </div>
+            <div class="form-group">
+                <label for="categoryId">分类</label><br />
+                <% for(o in catalog){
+                %>
+                <input type="checkbox" name="categoryId" value="${o.id}" > ${o.categoryName}
+                <%}%>
+                <input type="hidden" id="categoryId"  onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="sreleaseYear">上映时间</label>
+                <input type="text" id="sreleaseYear" name="sreleaseYear" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="ereleaseYear"></label>
+                <input type="text" id="ereleaseYear" name="ereleaseYear" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<!-- 批量审核 -->
+<div id="verifyMulti" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">批量审核</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">审核理由：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="reason" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="填写审核理由">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="refuse" type="button" class="btn btn-primary" data-loading-text="正在修改...">拒 绝</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在修改...">通过</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    input[type=checkbox].checkInput{ float: left; width: 18px; height: 18px; vertical-align: middle; margin: 17px 10px 17px 0px;}
+    .checkEdit{border-radius: 3px;vertical-align: top; float: left; text-align: center; height: 26px; line-height: 26px; padding: 0 12px; border: 1px solid #999;margin: 13px 0px;}
+</style>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operation/verify/data",
+                "type": "post",
+                "data": function (d) {
+                    var obj = document.getElementsByName("categoryId");
+                    var check_val = [];
+                    for(k in obj){
+                        if(obj[k].checked)
+                            check_val.push(obj[k].value);
+                    }
+                    $('#categoryId').val(check_val);
+                    d.categoryId = $('#categoryId').val();
+                    d.seriesName = $('#seriesName').val();
+                    d.sreleaseYear = $('#sreleaseYear').val();
+                    d.ereleaseYear = $('#ereleaseYear').val();
+
+                }
+            },
+            "order": [[5, "desc"]],
+            "columns": [
+                {"data": "seriesName", "bSortable": false},
+                {"data": "cpName", "bSortable": false},
+                {"data": "releaseYear", "bSortable": false},
+                {"data": "charge", "bSortable": false},
+                {"data": "score", "bSortable": false},
+                {"data": "updateDateStr", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                            ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                            '<li><a href="${base}/platform/operation/verify/detail/' + row.id + '" data-toggle="modal" data-target="#dialogUserDetail">详情</a></li>' +
+                            '<li><a href="#" onclick=verify("'+ row.id + '") data-pjax>审核</a></li>' +
+                        '</ul></div>';
+                    },
+                    "targets": 6
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        //点击全选操作
+        $("#checkAll").on('click', function () {
+            $("tbody tr").toggleClass('selected');
+            if($("#checkAll").text() == "全部选中"){
+                $("tbody tr").addClass('selected');
+                $(this).text("取消选中");
+            }else{
+                $("tbody tr").removeClass('selected');
+                $(this).text("全部选中");
+            }
+        });
+
+        //批量修改
+        $("#piliang").on('click', function () {
+            $("#reason").val("");
+            var chks = datatable.rows('.selected').data();
+            if (chks.length > 0) {
+                var ids = [];
+                $.each(chks, function (i, n) {
+                    ids.push(n.id);
+                });
+
+                var dialog = $("#verifyMulti");
+                dialog.modal("show");
+                dialog.find("#ok").unbind("click");
+                dialog.find("#refuse").unbind("click");
+
+                dialog.find("#ok").bind("click", function (event) {
+                    var btn = $(this);
+                    btn.button("loading");
+                    $.post("${base}/platform/operation/verify/edit", {ids: ids.toString(),reason:$("#reason").val(),status:1}, function (data) {
+                        if (data.code == 0) {
+                            datatable.ajax.reload(null,false);
+                        } else {
+                            Toast.error(data.msg);
+                        }
+                        btn.button("reset");
+                        dialog.modal("hide");
+                    }, "json");
+                });
+                dialog.find("#refuse").bind("click", function (event) {
+                    var btn = $(this);
+                    if($("#reason").val() != ""){
+                        btn.button("loading");
+                        $.post("${base}/platform/operation/verify/edit", {ids: ids.toString(),reason:$("#reason").val(),status:2}, function (data) {
+                            if (data.code == 0) {
+                                datatable.ajax.reload(null,false);
+                            } else {
+                                Toast.error(data.msg);
+                            }
+                            btn.button("reset");
+                            dialog.modal("hide");
+                        }, "json");
+                    }else{
+                        Toast.warning("请填写拒绝理由！");
+                    }
+
+                });
+            } else {
+                Toast.warning("请先选择用户！");
+            }
+
+
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+        $("#changeBtn").on('click', function () {
+
+            var obj = document.getElementsByName("categoryId");
+            var check_val = [];
+            for(k in obj){
+                if(obj[k].checked)
+                    check_val.push(obj[k].value);
+            }
+            $('#categoryId').val(check_val);
+
+            $(this).ajaxSubmit({
+                type: 'post',
+                url: '${base}/platform/cibn/list/change',
+                data: {
+                    'sreleaseYear': $('#sreleaseYear').val(),
+                    'ereleaseYear':  $('#ereleaseYear').val(),
+                    'categoryId' : $('#categoryId').val()
+                },
+                success: function(data) {
+                }
+            });
+        });
+        //时间插件
+        $("#sreleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sreleaseYear").datetimepicker("setEndDate",$("#ereleaseYear").val())
+        });
+        $("#ereleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ereleaseYear").datetimepicker("setStartDate",$("#sreleaseYear").val())
+        });
+    }
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#verifyMulti").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+    //审核
+    function verify(id) {
+        $("#reason").val("");
+        var ids = [];
+        ids.push(id);
+        var dialog = $("#verifyMulti");
+        dialog.modal("show");
+        dialog.find("#ok").unbind("click");
+        dialog.find("#refuse").unbind("click");
+
+        dialog.find("#ok").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+
+            $.post("${base}/platform/operation/verify/edit", {ids: ids.toString(),reason:$("#reason").val(),status:1}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+        dialog.find("#refuse").bind("click", function (event) {
+            var btn = $(this);
+            if($("#reason").val() != ""){
+                btn.button("loading");
+                $.post("${base}/platform/operation/verify/edit", {ids: ids.toString(),reason:$("#reason").val(),status:2}, function (data) {
+                    if (data.code == 0) {
+                        datatable.ajax.reload(null,false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            }else{
+                Toast.warning("请填写拒绝理由！");
+            }
+
+        });
+    };
+</script>
+<%}%>

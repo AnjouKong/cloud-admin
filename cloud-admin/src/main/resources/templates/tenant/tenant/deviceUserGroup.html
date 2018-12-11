@@ -1,0 +1,188 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/tenant" data-pjax><i class="ti-angle-left"></i> 返回</a>
+            <a id="add" class="btn btn-primary navbar-btn" href="${base!}/platform/operate/tenant/addDeviceUserGroup/${tenantId}" data-pjax><i class="ti-plus"></i> 新建终端组</a>
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>设备组名</th>
+                    <th>商户名称</th>
+                    <th>设备组id</th>
+                    <th>商户场景</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="groupName">设备组名</label>
+                <input type="text" id="groupName" name="groupName" onclick="this.value=''" class="form-control" placeholder="设备组名" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="tenancyName">商户名称</label>
+                <input type="text" id="tenancyName" name="tenancyName" onclick="this.value=''" class="form-control" placeholder="商户名称">
+            </div>
+            <div class="form-group">
+                <label for="tenantId"></label>
+                <input type="hidden" id="tenantId" name="tenantId" onclick="this.value=''" class="form-control" placeholder="tenantId">
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 删除用户 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除终端组</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        终端删除后无法恢复，确定删除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 删除选中用户 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除终端</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        终端删除后无法恢复，确定删除已选终端吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<div id="dialogSceneSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/deviceGroup/groupData",
+                "type": "post",
+                "data": function (d) {
+                    d.groupName = $('#groupName').val();
+                    $('#tenantId').val('${tenantId}');
+                    d.tenantId = $('#tenantId').val();
+                    d.tenancyName = $('#tenancyName').val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "groupName", "bSortable": false},
+                {"data": "tenantName", "bSortable": false},
+                {"data": "id", "bSortable": false},
+                {"data": "sceneName", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                                '<li><a href="${base!}/platform/operate/deviceGroup/scene?id=' + row.id + '&tenantId=' + row.tenantId + '" data-toggle="modal" data-target="#dialogSceneSelect">选择商户场景</a></li>' +
+                                '<li><a href="${base!}/platform/operate/tenant/sceneRecord?id=' + row.id + '&tenantId=' + row.tenantId + '" >查看历史场景</a></li>' +
+                                '</ul></div>';
+                    },
+                    "targets": 4
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogSceneSelect").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

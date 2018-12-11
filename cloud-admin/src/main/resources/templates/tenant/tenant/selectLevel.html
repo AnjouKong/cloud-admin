@@ -1,0 +1,96 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border" >
+            <table class="table table-bordered table-striped mg-t " id="levelDatatable" >
+                <thead>
+                <tr aria-multiline="false" >
+                    <th>级别名称</th>
+                    <th>启用状态</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select;
+    function initdatatable_select() {
+       datatable_select = $('#levelDatatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/media/level/selectData",
+                "type": "post",
+                "data": function (d) {
+
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "levelName", "bSortable": false},
+                {"data": "status", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        if (data==0) {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 1
+                }
+            ]
+        });
+        datatable_select.on('click', 'tr', function () {
+        $("tbody tr").removeClass('selected');
+            $(this).toggleClass('selected');
+        });
+
+    }
+
+    function _selectOn() {
+        var chks = datatable_select.rows('.selected').data();
+
+        var confir = window.confirm("确定要选择吗？")
+        if (chks.length != 0 && confir==true ) {
+
+            $.post("${base}/platform/operate/tenant/pushLevel", {id:$("#tenantId").val(),levelId: chks[0].id }, function (data) {
+                if (data.code == 0) {
+                     $("#levelId").val(chks[0].id);
+                     $("#levelName").text(chks[0].levelName);
+
+                    datatable.ajax.reload();
+                } else {
+                    Toast.error(data.msg);
+                }
+                $('#dialogUserSelect').modal('hide');
+            }, "json");
+        }else{
+            Toast.warning("请选择一个级别！");
+        }
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+
+</script>

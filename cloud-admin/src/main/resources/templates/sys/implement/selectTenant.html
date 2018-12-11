@@ -1,0 +1,110 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t " id="levelDatatable">
+                <thead>
+                <tr>
+                    <th>商户标识</th>
+                    <th>名称</th>
+                    <th>所属者</th>
+                    <th>租户类型</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select;
+    function initdatatable_select() {
+       datatable_select = $('#levelDatatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base!}/platform/operate/tenant/data",
+                "type": "post",
+                "data": function (d) {
+
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "tenancyCode", "bSortable": false},
+                {"data": "tenancyName", "bSortable": false},
+                {"data": "sysUserName", "bSortable": false},
+                {"data": "tenancyType", "bSortable": false},
+                {"data": "status", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        if (data==1) {
+                            return "私有化";
+                        } else {
+                            return "托管";
+                        }
+                    },
+                    "targets": 3
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data=="1") {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 4
+                }
+            ]
+        });
+        datatable_select.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+    }
+
+    function _selectOn() {
+        var chks = datatable_select.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(chks, function (i, n) {
+                ids.push(n.id);
+            });
+            $.post("${base}/platform/sys/implement/pushTenant", {userId:$("#userId").val(),tenantIds: ids.toString() }, function (data) {
+                if (data.code == 0) {
+                     Toast.success(data.msg);
+                     location.reload();
+                } else {
+                    Toast.error(data.msg);
+                }
+                $('#dialogUserSelect').modal('hide');
+            }, "json");
+        }else{
+            Toast.warning("请至少选择一个商户！");
+        }
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+
+</script>

@@ -1,0 +1,406 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<aside class="sidebar-250 canvas-right bg-default ">
+    <header class="header navbar clearfix bb bg-default pl0 pr0">
+        <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 分类列表</p>
+    </header>
+    <div class="content-wrap no-p">
+        <div class="wrapper2">
+            <div class="m5">
+                <div id="jsTreeUnit"></div>
+            </div>
+        </div>
+    </div>
+</aside>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a id="add" class="btn btn-primary navbar-btn" href="${base!}/platform/scene/basic/add" data-pjax><i
+                    class="ti-plus"></i> 新建</a>
+            <% if(isAdmin){ %>
+            <button class="btn btn-danger navbar-btn" onclick="delCheck()"><i class="ti-close"></i> 删除选中</button>
+            <% } %>
+            <button class="btn btn-primary navbar-btn" onclick="copy()"> 复制模板</button>
+        </div>
+        <div class="pull-right ">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input type="hidden" id="categoryId">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>适用分辨率</th>
+                    <th>适用比例</th>
+                    <th>是否包含vod首页</th>
+                    <th>描述</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="sceneName">名称</label>
+                <input type="text" id="sceneName" name="sceneName" onclick="this.value=''"
+                       class="form-control" placeholder="名称" autofocus>
+
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 重加载 -->
+<div id="dialogReload" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">重加载</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        重加载后所有沿用此模板的商户信息都将被替换，确定重加载吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okReload" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 删除用户 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        删除后无法恢复，确定删除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 复制模板 -->
+<div id="dialogCopyCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">复制模板</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <label for="sceneName" class="col-sm-3 control-label">新模板名称</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" id="newSceneName" class="form-control" name="newSceneName"
+                               placeholder="请输入新模板名称">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="copyOk" type="button" class="btn btn-primary" data-loading-text="正在复制...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 删除选中用户 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        删除后无法恢复，确定删除已选记录吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    function initTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/category/categoryTree/${modelName}/" : "${base!}/platform/sys/category/categoryTree/${modelName}/?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            var id = selected.selected;
+            if(id=="root"){
+            $("#categoryId").val("");
+            }else{
+            $("#categoryId").val(id);
+            }
+
+             $("#add").attr("href","${base}/platform/scene/basic/add?categoryId="+id);
+
+            if (datatable) {
+                $(".cd-panel-content").find("input").val("");
+                datatable.ajax.reload();
+            } else {
+                initDatatable();
+            }
+        }).on("loaded.jstree", function (node, jstree) {
+            $(node.target).find("li:first div").addClass("jstree-wholerow-clicked");
+        });
+    }
+
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/scene/basic/data",
+                "type": "post",
+                "data": function (d) {
+                    d.sceneName = $('#sceneName').val();
+                    d.categoryId = $('#categoryId').val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "sceneName", "bSortable": false},
+                {"data": "resolution", "bSortable": false},
+                {"data": "proportion", "bSortable": false},
+                {"data": "mediaHomePageId", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                                var html = '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                '<i class="ti-settings"></i><span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' ;
+                                if(row.auth=='edit'){
+                                html+='<li><a href="${base!}/platform/scene/basic/configure/' + row.id + '" data-pjax>配置场景信息</a></li>' +
+                                '<li class="divider"></li>' +
+                                '<li><a href="javascript:;" onclick="enable(\'' + row.id + '\')">发布新版本</a></li>' +
+                                '<li><a href="javascript:;" onclick="reload(\'' + row.id + '\')">商户重加载</a></li>' +
+                                '<li class="divider"></li>' +
+                                '<li><a href="${base!}/platform/scene/basic/edit/' + row.id + '" data-pjax>修改</a></li>' +
+                                '<li><a href="javascript:;" onclick="del(\'' + row.id + '\')">删除</a></li>' +
+                                '<li class="divider"></li>' ;
+                                }
+
+                               html+= '<li><a href="${base!}/platform/scene/basic/previewHtml/' + row.id + '" target="_blank">预览最新发布信息</a></li>' +
+                                '<li><a href="${base!}/platform/scene/basic/history/' + row.id + '" data-pjax>查看配置信息历史版本</a></li>' +
+                                '</ul></div>';
+
+                                return html;
+                    },
+                    "targets": 5
+                },{
+                    "render": function (data, type, row) {
+                        if (data!=''&&data!=null){
+                            return  '是';
+                        }else{
+                            return  '否';
+                        }
+                    },
+                    "targets": 3
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+    function enable(id) {
+        $.post("${base!}/platform/scene/basic/enable/" + id, {}, function (data) {
+            if (data.code == 0) {
+                Toast.success(data.msg);
+            } else {
+                Toast.error(data.msg);
+            }
+        }, "json");
+    }
+
+    function del(id) {
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/scene/basic/delete/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    function reload(id) {
+        var dialog = $("#dialogReload");
+        dialog.modal("show");
+        dialog.find("#okReload").unbind("click");
+        dialog.find("#okReload").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/scene/basic/reload/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    function copy() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length == 1 ) {
+            var id =  chks[0].id;
+
+            var dialog = $("#dialogCopyCheck");
+            dialog.modal("show");
+            dialog.find("#copyOk").unbind("click");
+            dialog.find("#copyOk").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+                var newSceneName=$("#newSceneName").val();
+                $.post("${base}/platform/scene/basic/copy", {id: id,sceneName: newSceneName}, function (data) {
+                    if (data.code == 0) {
+                        Toast.success(data.msg);
+                        $("#newSceneName").val("");
+                        datatable.ajax.reload(null,false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            });
+        } else {
+            Toast.warning("请先选择一个需要要复制的模板！");
+        }
+    }
+
+    function delCheck() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(chks, function (i, n) {
+                ids.push(n.id);
+            });
+            var dialog = $("#dialogDeleteCheck");
+            dialog.modal("show");
+            dialog.find("#ok").unbind("click");
+            dialog.find("#ok").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+                $.post("${base}/platform/scene/basic/deletes", {ids: ids.toString()}, function (data) {
+                    if (data.code == 0) {
+                        datatable.ajax.reload(null,false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            });
+        } else {
+            Toast.warning("请先选择要删除的记录！");
+        }
+    }
+
+    $(document).ready(function () {
+        initTreeView();
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+
+
+
+
+</script>
+<%}%>

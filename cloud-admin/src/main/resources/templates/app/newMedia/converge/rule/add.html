@@ -1,0 +1,138 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" id="goback" href="${base}/platform/newMedia/converge/rule" data-pjax><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/newMedia/converge/rule/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">规则名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="name" class="form-control" name="name" data-parsley-required="true" placeholder="规则名称">
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label for="code" class="col-sm-2 control-label">规则标识</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="code" class="form-control" name="code" data-parsley-required="true" placeholder="规则标识">
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">规则标识</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input name="dicName" id="dicName" type="text" class="form-control" placeholder=""  data-parsley-required="true" disabled />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogSelectRuleUnit">
+                                            <i class="ti-plus"></i>选择
+                                        </button>
+			                         </span>
+                                    <input name="code" id="code" type="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 选择规则 -->
+<div id="dialogSelectRuleUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择字典</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeRuleUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectRuleMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+
+    function initRuleView() {
+        $("#jsTreeRuleUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/newMedia/converge/rule/convergeTree" : "${base}/platform/newMedia/converge/rule/convergeTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectRuleMenu();
+        });
+    }
+    //选择规则
+    function selectRuleMenu() {
+        var tree = $.jstree.reference("#jsTreeRuleUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm input[name='code']").val(node[0].id);
+        $("#unitAddForm input[name='dicName']").val(node[0].id);
+        $("#dialogSelectRuleUnit").modal("hide");
+    }
+
+    $(document).ready(function () {
+        initRuleView();
+        $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code==0) {
+                    Toast.success(data.msg);
+                    //刷新父级菜单
+                    form.resetForm();
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+</style>
+<%}%>

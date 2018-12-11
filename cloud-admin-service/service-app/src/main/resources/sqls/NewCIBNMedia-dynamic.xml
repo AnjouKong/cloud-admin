@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+
+    <sql-query name="cibnMediaSeriesList_new">
+        <![CDATA[
+            SELECT a.* FROM app_cibn_series a left join media_series b on a.id=b.id WHERE b.id is null
+             <#if startYear??>
+                and a.releaseYear >= :startYear
+             </#if>
+             <#if endYear??>
+                and a.releaseYear <=:endYear
+            </#if>
+            <#if categoryId??>
+                and a.categoryId in (:categoryId)
+            </#if>
+	    ]]>
+    </sql-query>
+
+</dynamic-hibernate-statement>

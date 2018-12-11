@@ -1,0 +1,99 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-left offscreen-left" style="padding-top:15px;">
+            <div class="form-group">
+                <input id="seriesName" type="text" onclick="this.value='';" placeholder="请输入媒资名称">
+            </div>
+        </div>
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_media_selectAll()">全选</a>
+            <a class="btn btn-primary navbar-btn" onclick="_media_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border" style="padding-top: 5px;">
+            <table id="datatable_select_media" class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>媒资 code</th>
+                    <th>来源（网站）</th>
+                    <th>年份</th>
+                    <th>价格</th>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select_media;
+    function initdatatable_select_media() {
+        datatable_select_media = $('#datatable_select_media').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "ajax": {
+              "url": base+"/platform/media/list/data",
+                "type": "post",
+                "data": function (d) {
+                  d.levelId = 1;
+                  d.publish = 1;
+                  d.status = 1;
+                  d.seriesName = $('#seriesName').val();
+               }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "seriesName", "bSortable": true},
+                {"data": "seriesCode", "bSortable": true},
+                {"data": "cpName", "bSortable": true},
+                {"data": "releaseYear", "bSortable": true},
+                {"data": "charge", "bSortable": true}
+            ]
+        });
+        datatable_select_media.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#seriesName").on('keyup', function () {
+            datatable_select_media.ajax.reload();
+        });
+    }
+
+    function _media_selectAll() {
+        $("#datatable_select_media").find("tr").each(function () {
+            if (!$(this).hasClass('selected'))
+                $(this).addClass('selected');
+        });
+    }
+
+    function _media_selectOn() {
+        var chks = datatable_select_media.rows('.selected').data();
+        if (chks.length > 0) {
+            var html = '';
+            $.each(datatable_select_media.rows('.selected').data(), function (i, n) {
+                if($("#"+n.id).length<=0){
+                   html+='<tr role="row" id="'+n.id+'"><td><input name="mediaId" type="hidden" value="'+n.id+'" >'+n.seriesName+'</td><td>'+n.seriesCode+'</td><td>'+n.cpName+'</td><td>'+n.releaseYear+'</td>'+
+                      '<td><input type="number" name="location" class="form-control"  placeholder="按数字从小到大排序"></td><td><a style="color:red;" href="javascript:" onclick=delMedia("'+n.id+'");>删除</a></td></tr>';
+                }
+            });
+            $("#media_selected").append(html);
+
+            $('#dialogMediaSelect').modal('hide');
+        }else{
+            Toast.warning("请先选择媒资！");
+        }
+    }
+
+
+
+    $(document).ready(function () {
+        initdatatable_select_media();
+    });
+
+
+</script>

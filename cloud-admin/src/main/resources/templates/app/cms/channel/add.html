@@ -1,0 +1,199 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/cms/channel" id="goback" data-pjax><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/cms/channel/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group has-feedback">
+                            <label for="parentId" class="col-sm-2 control-label">上级栏目</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="parentId" type="text" class="form-control" placeholder="不选择默认为顶级栏目" disabled
+                                           value="<%if(!isEmpty(obj)){%>${obj.name}<%}%>"/>
+
+			                             		<span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectParentUnit"><i class="ti-plus"></i>选择
+                                                    </button>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="parentId" value="<%if(!isEmpty(obj)){%>${obj.id}<%}%>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">栏目名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="name" class="form-control" name="name" data-parsley-required="true"
+                                       placeholder="栏目名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">栏目类型</label>
+                            <div class="col-sm-8">
+                            <%  if(!isEmpty(obj)){  %>
+                                <input type="hidden" name="type" value="${obj.type!}">
+                                <select class="form-control" disabled id="type">
+                                    <option value="html" <%if(obj.type=="html"){%>selected<%}%>>html</option>
+                                    <option value="img" <%if(obj.type=="img"){%>selected<%}%>>图片</option>
+                                    <option value="imgCollection"<%if(obj.type=="imgCollection"){%>selected<%}%>>图片集</option>
+                                    <option value="video"<%if(obj.type=="video"){%>selected<%}%>>视频</option>
+                                    <option value="videolist"<%if(obj.type=="videolist"){%>selected<%}%>>视频集</option>
+                                    <option value="app"<%if(obj.type=="app"){%>selected<%}%>>app</option>
+                                    <option value="code"<%if(obj.type=="code"){%>selected<%}%>>code</option>
+                                    <option value="adv"<%if(obj.type=="adv"){%>selected<%}%>>广告</option>
+                                    <option value="language"<%if(obj.type=="language"){%>selected<%}%>>语言</option>
+                                    <option value="pms"<%if(obj.type=="pms"){%>selected<%}%>>PMS</option>
+                                    <option value="music"<%if(obj.type=="music"){%>selected<%}%>>音乐</option>
+                                    <option value="website"<%if(obj.type=="website"){%>selected<%}%>>网站</option>
+                                </select>
+                                <%  } else { %>
+                                <select class="form-control" name="type" id="type">
+                                    <option value="img">图片</option>
+                                    <option value="imgCollection">图片集</option>
+                                    <option value="video">视频</option>
+                                    <option value="videoList">视频集</option>
+                                    <option value="app">app</option>
+                                    <option value="code">code</option>
+                                    <option value="adv">广告</option>
+                                    <option value="language">语言</option>
+                                    <option value="pms">PMS</option>
+                                    <option value="music">音乐</option>
+                                    <option value="html">html</option>
+                                    <option value="website">网站</option>
+                                </select>
+
+                                <% } %>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">是否禁用</label>
+                            <div class="col-sm-8 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-center">
+                            <label></label>
+
+                            <div>
+                                <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 选择上级单位 -->
+<div id="dialogSelectParentUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择上级菜单</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeParentUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="selectFirstMenu()">设为顶级菜单</button>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectParentMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+
+    function initTreeView() {
+        $("#jsTreeParentUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/cms/channel/channelTree" : "${base}/platform/cms/channel/channelTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectParentMenu();
+        });
+    }
+    //选择父菜单
+    function selectParentMenu() {
+        var tree = $.jstree.reference("#jsTreeParentUnit");
+        var node = tree.get_selected(true);
+        $("#addForm #parentId").val(node[0].text);
+        $("#addForm input[name='parentId']").val(node[0].id=="root"?"":node[0].id);
+        $("#type").val(node[0].original.channelType);
+        $("#type").attr("disabled",true);
+
+        $("#dialogSelectParentUnit").modal("hide");
+
+    }
+
+    function selectFirstMenu() {
+        $("#addForm #parentId").val("顶级菜单");
+        $("#type").attr("disabled",false);
+        $("#addForm input[name='parentId']").val("");
+        $("#dialogSelectParentUnit").modal("hide");
+    }
+    $(document).ready(function () {
+        initTreeView();
+        myForm.init();
+        $("#save").on("click",function(){
+            $('#addForm').submit();
+        });
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code==0) {
+                    Toast.success(data.msg);
+                    //刷新父级菜单
+                     setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                    form.resetForm();
+
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+
+<%}%>

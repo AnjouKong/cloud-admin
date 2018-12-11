@@ -1,0 +1,15 @@
+.idea
+target
+*.iml
+*.log
+ehcache.disk.store.dir
+out
+tmp
+*.class
+.DS_Store
+ehcache.disk.store.dir/
+logs/
+classpath-data.json
+.project
+.classpath
+.settings/

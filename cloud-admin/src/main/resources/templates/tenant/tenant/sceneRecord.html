@@ -1,0 +1,152 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/tenant/group/${tenantId}" id="goback" data-pjax><i class="ti-angle-left"></i> 返回</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <input type="hidden" id="tenantId" value="${tenantId!}">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>场景名称</th>
+                    <th>版本</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<script language="JavaScript">
+
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/deviceGroup/sceneRecordData",
+                "type": "post",
+                "data": function (d) {
+                    d.groupId='${groupId}';
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "sceneName", "bSortable": false},
+                {"data": "version", "bSortable": false}
+            ],
+            "columnDefs": []
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+
+    function update(id) {
+        var dialog = $("#dialogUpdate");
+        dialog.modal("show");
+        dialog.find("#update").unbind("click");
+        dialog.find("#update").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/tenant/scene/update/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+    function del(id) {
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/tenant/scene/delete/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+    function delCheck() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(chks, function (i, n) {
+                ids.push(n.id);
+            });
+            var dialog = $("#dialogDeleteCheck");
+            dialog.modal("show");
+            dialog.find("#ok").unbind("click");
+            dialog.find("#ok").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+                $.post("${base}/platform/tenant/scene/deletes", {ids: ids.toString()}, function (data) {
+                    if (data.code == 0) {
+                        datatable.ajax.reload(null,false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            });
+        } else {
+            Toast.warning("请先选择要删除的记录！");
+        }
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogDeviceUserGroupSelect").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+         $("#dialogUpdate").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+
+    });
+
+
+
+
+
+</script>
+<%}%>

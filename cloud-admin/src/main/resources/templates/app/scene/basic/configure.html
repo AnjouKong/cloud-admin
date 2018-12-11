@@ -1,0 +1,846 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white ddd">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button close_size">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/scene/basic" id="goback"><i
+                    class="ti-angle-left"></i> 返回</a>
+        </div>
+    </header>
+    <div class="content-wrap">
+        <div class="wrapper">
+            <div class="col-md-12 form-horizontal option">
+                <div class="form-group">
+                    <input type="hidden" id="sceneBasicInfoId" value="${sceneBasicInfoId}"/>
+                    <input type="hidden" id="version" value="${version}"/>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">整体：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn labelBtnDrag" id="overallEdit" data-toggle='modal'
+                               data-target='#overallDetail'>编辑</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">挂件：</label>
+                    <div class="col-sm-8 pendant">
+                        <div style="float:left; margin-right:7px;">
+                            <label class="labelBtn labelBtnDrag" id="date" data-toggle="dropdown">日期</label>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" id="addDate1">日期位置 1</a></li>
+                                <li><a href="#" id="addDate2">日期位置 2</a></li>
+                                <li><a href="#" id="addDate3">日期位置 3</a></li>
+                                <li><a href="#" id="addDate4">日期位置 4</a></li>
+                            </ul>
+                        </div>
+                        <div style="float:left;">
+                            <label class="labelBtn labelBtnDrag" id="weather" data-toggle="dropdown">天气</label>
+                            <ul class="dropdown-menu" style="left:87px;">
+                                <li><a href="#" id="addWeather1">天气位置 1</a></li>
+                                <li><a href="#" id="addWeather2">天气位置 2</a></li>
+                                <li><a href="#" id="addWeather3">天气位置 3</a></li>
+                                <li><a href="#" id="addWeather4">天气位置 4</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="labelText control-label">窗口：</label>
+                    <div class="col-sm-8 dropDown">
+                        <label class="labelBtn" id="recommendDrop">推荐位</label>   <!--data-toggle="dropdown"-->
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="addBD1">宽高 1：1</a></li>
+                            <li><a href="#" id="addBD2">宽高 1：2</a></li>
+                            <li><a href="#" id="addBD3">宽高 2：1</a></li>
+                            <li><a href="#" id="addBD4">宽高 2：2</a></li>
+                            <li><a href="#" id="addBD5">宽高 3：2</a></li>
+                            <li><a href="#" id="addBD6">宽高 4：2</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">导航：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn" id="addHD">栏目</label>
+                    </div>
+                </div>
+            </div>
+            <div class="drag">
+                <ul class="dragging pendant">
+                    <li class="weather">
+                        <img src="${base!}/static/img/weather.png"/>
+                        <div class="dateText">
+                            <p><span>2日星期六</span><span>晴</span></p>
+                            <p>22℃ ~ 27℃</p>
+                        </div>
+                        <button type='button' class='close'>×</button>
+                    </li>
+                    <li class="date">
+                        <img src="${base!}/static/img/date.png"/>
+                        <div class="dateText">
+                            <p>2017/12/20</p>
+                            <p><span>周一</span><span>10:00</span></p>
+                        </div>
+                        <button type='button' class='close'>×</button>
+                    </li>
+                </ul>
+                <div class="fullSlide">
+                    <div class="bdTop gridster">
+                        <!--推荐位-->
+                        <!--<ul class="firstUl" style="display: block;" id="currentTabId"></ul>-->
+                    </div>
+                    <div class="hdDown">
+                        <ul>
+                            <!-- 栏目 -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 saveTemp" style="margin-left: 100px;">
+                <div class="btn-group tool-button">
+                    <!--<a class="btn btn-primary navbar-btn" href="#" data-pjax>预览</a>-->
+                    <a class="btn btn-primary navbar-btn" href="#" id="save" data-pjax>暂存</a>
+                    <!--<a class="btn btn-primary navbar-btn" href="#" data-pjax>清空</a>-->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<a class="exit-offscreen"></a>
+<!-- 整体编辑 -->
+<div id="overallDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h5 class="modal-title">编辑</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">背景：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallBG" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#333">
+                                    </div>
+                                </div>
+                                <div class="form-group upload">
+                                    <label class="col-xs-3 control-label">背景图片：</label>
+                                    <form id="overallBackgroundPicForm" role="form"
+                                          action="${base}/platform/scene/interface/addBackgroundPic" method="post">
+                                        <div class="col-xs-4">
+                                            <#upload id="overallUp" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传图片" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                        </div>
+                                        <button type="button" class="col-xs-3 deleteUpload">删除图片</button>
+                                    </form>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">字体：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallFont" name="" value=""
+                                               data-parsley-required="true"
+                                               class="form-control" placeholder="例如：16px">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">字体颜色：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallColor" name="" value=""
+                                               data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#ffffff">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">是否授权：</label>
+                                    <div class="col-xs-8 allAuthority" style="padding-top: 7px;">
+                                        <input type="radio" name="allAuthority" value="1" data-parsley-required="true" >是
+                                        <input type="radio" name="allAuthority" value="0" data-parsley-required="true" checked>否
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">风格：</label>
+                                    <div class="col-xs-8 styleTypes" style="padding-top: 7px;">
+                                        <input type="radio" name="styleTypes" value="0" data-parsley-required="true"
+                                               checked>扁平化
+                                        <!--<input type="radio" name="styleTypes" value="1" data-parsley-required="true">卡片化-->
+                                        <!--<input type="radio" name="styleTypes" value="2" data-parsley-required="true">弹出化-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="overall" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 栏目编辑 -->
+<div id="columnDetail" class="modal Slide in bs-modal-sm from-right" tabindex="-3" role="dialog" data-backdrop="static"
+     aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog cd-panel-container">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <button id="columnClose" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h5 class="modal-title">编辑</h5>
+            </div>
+            <!--基本信息-->
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                基本信息
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group" id="languageName">
+                                    <!--<label class="col-xs-3 control-label">名称：</label>-->
+                                    <!--<div class="col-xs-8">-->
+                                        <!--<input type="text" id="editName" name="" value="" class="form-control" placeholder="请输入名称">-->
+                                    <!--</div>-->
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">标签：</label>
+                                    <div class="col-xs-8">
+                                        <select class="form-control corner">
+                                            <option value=""></option>
+                                            <option value="0">蓝光</option>
+                                            <option value="1">杜比</option>
+                                            <option value="2">4K</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">是否授权：</label>
+                                    <div class="col-xs-8 authority" style="padding-top: 7px;">
+                                        <input type="radio" name="authority" value="1" >是
+                                        <input type="radio" name="authority" value="0" checked >否
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--样式信息-->
+            <div class="panel-group" id="accordionStyle">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordionStyle" href="#staticStateStyle">
+                                样式信息
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="staticStateStyle" class="panel-collapse collapse in">
+                        <!--静态样式-->
+                        <div class="panel-collapse collapse in">
+                            <a data-toggle="collapse" data-parent="#staticStateStyle"
+                               href="#collapseFo">
+                                <h5 style='padding:10px 20px 5px;'>静态样式：</h5>
+                            </a>
+
+                            <div id="collapseFo" class="panel-collapse collapse">
+                                <div class="col-xs-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">背景颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="staticBG" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如 #fff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group upload">
+                                        <label class="col-xs-3 control-label">背景图片：</label>
+
+                                        <form id="staticBackgroundPicForm" role="form"
+                                              action="${base}/platform/scene/interface/addBackgroundPic"
+                                              method="post">
+                                            <div class="col-xs-4">
+                                                <#upload id="columnUp" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传图片" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                            </div>
+                                            <button type="button" class="col-xs-3 deleteUpload">删除图片</button>
+                                        </form>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="staticColor" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体大小：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="staticSize" name="" value=""
+                                                   data-parsley-required="true" class="form-control"
+                                                   placeholder="例如：16px">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体背景：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="staticFontBack" name="" value=""
+                                                   data-parsley-required="true" class="form-control"
+                                                   placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--聚焦样式-->
+                        <div class="panel-collapse collapse in">
+                            <a data-toggle="collapse" data-parent="#staticStateStyle" href="#collapseFour">
+                                <h5 style='padding:10px 20px 5px;'>聚焦样式：</h5>
+                            </a>
+                            <div id="collapseFour" class="panel-collapse collapse ">
+                                <div class="col-xs-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">背景颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="focusBG" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如 #fff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group upload">
+                                        <label class="col-xs-3 control-label">背景图片：</label>
+                                        <form id="focusBackgroundPicForm" role="form"
+                                              action="${base}/platform/scene/interface/addBackgroundPic"
+                                              method="post">
+                                            <div class="col-xs-4">
+                                                <#upload id="columnUptwo" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传图片" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                            </div>
+                                            <button type="button" class="col-xs-3 deleteUpload">删除图片</button>
+                                        </form>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="focusColor" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体大小：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="focusSize" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如：16px">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体背景：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="focusFontBack" name="" value=""
+                                                   data-parsley-required="true" class="form-control"
+                                                   placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--点击样式-->
+                        <div class="panel-collapse collapse in">
+                            <a data-toggle="collapse" data-parent="#staticStateStyle"
+                               href="#collapseTress">
+                                <h5 style="padding:10px 20px 5px;">点击样式：</h5>
+                            </a>
+                            <div id="collapseTress" class="panel-collapse collapse">
+                                <div class="col-xs-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">背景颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="clickBG" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如 #fff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group upload">
+                                        <label class="col-xs-3 control-label">背景图片：</label>
+                                        <form id="clickBackgroundPicForm" role="form"
+                                              action="${base}/platform/scene/interface/addBackgroundPic"
+                                              method="post">
+                                            <div class="col-xs-4">
+                                                <#upload id="columnUpthree" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传图片" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                            </div>
+                                            <button type="button" class="col-xs-3 deleteUpload">删除图片</button>
+                                        </form>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体颜色：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="clickColor" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体大小：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="clickSize" name="" value=""
+                                                   data-parsley-required="true"
+                                                   class="form-control" placeholder="例如：16px">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">字体背景：</label>
+                                        <div class="col-xs-8">
+                                            <input type="text" id="clickFontBack" name="" value=""
+                                                   data-parsley-required="true" class="form-control"
+                                                   placeholder="例如：#ffffff">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"></div>
+                        </div>
+                        <!-- end点击样式-->
+                    </div>
+                </div>
+            </div>
+            <!--事件信息-->
+            <div class="panel-group" id="accordionEvent">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordionEvent"
+                               href="#click">
+                                事件信息（终端）
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="click" class="panel-collapse collapse in">
+                        <div class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <a data-toggle="collapse" data-parent="#click"
+                                   href="#collaps">
+                                    <h5>点击事件</h5>
+                                </a>
+                                <div id="collaps" class="panel-collapse collapse in">
+                                    <div class="col-xs-12 form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">事件类型</label>
+                                            <div class="col-sm-8 selectNum">
+                                                <select class="form-control ">
+                                                    <option value="Container">本容器</option>
+                                                    <option data-to="dataTableImg" value="image">图片</option>
+                                                    <option data-to="dataTableArticle" value="html">Html</option>
+                                                    <!--<option data-to="dataTableMedia" value="media">媒资</option>-->
+                                                    <option data-to="dataTableApp" value="app">app</option>
+                                                    <option data-to="dataTableImgCollection" value="imageList">图片列表
+                                                    </option>
+                                                    <option data-to="dataTableVideo" value="video">视频</option>
+                                                    <!--<option data-to="videoList" value="videoList">视频列表</option>-->
+                                                    <option data-to="dataTableAdv" value="adv">广告</option>
+                                                    <option data-to="generalTVSignal" value="GeneralTVSignal">普通电视信号</option>
+                                                    <option data-to="specialTVSignal" value="SpecialTVSignal">特殊电视信号</option>
+                                                    <option data-to="custom" value="Custom">自定义事件</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-xs-12 selectTab">
+                                                <!--<textarea id="videoList" name="remarks" class="form-control" style="width:100%;height:90px;display:none;" placeholder="字数不能超过200字"></textarea>-->
+                                                <!--<div class="table-responsive no-border">-->
+                                                <table class="table table-bordered table-striped mg-t dataTableImg">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>图片</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table table-bordered table-striped mg-t dataTableArticle">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>描述</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table table-bordered table-striped mg-t dataTableApp">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>包名</th>
+                                                        <th>动作</th>
+                                                        <th>描述</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table table-bordered table-striped mg-t dataTableImgCollection">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>图片</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table table-bordered table-striped mg-t dataTableVideo">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>描述</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table table-bordered table-striped mg-t dataTableAdv">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>名称</th>
+                                                        <th>类型</th>
+                                                        <th>描述</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                                <div class="col-xs-12">
+                                                    <div class="col-xs-8 col-xs-offset-3 generalTVSignal" style="padding: 9px;">
+                                                        <div class="col-xs-12" style="padding: 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">包名：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="packageNameGeneral"  class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12" style="padding: 7px 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">动作：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="actionGeneral" class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12">
+                                                    <div class="col-xs-8 col-xs-offset-3 specialTVSignal" style="padding: 9px;">
+                                                        <div class="col-xs-12" style="padding: 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">包名：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="packageNameSpecial"  class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12" style="padding: 7px 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">动作：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="actionSpecial" class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12" style="padding: 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">源：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="sourceSpecial"  class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12" style="padding: 7px 0;">
+                                                            <label class="col-xs-2 control-label" style="padding: 7px 0 0;">频道：</label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" id="channelSpecial" class="form-control" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 customParent">
+                                                    <div class="col-xs-8 col-xs-offset-3 custom" style="padding: 9px;">
+                                                        <input type="radio" data-cus="dataTableMedia" name="custom" value="media" checked >媒资
+                                                        <input type="radio" data-cus="customList" name="custom" value="customList" >列表
+                                                    </div>
+                                                    <div class="col-xs-8 col-xs-offset-3" style="padding: 0;">
+                                                        <label class="col-xs-2 control-label" style="padding: 7px 0 0;">包名：</label>
+                                                        <div class="col-xs-10">
+                                                            <input type="text" id="packageName"  class="form-control" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-8 col-xs-offset-3" style="padding: 7px 0;">
+                                                        <label class="col-xs-2 control-label" style="padding: 7px 0 0;">动作：</label>
+                                                        <div class="col-xs-10">
+                                                            <input type="text" id="action" class="form-control" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left offscreen-left" style="padding-top:15px;" id="div_mediaName">
+                                                        <div class="form-group">
+                                                            <input id="mediaName_search"  type="text" onclick="this.value='';" placeholder="请输入媒资名称">
+                                                        </div>
+                                                    </div>
+                                                    <table class="table table-bordered table-striped mg-t dataTableMedia">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>名称</th>
+                                                            <th>媒资 code</th>
+                                                            <th>来源（网站）</th>
+                                                            <th>年份</th>
+                                                            <th>价格</th>
+                                                        </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+
+                                                <!--</div>-->
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="columnCancel" type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="columnEdit" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 推荐位编辑 -->
+<!--
+<div id="recommendDetail" class="modal fade bs-modal-sm from-right" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog cd-panel-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="recClose" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h5 class="modal-title">推荐位编辑</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group" id="recNamet">
+                                    <label class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" id="reName" name="" value="" class="form-control col-xs-8"
+                                               placeholder="推荐位名称">
+                                    </div>
+                                </div>
+                                <div class="form-group upload">
+                                    <label class="col-xs-3 control-label">背景图片：</label>
+                                    <form id="addBackgroundPicForm" role="form"  action="${base}/platform/scene/interface/addBackgroundPic" method="post">
+                                        <div class="col-xs-8">
+                                            <#upload  name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传图片" imgWidth="50" imgHeight="50" showImg="true"  mult="false" />
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">是否二级授权：</label>
+                                    <div class="col-xs-6 authority">
+                                        <input type="radio" name="authority" value="0" data-parsley-required="true"
+                                               checked>是
+                                        <input type="radio" name="authority" value="1" data-parsley-required="true">否
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">事件类型：</label>
+                                    <div class="col-xs-8 editRadio" style="margin-top: 6px;">
+                                        <input type="radio" name="event" value="onclick" checked >点击
+                                        &lt;!&ndash; <input type="radio" name="event" value="onfoucs"  >聚焦&ndash;&gt;
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">跳转类型：</label>
+                                        <div class="col-xs-9 editRadio">
+                                            <select class="form-control ">
+                                                <option value="image">图片</option>
+                                                <option value="article">文章</option>
+                                                <option value="media">媒资</option>
+                                                <option value="app">app</option>
+                                                <option value="imageList">图片列表</option>
+                                                <option value="video">视频</option>
+                                                <option value="videoList">视频列表</option>
+                                                <option value="adv">广告</option>
+                                                <option value="Container">本容器</option>
+                                            </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+
+                                        <div class="table-responsive no-border">
+                                            <table class="table table-bordered table-striped mg-t dataTableImg ">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableImgCollection">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableMedia">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>媒资 code</th>
+                                                    <th>来源（网站）</th>
+                                                    <th>年份</th>
+                                                    <th>价格</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableArticle">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>文章简介</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableVideo">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>描述</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableAdv">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>类型</th>
+                                                    <th>描述</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t dataTableApp">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>包名</th>
+                                                    <th>动作</th>
+                                                    <th>描述</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="recCancel" type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="recEdit" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+
+<style>
+    .cd-panel-container{
+        width: 900px;
+        height: 95%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .panel-group{margin-bottom: 5px;}
+    .drag{
+        width:800px;
+        height:450px;
+        overflow:hidden;
+        position:relative;
+        border: 1px solid #333;
+        font-size: 12px;
+        margin-left: 115px;
+        background-size: 100% 100%;
+        /*display:none;*/
+    }
+    .dropDown{position: relative;}
+    /*.option{display:none;}*/
+    /*.saveTemp{display:none;}*/
+    .option .labelText{width: 100px; float:left;margin-right:15px;}
+    .option .col-sm-8{padding: 0;}
+
+    .setStatus{
+        position: absolute;
+        right: 8px;
+        top: 81%;
+        width: 80px;
+        height: 30px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        text-align: center;
+        display: none;
+        z-index: 9;
+    }
+    .colpick_hex {
+        z-index: 9999;
+    }
+    /* 本例子css */
+    .drag .fullSlide .slideBox{ width:100%; height:100%; overflow:hidden; position:relative; }
+    .drag .fullSlide .slideBox .hd{ height:15px; overflow:hidden; position:absolute; right:5px; bottom:5px; z-index:1; }
+    .drag .fullSlide .slideBox .hd ul{ overflow:hidden; zoom:1; display:block;  }
+    .drag .fullSlide .slideBox .hd ul li{ float:left; margin-right:2px;  width:15px; height:15px;border-radius: 7px; line-height:14px; text-align:center; background:#fff; cursor:pointer; }
+    .drag .fullSlide .slideBox .hd ul li.on{ background:#f00; color:#fff; }
+    .drag .fullSlide .slideBox .bd{ position:relative; height:100%; z-index:0;   }
+    .drag .fullSlide .slideBox .bd ul{ width: 100%; height: 100%;display: block;}
+    .drag .fullSlide .slideBox .bd ul li{ width: 100%; height: 100%; zoom:1; vertical-align:middle; padding:0;}
+    .drag .fullSlide .slideBox .bd img{ width:450px; height:230px; display:block;  }
+
+</style>
+<!-- 拖拽和轮播 -->
+<!--<script src="/static/plugins/draggable/jquery.ui.core.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery.ui.widget.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery.ui.mouse.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery.ui.draggable.js"></script>-->
+<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery-ui.js"></script>-->
+
+<link rel="stylesheet" href="/static/modules/app/v1/css/mainDrag.css">
+<script src="/static/plugins/draggable/jquery.SuperSlide.2.1.1.js"></script>
+<script src="/static/modules/app/utils.js"></script>
+<script src="/static/modules/app/sourceDataTable.js"></script>
+<script src="/static/modules/app/v1/appui.js?t=" +Math.random()></script>
+<script src="/static/modules/app/v1/scene.js"></script>
+<script src="/static/modules/app/v1/echo.js"></script>
+
+<!--<script src="/static/plugins/draggable/TouchSlide.1.1.js"></script>-->
+<!--<script src="/static/plugins/draggable/mainDrag.js"></script>-->
+<script>
+        $(document).ready(function () {
+            $("#columnDetail").on("hidden.bs.modal", function () {
+                $(this).removeData("bs.modal");
+            });
+            $("#recommendDetail").on("hidden.bs.modal", function () {
+                $(this).removeData("bs.modal");
+            });
+            $("#overallDetail").on("hidden.bs.modal", function () {
+                $(this).removeData("bs.modal");
+            });
+        });
+
+</script>
+<%}%>

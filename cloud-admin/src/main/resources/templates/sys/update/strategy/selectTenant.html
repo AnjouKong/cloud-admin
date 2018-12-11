@@ -1,0 +1,160 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-left offscreen-left" style="padding-top:15px;">
+            <div class="form-group">
+                <input id="tenancyName" type="text" onclick="this.value='';" placeholder="请输入名称">
+            </div>
+        </div>
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t " id="levelDatatable">
+                <tbody id="tbodyIfle">
+                <thead>
+
+                <tr>
+                    <th>id</th>
+                    <th>商户标识</th>
+                    <th>名称</th>
+                    <th>租户类型</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+            </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var selectionIds = [];
+    var selectionNames = [];
+
+    var datatable_select;
+    function initdatatable_select() {
+       datatable_select = $('#levelDatatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base!}/platform/operate/tenant/data",
+                "type": "post",
+                "data": function (d) {
+                    d.tenancyName = $('#tenancyName').val();
+                },
+                "complete":function(e,d){
+                    var trList = $('#tbodyIfle').find('tr');
+
+                    for(var i=0;i<trList.length;i++){
+                        if( $.inArray(trList[i].firstChild.innerText, selectionIds)>-1){
+                            $(trList[i]).toggleClass('selected');
+                        }
+                    }
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "id", "bSortable": false},
+                {"data": "tenancyCode", "bSortable": false},
+                {"data": "tenancyName", "bSortable": false},
+                {"data": "tenancyType", "bSortable": false},
+                {"data": "status", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        if (data==1) {
+                            return "私有化";
+                        } else {
+                            return "托管";
+                        }
+                    },
+                    "targets": 3
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data=="1") {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 4
+                }
+            ]
+        });
+        datatable_select.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+
+            var selId = $(this).context.firstChild.innerText;
+            var selName = $(this).context.children[2].innerText;
+            if($(this).attr("class")=="odd selected" ||$(this).attr("class")=="even selected"){
+                selectionIds.push(selId);
+                selectionNames.push(selName);
+            }else{
+                selectionIds.splice($.inArray(selId,selectionIds),1);
+                selectionNames.splice($.inArray(selId,selectionNames),1);
+            }
+            $.unique(selectionIds);
+            $.unique(selectionNames);
+            //console.log(selectionIds);
+            //console.log(selectionNames);
+        });
+        $("#tenancyName").on('keyup', function () {
+            datatable_select.ajax.reload();
+        });
+    }
+    function _selectOn() {
+        var html='';
+        if (selectionNames.length > 0) {
+            var tenantIds = [];
+            if($("#tenantId").val() !=""){
+                tenantIds = $("#tenantId").val().split(",");
+            }
+console.log(tenantIds)
+            for(var i=0;i<selectionNames.length;i++){
+               var trId = selectionIds[i];
+               if($.inArray(trId,tenantIds)==-1){
+                     html +='<tr id="'+trId+'"><td align="left">'+selectionNames[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeTenantTr(\''+trId+'\')">×</a></td></tr>';
+                     tenantIds.push(trId);
+                     $("#tenantId").val(tenantIds)
+               }
+
+            }
+            console.log($("#tenantId").val())
+            $("#showTenantList").append(html);
+            //("#unitAddForm #tenantId").val(selectionIds);
+            //$("#unitAddForm input[name='tenantName']").val(selectionNames);
+            $('#dialogUserSelect').modal('hide');
+        }else{
+            $("#showTenantList").html(html);
+            $("#unitAddForm #tenantId").val("");
+            $("#unitAddForm input[name='tenantName']").val("");
+            $('#dialogUserSelect').modal('hide');
+        }
+    }
+    function removeTenantTr(trId){
+       var ids = $("#tenantId").val().split(",");
+       ids.splice($.inArray(trId,ids),1);
+       $("#tenantId").val(ids)
+       document.getElementById(trId).remove();
+       console.log(ids)
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+</script>

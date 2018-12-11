@@ -1,0 +1,40 @@
+<% for(o in obj){
+%>
+<tr data-tt-id="${o.id!}" data-tt-parent-id="${o.parentId!}" data-tt-branch="${o.hasChildren!}">
+    <td>
+        <span class="pd-l-sm"></span>${o.name!}
+    </td>
+    <td><%if(o.type=="html"){%>html<%}%>
+        <%if(o.type=="img"){%>图片<%}%>
+        <%if(o.type=="imgCollection"){%>图片集<%}%>
+        <%if(o.type=="video"){%>视频<%}%>
+        <%if(o.type=="videoList"){%>视频集<%}%>
+        <%if(o.type=="app"){%>app<%}%>
+        <%if(o.type=="code"){%>code<%}%>
+        <%if(o.type=="adv"){%>广告<%}%>
+        <%if(o.type=="language"){%>语言<%}%>
+        <%if(o.type=="pms"){%>pms<%}%>
+        <%if(o.type=="music"){%>音乐<%}%>
+        <%if(o.type=="website"){%>网站<%}%>
+    </td>
+    <td><%if(false==o.disabled){%><i id="disable_${o.id!}" class="fa fa-circle text-success ml5"></i><%}else{%><i id="disable_${o.id!}" class="fa fa-circle text-danger ml5"></i><%}%></td>
+    <td>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                <i class="ti-settings"></i>
+                <span class="ti-angle-down"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="${base}/platform/cms/channel/edit/${o.id!}" data-pjax>修改</a></li>
+                <li><a href="javascript:;" onclick="del('${o.id!}')">删除</a></li>
+                <li class="divider"></li>
+                <li><a href="${base}/platform/cms/channel/add?pid=${o.id!}" data-pjax>添加子栏目</a></li>
+                <li class="divider"></li>
+                <li><a href="javascript:;" onclick="enableRole('${o.id!}')">启用</a></li>
+                <li><a href="javascript:;" onclick="disableRole('${o.id!}')">禁用</a></li>
+            </ul>
+        </div>
+    </td>
+</tr>
+<%
+}%>

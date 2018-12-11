@@ -1,0 +1,117 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>旅客名称</th>
+                    <th>商户</th>
+                    <th>房间号</th>
+                    <th>入住时间</th>
+                    <th>退房时间</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="tenantName">商户</label>
+                <input type="text" id="tenantName" name="tenantName" onclick="this.value=''" class="form-control" placeholder="商户" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="guestName">旅客名称</label>
+                <input type="text" id="guestName" name="guestName" onclick="this.value=''" class="form-control" placeholder="旅客名称" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+
+<!-- 详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/guest/data",
+                "type": "post",
+                "data": function (d) {
+                    d.tenantName = $('#tenantName').val();
+                    d.guestName = $('#guestName').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "guestName", "bSortable": true},
+                {"data": "tenantName", "bSortable": true},
+                {"data": "roomNo", "bSortable": true},
+                {"data": "checkInTime", "bSortable": true},
+                {"data": "checkOutTime", "bSortable": true}
+
+            ],
+            "columnDefs": []
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+</style>
+<%}%>

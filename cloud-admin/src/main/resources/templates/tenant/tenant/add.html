@@ -1,0 +1,352 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/tenant" id="goback" data-pjax><i
+                class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base!}/platform/operate/tenant/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <h4 class="col-sm-2 control-label">基础信息：</h4>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="parentId" class="col-sm-2 control-label">归属商务</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="parentId" type="text" class="form-control" placeholder="选择归属者" disabled
+                                           value="<%if(!isEmpty(obj)){%>${obj.name}<%}%>" data-parsley-required="true"/>
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectParentUnit"><i
+                                                            class="ti-plus"></i>选择
+                                                    </button>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="sysUserId"
+                                       value="<%if(!isEmpty(obj)){%>${obj.sysUserId}<%}%>">
+                                <input type="hidden" name="sysUserName"
+                                       value="<%if(!isEmpty(obj)){%>${obj.sysUserName}<%}%>">
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="parentId" class="col-sm-2 control-label">归属地区</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="areaId" type="text" class="form-control" placeholder="选择地区" disabled
+                                           data-parsley-required="true"/>
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectAreaUnit"><i class="ti-plus"></i>选择
+                                                    </button>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="areaId">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tenancyCode" class="col-sm-2 control-label">商户标识</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="tenancyCode" class="form-control" name="tenancyCode"
+                                       data-parsley-required="true" placeholder="商户标识">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tenancyName" class="col-sm-2 control-label">商户名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="tenancyName" class="form-control" name="tenancyName"
+                                       data-parsley-required="true" placeholder="商户名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone" class="col-sm-2 control-label">联系电话</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="telephone" class="form-control" name="telephone"
+                                       data-parsley-type="digits"
+                                       placeholder="联系电话">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-2 control-label">电子邮箱</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="email" name="email" data-parsley-type="email"
+                                       class="form-control" placeholder="Email">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="deviceNum" class="col-sm-2 control-label">最大设备数</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="deviceNum" name="deviceNum"
+                                       class="form-control" placeholder="最大设备数">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tenancyType" class="col-sm-2 control-label">租户类型</label>
+
+                            <div class="col-sm-8">
+                                <select id="tenancyType" name="tenancyType" class="form-control">
+                                    <option value="0">托管</option>
+                                    <option value="1">私有化</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="status" class="col-sm-2 control-label">商户状态</label>
+
+                            <div class="col-sm-8">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="0">待审核</option>
+                                    <option value="1">通过审核</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">语言设置</label>
+                            <input type="hidden" name="languageDic" id="languageDic">
+                            <div class="col-sm-8" id="language">
+                                <% for(dic in languageDic){ %>
+                                <input type="checkbox" name="language" value="${dic.code}"> ${dic.name}
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h4 class="col-sm-2 control-label">扩展信息：</h4>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用实施</label>
+
+                            <div class="col-sm-8">
+                                <input type="radio" name="isImplement" value="1" checked>是
+                                <input type="radio" name="isImplement" value="0">否
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用应用升级</label>
+
+                            <div class="col-sm-8">
+                                <input type="radio" name="appSwitch" value="1" checked>是
+                                <input type="radio" name="appSwitch" value="0">否
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用日志上报</label>
+
+                            <div class="col-sm-8">
+                                <input type="radio" name="logOn" value="0">否
+                                <input type="radio" name="logOn" value="1" checked>是
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用PMS对接</label>
+
+                            <div class="col-sm-8">
+                                <input type="radio" name="enablePms" value="1" checked>是
+                                <input type="radio" name="enablePms" value="0">否
+                            </div>
+                        </div>
+                        <div id="showPMS">
+                            <div class="form-group">
+                                <label for="pmsName" class="col-sm-2 control-label">对接的pms厂商</label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" id="pmsName" class="form-control" name="pmsName"
+                                           placeholder="对接的pms厂商">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pmsUrl" class="col-sm-2 control-label">PMS服务地址</label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" id="pmsUrl" class="form-control" name="pmsUrl"
+                                           placeholder="PMS服务地址">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley"
+                                    data-loading-text="正在提交...">提 交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 地区 -->
+<div id="dialogSelectAreaUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择地区</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeAreaUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectAreaMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 选择上级单位 -->
+<div id="dialogSelectParentUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择单位</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeParentUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectParentMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    function initAreaTreeView() {
+        $("#jsTreeAreaUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/area/treeArea" : "${base!}/platform/sys/area/treeArea?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectAreaMenu();
+        });
+    }
+
+    function selectAreaMenu() {
+        var tree = $.jstree.reference("#jsTreeAreaUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm #areaId").val(node[0].text);
+        $("#unitAddForm input[name='areaId']").val(node[0].id);
+        $("#dialogSelectAreaUnit").modal("hide");
+    }
+
+    function initTreeView() {
+        $("#jsTreeParentUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/sys/office/tree" : "${base}/platform/sys/office/tree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectParentMenu();
+        });
+    }
+
+    //选择父菜单
+    function selectParentMenu() {
+        var tree = $.jstree.reference("#jsTreeParentUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm #parentId").val(node[0].text);
+        $("#unitAddForm input[name='sysUserId']").val(node[0].id);
+        $("#unitAddForm input[name='sysUserName']").val(node[0].text);
+        $("#dialogSelectParentUnit").modal("hide");
+    }
+
+    $(document).ready(function () {
+
+        $('input[type=radio][name=enablePms]').change(function () {
+            if (this.value == '0') {
+                document.getElementById('showPMS').style.display = 'none';
+                $("#pmsName").val("");
+                $("#pmsUrl").val("");
+            }
+            else if (this.value == '1') {
+                document.getElementById('showPMS').style.display = 'block';
+            }
+        });
+
+        initTreeView();
+        initAreaTreeView();
+
+        myForm.init();
+        $("#save").on("click", function () {
+            var language = [];
+            $("#language input[name='language']:checked").each(function () {
+                var i = $(this).val();
+                language.push(i);
+            });
+            if (language == '') {
+                language.push("zh-Hans");
+            }
+            $("#languageDic").val(language);
+            $('#unitAddForm').submit();
+        });
+
+        $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    //刷新父级菜单
+                    form.resetForm();
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>

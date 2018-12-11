@@ -1,0 +1,68 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">详情</a>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>基础信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        终端id：${obj.deviceId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        应用名称：${obj.launcherName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        应用包名：${obj.packageName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        应用版本：${obj.launcherVersion!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        应用版本名称：${obj.launcherVersionName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        升级状态：
+                        <% if(obj.status=="100003"){ %>
+                        成功
+                        <% } else{%>
+                        失败(${obj.status!}:${obj.failureMsg!})
+                        <% } %>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>版本信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        版本名称：${version.versionName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="版本号">
+                        版本号：${version.version!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="版本描述">
+                        版本描述：${version.remarks!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="App信息">
+                        App信息：
+                        <%if(!isEmpty(attMain)){%>
+                            ${attMain.fdFileName}
+                        <% } %>
+                    </a>
+                </div>
+                <div class="list-group">
+                    &nbsp;下载地址：
+                    <%if(!isEmpty(attMain)){%>
+                    ${attMain.fdFilePath}
+                    <% } %>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

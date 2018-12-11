@@ -1,0 +1,151 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">订单详情</a>
+                    </div>
+                </header>
+                <div class="col-xs-12" style="padding: 0;">
+                    <a href="javascript:;" class="list-group-item" title=" 商户">
+                        商户 ：${obj.tenantName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="房间号">
+                        房间号：${obj.roomId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        设备Id ：${obj.deviceId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        支付用户 ：${obj.userId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        收货人姓名 ：${obj.acceptName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        收货人电话 ：${obj.telPhone!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        会话token ：${obj.token!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="订单标题">
+                        订单标题 ：${obj.subject!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="订单描述">
+                        订单描述 ：${obj.body!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="银行卡类型">
+                        银行卡类型 ：${obj.bankType!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备号">
+                        设备号 ：${obj.deviceInfo!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="设备号">
+                        付款条码串 ：${obj.authCode!}
+                    </a>
+                     <a href="javascript:;" class="list-group-item" title="openid">
+                         openid ：${obj.openid!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="币种">
+                        币种 ：${obj.curType!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="订单编号">
+                        订单编号：${obj.orderNo!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="支付方式">
+                        支付方式 ：
+                        <%if(${obj.payType!}=='aliPay'){%>
+                        支付宝
+                        <%}else if(${obj.payType!}=='wxPay'){%>
+                        微信
+                        <%}%>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="支付类型">
+                        支付类型 ：
+                        <%if(${obj.transactionType!}=='JSAPI'){%>
+                        微信公众号支付
+                        <%}else if(${obj.transactionType!}=='NATIVE'){%>
+                        微信二维码支付
+                        <%}else if(${obj.transactionType!}=='APP'){%>
+                        微信移动支付
+                        <%}else if(${obj.transactionType!}=='SWEEPPAY'){%>
+                        支付宝二维码支付
+                        <%}else if(${obj.transactionType!}=='BAR_CODE'){%>
+                        支付宝条码付
+                        <%}%>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="订单总额">
+                        订单总额 ：${obj.price!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="实付总额">
+                          实付总额 ：${obj.realAmount!}
+                    </a>
+                     <a href="javascript:;" class="list-group-item" title="运费金额">
+                         运费金额 ：${obj.payableFreight!}
+                    </a>
+                     <a href="javascript:;" class="list-group-item" title="实付运费">
+                         实付运费 ：${obj.realFreight!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="交易单号">
+                        交易单号 ：${obj.tradeNo!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        购买时间 ：${obj.payTime!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="支付回调通知时间">
+                        支付通知时间：${obj.notifyTime!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="购买人">
+                        购买人：${obj.buyerEr!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        软件版本：${obj.appVersion!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="订单状态">
+                        订单状态：
+                        <%if(${obj.status!}=='1'){%>
+                        生成订单
+                        <%}else if(${obj.status!}=='2'){%>
+                        支付订单
+                        <%}else if(${obj.status!}=='3'){%>
+                        取消订单
+                        <%}else if(${obj.status!}=='4'){%>
+                        作废订单
+                        <%}else if(${obj.status!}=='5'){%>
+                        完成订单
+                        <%}else if(${obj.status!}=='6'){%>
+                        退款
+                        <%}else if(${obj.status!}=='7'){%>
+                        部分退款
+                        <%}%>
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="支付状态">
+                        支付状态：
+                        <%if(${obj.payStatus!}=='Unpaid'){%>
+                        未付款
+                        <%}else if(${obj.payStatus!}=='Paid'){%>
+                        已付款
+                        <%}else if(${obj.payStatus!}=='Shipped'){%>
+                        已发货
+                        <%}else if(${obj.payStatus!}=='3'){%>
+                        确认收货
+                        <%}else if(${obj.payStatus!}=='4'){%>
+                        售后
+                        <%}else if(${obj.payStatus!}=='error'){%>
+                        付款异常
+                        <%}%>
+
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

@@ -1,0 +1,189 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>终端Id</th>
+                    <th>应用名称</th>
+                    <th>应用包名</th>
+                    <th>版本名称</th>
+                    <th>版本号</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                    <!--<th>对应更新版本</th>-->
+                    <!--<th>附件信息</th>-->
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="sstartDate">创建时间</label>
+                <input type="text" id="sstartDate" name="sstartDate" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="estartDate"></label>
+                <input type="text" id="estartDate" name="estartDate" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="launcherName">应用名称</label>
+                <input type="text" id="launcherName" name="launcherName" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="launcherVersionName">版本名称</label>
+                <input type="text" id="launcherVersionName" name="launcherVersionName" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="launcherVersion">版本号</label>
+                <input type="text" id="launcherVersion" name="launcherVersion" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+
+<!-- 版本详情 -->
+<div id="dialogVersionDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<!-- 详情 -->
+<div id="dialogDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/sys/upgrade/record/data",
+                "type": "post",
+                "data": function (d) {
+                    d.sstartDate = $('#sstartDate').val();
+                    d.estartDate = $('#estartDate').val();
+                    d.launcherName = $('#launcherName').val();
+                    d.launcherVersionName = $('#launcherVersionName').val();
+                    d.launcherVersion = $('#launcherVersion').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "deviceId", "bSortable": true},
+                {"data": "launcherName", "bSortable": true},
+                {"data": "packageName", "bSortable": true},
+                {"data": "launcherVersionName", "bSortable": true},
+                {"data": "launcherVersion", "bSortable": true},
+                {"data": "status", "bSortable": true},
+                {"data": "createDateStr", "bSortable": true}
+               // {"data": "upgradeVersionId", "bSortable": true}
+               // {"data": "upgradeAtt", "bSortable": true}
+            ],
+            "columnDefs": [
+                //{
+                  //  "render": function (data, type, row) {
+                 //       return '<a href="${base!}/platform/sys/upgrade/record/versionDetail?id=' + row.upgradeVersionId + '" data-toggle="modal" data-target="#dialogVersionDetail">'+row.launcherVersion+'（点击查看详情）</a>';
+                //    },
+                //    "targets": 3
+              //  },
+                {
+                    "render": function (data, type, row) {
+                        if(row.status=="100003"){
+                            return '成功';
+                        }else{
+                            return '失败';
+                        }
+
+                    },
+                    "targets": 5
+                },{
+                    "render": function (data, type, row) {
+                          return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                    '<i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                                    '<li><a href="${base!}/platform/sys/upgrade/record/detail?id=' + row.id + '" data-toggle="modal" data-target="#dialogDetail">详情</a></li>' +
+                                    '</ul></div>';
+                    },
+                    "targets": 7
+                }
+            ]
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+        //时间插件
+        $("#sstartDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sstartDate").datetimepicker("setEndDate",$("#sstartDate").val())
+        });
+        $("#estartDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#estartDate").datetimepicker("setStartDate",$("#estartDate").val())
+        });
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogVersionDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

@@ -1,0 +1,133 @@
+server:
+  port: 8088
+  undertow:
+   buffer-size: 512
+   io-threads: 20
+   worker-threads: 20
+spring:
+  aop:
+    proxy-target-class: false
+  mvc:
+    static-path-pattern: /static/**
+  datasource:
+    url: jdbc:mysql://47.94.162.127:3306/phenix_cloud_master?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: mysql
+    password: L84{cPwi
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    max-active: 20
+    initial-size: 1
+    min-idle: 3
+    max-wait: 600000000
+    time-between-eviction-runs-millis: 600000000
+    min-evictable-idle-time-millis: 300000
+    validation-query: SELECT 'x' FROM DUAL
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+     # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+  logsource:
+    url: jdbc:mysql://47.94.162.127:3306/phenix_cloud_logs?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&serverTimezone=PRC&useSSL=false&autoReconnect=true
+    username: mysql
+    password: L84{cPwi
+    driver-class-name: com.mysql.jdbc.Driver
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    max-active: 20
+    initial-size: 1
+    min-idle: 3
+    max-wait: 6000000000
+    time-between-eviction-runs-millis: 6000000000
+    min-evictable-idle-time-millis: 300000
+    validation-query: SELECT 'x' FROM DUAL
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+     # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+  data:
+    mongodb:
+      host: 47.94.162.127
+      port: 27019
+      username: happyview
+      password: 1qaz@WSXhappy
+      database: phenix
+#spring-ehcache的配置
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  jpa:
+    database: mysql
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+        hbm2ddl.auto : update
+    show-sql: true
+adminPath:
+#oss
+upload:
+  base-dir: /home/resource/
+  plugin-map:
+    alioss: cn.phenix.integration.alioss.plugin.OssUploadPlugin
+#phenix-att-test/201710/A264215029_12966.jpeg
+#http://phenix-att-test.oss-cn-shanghai.aliyuncs.com/201710/A264215029_12966.jpeg
+oss:
+  website: oss-cn-beijing.aliyuncs.com
+  endpoint: oss-cn-beijing.aliyuncs.com
+  access-key-id: LTAI26pZxzhtvr9k
+  access-key-secret: Z2SBnvDZ4ckRVhiygxMNFPisRmWMwY
+  bucket-name: phenix-attr-pro1
+  client:
+     max-connections: 1024
+     socket-timeout: 50000
+     connection-timeout: 50000
+     connection-request-timeout: 3000
+     idle-connection-time: 600000
+     max-error-retry: 3
+     support-cname: true
+     sld-enabled: false
+     protocol: http
+     user-agent: aliyun-sdk-java
+
+logging:
+  level:
+    root: INFO
+    cn.phenix: INFO
+    org.springframework: INFO
+  file: cloud-admin.log
+
+#退款
+pay:
+  refundUrl: http://api.cloud.unitedview.cn/service-pay/api/pay/testRefund/v1
+
+#缓存
+cache:
+  cacheUrl: http://api.cloud.unitedview.cn/service-media/api/cache/clear/
+
+#资源接口
+resource:
+  bootResourceAPI : http://api.cloud.unitedview.cn/service-resource/api/resource/boot/v1/
+  screenProtectorAPI : http://api.cloud.unitedview.cn/service-resource/api/resource/screenProtector/v1/
+
+#vod接口
+vod:
+  deviceId : SHARPKTU84P70208416d854
+  getTokenUrl : http://api.cloud.unitedview.cn/service-auth/api/device/token/v1/
+  CategoryHandler : http://api.cloud.unitedview.cn/service-media/api/media/category/v1/
+  SearchHandler : http://api.cloud.unitedview.cn/service-media/api/media/list/v1/
+  MediaDetailController  : http://api.cloud.unitedview.cn/service-media/api/media/details/v1/

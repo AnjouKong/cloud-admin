@@ -1,0 +1,174 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<aside class="sidebar-250 canvas-right bg-default ">
+    <header class="header navbar clearfix bb bg-default pl0 pr0">
+        <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 组织列表</p>
+    </header>
+    <div class="content-wrap no-p">
+        <div class="wrapper2">
+            <div class="m5">
+                <div id="jsTreeUnit"></div>
+            </div>
+        </div>
+    </div>
+</aside>
+<section class="content-wrap bg-white">
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input id="officeId" type="hidden">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>姓名/昵称</th>
+                    <th>状态</th>
+                    <th>Email</th>
+                    <th>操作</th>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="loginName">用户名</label>
+                <input type="text" id="loginName" name="loginName" onclick="this.value=''" class="form-control" placeholder="用户名" autofocus>
+            </div>
+            <div class="form-group">
+                <input type="text" id="name" name="name" onclick="this.value=''" class="form-control" placeholder="姓名/昵称">
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base!}/platform/sys/user/data",
+                "type": "post",
+                "data": function (d) {
+                    d.officeId = $('#officeId').val();
+                    d.loginName = $('#loginName').val();
+                    d.name = $('#name').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "loginName", "bSortable": true},
+                {"data": "name", "bSortable": true},
+                {"data": "loginFlag", "bSortable": true},
+                {"data": "email", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                               // '<li><a href="${base!}/platform/sys/user/detail/' + row.id + '" data-toggle="modal" data-target="#dialogUserDetail">基本信息</a></li>' +
+                                '<li><a href="${base!}/platform/sys/implement/add/' + row.id + '"  data-pjax>分配权限方式</a></li>' +
+                                '</ul></div>';
+                    },
+                    "targets": 4
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data=='1') {
+                            return '<i id="disable_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="disable_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 2
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+    }
+    var unitTreeTable;
+    var selected = [];
+    function initTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/office/treeData" : "${base!}/platform/sys/office/treeData?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            var id = selected.selected;
+            $("#officeId").val(id);
+            $("#add").attr("href","${base!}/platform/sys/user/add?officeId="+id);
+            $("#searchForm").find("input[type='text']").val("");
+            if (datatable) {
+                $(".cd-panel-content").find("input").val("");
+                datatable.ajax.reload();
+            } else {
+                initDatatable();
+            }
+        }).on("loaded.jstree", function (node, jstree) {
+            $(node.target).find("li:first div").addClass("jstree-wholerow-clicked");
+        });
+    }
+
+        function del(id) {
+            $.get("${base!}/platform/sys/implement/tenantValidate/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    window.location.href="${base!}/platform/sys/implement/tenant/"+id;
+                } else {
+                    Toast.warning(data.msg);
+                }
+            }, "json");
+
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        initTreeView();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

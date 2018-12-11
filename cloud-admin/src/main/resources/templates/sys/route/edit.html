@@ -1,0 +1,76 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">修改路由</a>
+                    </div>
+                </header>
+                <div class="row mb10" style="text-align: center;padding-top: 10px;">
+                    <table width="80%" style="padding: 10px;">
+                        <tr style="height: 30px;">
+                            <td width="30%" align="right">原始路径：</td>
+                            <td width="70%" align="left">
+                                <input type="hidden" id="id" name="id" value="${obj.id!}">
+                                <input type="text" id="url" name="url" class="control-group"  placeholder="原始路径"
+                                       value="${obj.url!}">
+                            </td>
+                        </tr>
+                        <tr style="height: 30px;">
+                            <td width="30%" align="right">跳转路径：</td>
+                            <td width="70%" align="left">
+                                <input type="text" id="toUrl" name="toUrl" class="control-group" placeholder="跳转路径"
+                                       value="${obj.toUrl!}">
+                            </td>
+                        </tr>
+                        <tr style="height: 30px;">
+                            <td width="30%" align="right">转发类型：</td>
+                            <td width="70%" align="left">
+                                <input type="text" id="type" name="type" class="control-group" value="${obj.type!}" placeholder="转发类型">
+                            </td>
+                        </tr>
+                        <tr style="height: 30px;">
+                            <td width="30%" align="right">是否禁用：</td>
+                            <td width="70%" align="left">
+                                <input type="radio" name="disabled" value="true" <%if(obj.disabled == true){%> checked<%}%>>禁用
+                                <input type="radio" name="disabled" value="false" <%if(obj.disabled == false){%> checked<%}%>>不禁用
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+    <button onclick="editIt()" id="ok" type="button" class="btn btn-primary" data-loading-text="正在提交...">确 定</button>
+</div>
+<script type="text/javascript">
+    function editIt() {
+        if ($("#url").val() == "") {
+            Toast.error("原始路径不可为空");
+            $("#url").focus();
+            return false;
+        }
+        var btn = $("#ok");
+        var dialog = $("#dialogDetail2");
+        btn.button("loading");
+        $.post("${base}/platform/sys/route/editDo", {url: $("#url").val(),id:$("#id").val(),toUrl:$("#toUrl").val(),type: $("#type").val(),disabled: $("#disabled").val()}, function (data) {
+            if (data.code == 0) {
+                Toast.success("修改成功");
+                dialog.modal("hide");
+                datatable.ajax.reload();
+            } else {
+                Toast.error(data.msg);
+            }
+            btn.button("reset");
+
+        }, "json");
+    }
+
+
+</script>

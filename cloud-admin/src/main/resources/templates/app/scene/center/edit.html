@@ -1,0 +1,710 @@
+<%
+layout("/layouts/platform.html"){
+%>
+
+<section class="content-wrap bg-white ddd">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/scene/center" id="goback"  data-pjax><i class="ti-angle-left"></i> 返回</a>
+        </div>
+    </header>
+    <div class="content-wrap">
+        <div class="wrapper">
+            <div class="col-md-12 form-horizontal option">
+                <div class="form-group">
+                    <label class="labelText control-label">模板名称：</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="modelName" name="modelName" onclick="this.value=''" class="form-control" placeholder="名称"  value="${obj.name!}" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">整体：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn labelBtnDrag" id="overallEdit" data-toggle='modal' data-target='#overallDetail'>编辑</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">挂件：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn labelBtnDrag" id="date">日期</label>
+                        <label class="labelBtn labelBtnDrag" id="weather">天气</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="labelText control-label">窗口：</label>
+                    <div class="col-sm-8 dropDown">
+                        <label class="labelBtn" id="" data-toggle="dropdown">推荐位</label>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="addBD1">宽高 1：1</a></li>
+                            <li><a href="#" id="addBD2">宽高 1：2</a></li>
+                            <li><a href="#" id="addBD3">宽高 2：1</a></li>
+                            <li><a href="#" id="addBD4">宽高 2：2</a></li>
+                            <li><a href="#" id="addBD5">宽高 3：2</a></li>
+                            <li><a href="#" id="addBD6">宽高 4：2</a></li>
+                        </ul>
+                        <label class="labelBtn labelBtnDrag" id="">标签</label>
+                        <label class="labelBtn labelBtnDrag" id="">图片</label>
+                        <label class="labelBtn labelBtnDrag" id="">图片集合</label>
+                        <label class="labelBtn labelBtnDrag" id="">视频</label>
+                        <label class="labelBtn labelBtnDrag" id="">图文</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">导航：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn" id="addHD">栏目</label>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="dropDown">-->
+            <!--<button id="addHD" data-toggle="dropdown">添加栏目</button>-->
+            <!--<ul class="dropdown-menu">-->
+            <!--<li><a href="#">分辨率：1280*720</a></li>-->
+            <!--<li><a href="#">分辨率：1920*1080</a></li>-->
+            <!--</ul>-->
+            <!--</div>-->
+
+            <!--<button id="addBD">添加资源</button>-->
+            <!--<button id="save">保存</button>-->
+            <!--<a href="indexCanvas.html"><button id="">预览</button></a>-->
+            <div class="drag">
+
+                <!--<div class="addMake">-->
+                <div class="dragging">
+                    <div class="weather">
+                        <img src="${base!}/static/img/date.png" height="64" width="64"/>
+                        <div class="dateText">
+                            <p><span>2日星期六</span><span>晴</span></p>
+                            <p>22℃ ~ 27℃</p>
+                        </div>
+                    </div>
+                    <div class="date">
+                        <img src="../../../../static/img/date.png" height="64" width="64"/>
+                        <div class="dateText">
+                            <p>2017/9/4</p>
+                            <p><span>周一</span><span>10:00</span></p>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="fullSlide" class="fullSlide">
+                    <div class="bd" id="bd">
+                        <!--<ul>-->
+                        <!-- <li>
+                            <div class="liList" id="preview" style="width:155px; height:230px; border:1px solid gray; " > -->
+                        <!-- <div class="drag"></div> -->
+                        <!-- <div class="downBtn" ></div>
+                        <div class="downRightBtn"></div>
+                        <div class="centerRightBtn"></div> -->
+                        <!-- <div class="centerLeftBtn"></div> -->
+                        <!-- <p class="editMongodb">编辑</p>
+                    </div>
+                </li> -->
+
+                        <!--</ul>-->
+
+                    </div>
+                    <div class="hd">
+                        <ul>
+                            <!-- <li>推荐</li>
+                            <li>我的酒店</li>
+                            <li>高清影院</li>
+                            <li>娱乐</li>
+                            <li>酒店服务</li>  -->
+                        </ul>
+                    </div>
+                    <!--<button type='button' class='setStatus' data-toggle="dropdown">设置状态</button>-->
+                    <!--<ul class="dropdown-menu size" style="top: calc(80% - 87px);left: 83%;">-->
+                    <!--<li><a href="#" id="">扁平化</a></li>-->
+                    <!--<li><a href="#" id="">卡片化</a></li>-->
+                    <!--<li><a href="#" id="">弹出化</a></li>-->
+                    <!--</ul>-->
+                </div>
+                <!--</div>-->
+            </div>
+            <div class="col-md-12 saveTemp" style="margin-left: 100px;">
+                <div class="btn-group tool-button">
+                    <a class="btn btn-primary navbar-btn" href="#" data-pjax>预览</a>
+                    <a class="btn btn-primary navbar-btn" href="#" id="save" data-pjax>保存</a>
+                    <a class="btn btn-primary navbar-btn" href="#" data-pjax>清空</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<a class="exit-offscreen"></a>
+<!-- 整体编辑 -->
+<div id="overallDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">栏目编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallName" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="名称">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">背景：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallBG" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#333">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">字体：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallFont" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：16px">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">字体颜色：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallColor" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#ffffff">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">风格：</label>
+                                    <div class="col-xs-8" style="margin-top: 6px;">
+                                        <input type="radio" name="styleTypes" value="0" data-parsley-required="true" checked>扁平化
+                                        <!--<input type="radio" name="styleTypes" value="1" data-parsley-required="true">卡片化-->
+                                        <!--<input type="radio" name="styleTypes" value="2" data-parsley-required="true">弹出化-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="overall" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 栏目编辑 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">栏目编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="栏目名称">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 推荐位编辑 -->
+<div id="recommendDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">推荐位编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="recName" name="" value="" class="form-control" placeholder="推荐位名称">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">背景：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="recBG" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#333">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">是否授权：</label>
+                                    <div class="col-xs-8 authority">
+                                        <input type="radio" name="authority" value="0" data-parsley-required="true" checked>是
+                                        <input type="radio" name="authority" value="1" data-parsley-required="true">否
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-xs-3 control-label">类型：</label>
+                                    <div class="col-xs-8 editRadio" style="margin-top: 6px;">
+                                        <input type="radio" name="TypesOf" value="0" data-parsley-required="true" checked>图片
+                                        <input type="radio" name="TypesOf" value="1" data-parsley-required="true">文本
+                                        <input type="radio" name="TypesOf" value="2" data-parsley-required="true">视频
+                                        <input type="radio" name="TypesOf" value="3" data-parsley-required="true">app
+                                        <input type="radio" name="TypesOf" value="4" data-parsley-required="true">图片列表
+                                        <input type="radio" name="TypesOf" value="5" data-parsley-required="true">视频列表
+                                        <!--<div class="row" style="height: 200px">-->
+                                        <!--<input id="file-Portrait1" type="file">-->
+                                        <!--</div>-->
+                                        <div class="col-sm-12 picVideo" style="padding: 0;">
+                                            <#upload id="picVideo" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                        </div>
+                                        <div class="col-sm-12" style="display:none;padding: 0;">
+                                            <textarea id="" name="remarks" class="form-control" style="width:100%;height:90px;" placeholder="字数不能超过200字"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="recEdit" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .drag{
+        width:960px;
+        height:540px;
+        overflow:hidden;
+        position:relative;
+        border: 1px solid #333;
+        font-size: 12px;
+        margin-left: 115px;
+        /*display:none;*/
+    }
+    .dropDown{position: relative;}
+    /*.option{display:none;}*/
+    /*.saveTemp{display:none;}*/
+    .option .labelText{width: 100px; float:left;margin-right:15px;}
+    .option .col-sm-8{padding: 0;}
+    .drag .fullSlide .hd ul li p{
+        width: 85px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .setStatus{
+        position: absolute;
+        right: 8px;
+        top: 81%;
+        width: 80px;
+        height: 30px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        text-align: center;
+        display: none;
+        z-index: 9;
+    }
+</style>
+<!-- 拖拽和轮播 -->
+<script src="/static/plugins/draggable/jquery.ui.core.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.widget.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.mouse.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.draggable.js"></script>
+<!--<script src="/static/plugins/draggable/TouchSlide.1.1.js"></script>-->
+<!--<script src="/static/plugins/draggable/mainDrag.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery-ui.min.js"></script>-->
+<script>
+    function refresh(){
+        window.location.reload();//刷新当前页面.
+
+        //或者下方刷新方法
+        //parent.location.reload()刷新父亲对象（用于框架）--需在iframe框架内使用
+        // opener.location.reload()刷新父窗口对象（用于单开窗口
+        //top.location.reload()刷新最顶端对象（用于多开窗口）
+    }
+    $(function(){
+
+//        $("body").click(function(){
+//            refresh();
+//        });
+        $( "#weather" ).on("click",function(){
+            $( ".weather" ).show();
+        })
+        $( "#date" ).on("click",function(){
+            $( ".date" ).show();
+        })
+        // 拖拽位置
+        $( ".weather" ).draggable({ containment: ".dragging", scroll: false });
+        $( ".date" ).draggable({ containment: ".dragging", scroll: false });
+        // 分辨率窗口大小
+        $(".size").on("click","#big",function(){
+            $(".option").show();
+            $(".saveTemp").show();
+//            $(".drag").show().addClass("big");
+            $(".drag").show().css({"width":"960px","height":"540px"});
+            $(".close_size").removeClass("open");
+        });
+        $(".size").on("click","#small",function(){
+            $(".option").show();
+//            $(".drag").show().addClass("small");
+            $(".drag").show().css({"width":"800px","height":"450px"});
+            $(".close_size").removeClass("open");
+        });
+        //  整体编辑
+        $("#overall").on("click",function(){
+            $(".drag").css({"background":$("#overallBG").val(),"font-size":$("#overallFont").val(),"color":$("#overallColor").val()});
+            $(".drag").attr("styleTypes",$(".styleTypes").find("input[type='radio']:checked").val());
+            $("#overallDetail").modal("hide");
+        });
+        // 添加推荐位
+        $("#addBD1").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(25% - 14px); height:49%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $("#addBD2").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(25% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $("#addBD3").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(50% - 14px); height:49%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $("#addBD4").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(50% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $("#addBD5").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(75% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $("#addBD6").click(function(){
+            $(".bd").find("ul#currentTabId").append(
+                '<li><div class="liList" style="width:calc(100% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close columnClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false">编辑</p>'+
+                '</div></li>');
+        });
+        $(".bd").on("click", ".columnClose", function(){
+            $(this).parent().parent('li').remove();
+        })
+        $(".bd").on("click",".edit",function(){
+            var currentId = $(this).attr("id","currentId");
+            if($("#currentId").text() != "编辑"){
+                $("#recName").val($("#currentId").text());
+                $("#recBG").val($("#currentId").parent(".liList").css("background-color"));
+            }else{
+                $("#recName").val("");
+                $("#recBG").val("");
+            }
+            $(".authority").find("input:first").attr("checked",true);
+
+            // 推荐类型接口
+            $.post("${base}/platform/scene/interface/getPicUrl", {}, function (data) {
+                console.log(data);
+                // 类型选择
+                $(".editRadio").on("click","input",function(){
+                    var inputNum = $(this).val();
+                    switch (inputNum) {
+                        case "0":
+                        case "2":
+                        case "4":
+                        case "5":
+                            $(".picVideo").show();
+                            $("textarea").parent("div").hide();
+                            break;
+                        case "1":
+                            $("textarea").parent("div").show();
+                            $(".picVideo").hide();
+                            break;
+                        case "3":
+                            $("textarea").parent("div").hide();
+                            $(".picVideo").hide();
+                            alert("待定！");
+                            break;
+                    }
+                })
+            });
+        });
+
+        //  编辑推荐位弹出框
+        $("#recommendDetail").on("click","#recEdit",function(){
+            if($("input#recName").val() == ""){
+                alert("填写名称！")
+            }else{
+//                $.post("${base}/platform/scene/center/data", {params:params,name:name}, function (data) {
+////                console.log(data);
+//                });
+                $(".bd p").each(function(){
+                    if($(this).attr('id') == 'currentId'){
+                        $(this).text($("input#recName").val());//填充内容
+                        $(this).parent(".liList").css({"background":$("#recBG").val()});//填充内容
+                        var authorityNum = $(".authority").find("input[type='radio']:checked").val();
+                        $(this).parent(".liList").attr("authority",authorityNum);
+                    }
+                })
+//                $("input[type='radio']:checked").val();
+                $("#recommendDetail").modal("hide");
+                $(".bd p").removeAttr("id");
+
+            }
+        });
+        $(".bd").on("mousedown","li",function(){
+            $(".liList" ).draggable({ containment: "#bd", scroll: false });
+        });
+
+        // 添加栏目
+        $("#addHD").click(function(){
+            // alert("s"); data-toggle='modal' data-target='#dialogUserDetail'
+            if($(".hd").find("li").length < 6){
+                $(".hd").find("ul").append("<li><input type='text' name='edit' value='' placeholder='编辑'><button type='button' class='close columnClose'>×</button></li>");
+//                $(".hd").find("ul").append("<li><p class='columnEdit' onclick='aa()' ondblclick='bb()' data-toggle='modal' data-target='#dialogUserDetail'>编辑</p><button type='button' class='close columnClose'>×</button></li>");
+                $(".bd").append("<ul data-ulname='asd'></ul>");
+                $(".bd ul").hide().removeAttr("id");
+                $(".bd ul").eq(0).show().attr("id","currentTabId");
+                $(".hd li").find("input").removeClass("on");
+                $(".hd li").eq(0).find("input").addClass("on");
+            }else{
+                alert("添加的太多了！")
+            }
+            if($(".hd").find("li").length > 2){
+                $(".setStatus").show();
+            }
+//            if($(".hd").find("li").length > 5){
+//                $(".fullSlide .hd").css("margin-left","-290px");
+//            }
+        });
+        // tab标签切换
+        $(".hd ul").on("click","li",function(){
+            $(".bd ul").removeAttr("id");
+            $(".hd li").find("input").removeClass("on");
+            $(this).find("input").addClass("on");
+            var num = $(".hd li").index(this);
+//            $(this).addClass("on").slblings().removeClass("on");
+//            console.log($(".hd li").index(this));
+            $(".bd ul").hide();
+            $(".bd ul").eq(num).show();/*.slblings().hide()*/
+            //  当前添加id
+            $(".bd ul").eq(num).attr("id","currentTabId");
+            // 删除标签
+            $(".hd").on("click", ".columnClose", function(){
+//                console.log( $(".bd ul").eq(num));
+                $(".bd ul#currentTabId").remove();
+                $(this).parent('li').remove();
+//                $(".hd li").eq(0).trigger("click");
+            })
+        })
+        // 保存
+        $("#save").click(function() {
+            // 整体dragging
+            var drag = {
+                dragW : $(".drag").width(),
+                dragH : $(".drag").height(),
+                dragBG : $(".drag").css("background-color"),
+                dragSize : $(".drag").css("font-size"),
+                dragFamily : $(".drag").css("font-family"),
+                dragColor : $(".drag").css("color"),
+                styleTypes : $(".drag").attr("styleTypes")
+            };
+//            console.log(drag);
+
+            // 挂件
+            var pendant = [{
+                pendantW: $(".dragging").position().left,
+                pendantH: $(".dragging").position().top
+//                pendantSize : $(".dragging").css("font-size"),
+//                pendantFamily : $(".dragging").css("font-family"),
+//                pendantColor : $(".dragging").css("color")
+            },{ //天气
+                pendantTX: $(".weather").position().left,
+                pendantTY: $(".weather").position().top,
+                pendantTW: $(".weather").width(),
+                pendantTH: $(".weather").height()
+            },{//日期
+                pendantRX: $(".date").position().left,
+                pendantRY: $(".date").position().top,
+                pendantRW: $(".date").width(),
+                pendantRH: $(".date").height()
+            }];
+            // 将推荐位数据放进json
+            var ulList = $(".bd").find("ul");
+            var listUl = {}; // ul\
+            for(var i = 0; i < ulList.length; i++){ // ul
+                ulList.eq(i).css({"display":"block","opacity":"0"});
+//                if(ulList.eq(i).html()!= ""){
+                var liList = ulList.eq(i).find("li");
+                var listChild = []; // li
+                for(var e = 0; e < liList.length; e++) { // li
+                    var listLi = {
+                        W : liList.eq(e).find(".liList").width(),
+                        H : liList.eq(e).find(".liList").height(),
+                        TX: liList.eq(e).find(".liList").position().left,
+                        TY: liList.eq(e).find(".liList").position().top,
+                        authority: liList.eq(e).find(".liList").attr("authority")
+                    }
+                    listChild.push(listLi);
+                }
+//                }
+                listUl[i] = listChild;
+                ulList.eq(i).css({"display":"none","opacity":"1"});
+                $("ul#currentTabId").css({"display":"block","opacity":"1"});
+//                listUl.push(listChild);
+            }
+//            console.log(listChild);
+            console.log(listUl);
+            // 推荐位
+            var bit = {
+                bitW : $(".fullSlide").width(),
+                bitH : $(".fullSlide").height(),
+                bitTX: $(".fullSlide").position().left,
+                bitTY: $(".fullSlide").position().top,
+//                bitSize : $(".fullSlide").css("font-size"),
+//                bitFamily : $(".fullSlide").css("font-family"),
+//                bitColor : $(".fullSlide").css("color"),
+                bitList : listUl
+            }
+//            console.log(bit);
+
+            // 栏目
+            var numArr = []; // 定义一个空数组
+            var txt = $('.hd').find("input[type='text']"); // 获取所有文本框
+            for (var i = 0; i < txt.length; i++) {
+                numArr.push(txt.eq(i).val()); // 将文本框的值添加到数组中
+            }
+            var column = {
+                columnW : $(".hd").width(),
+                columnH : $(".hd").height(),
+                columnTX: $(".hd").position().left,
+                columnTY: $(".hd").position().top,
+                columnText: numArr
+            }
+//            console.log(column);
+
+            var category = {
+                "drag":drag, // 整体
+                "pendant":pendant,// 挂件
+                "bit" : bit, // 推荐位
+                "column":column // 导航
+            }
+            $.post("${base}/platform/scene/center/editDo", {params:JSON.stringify(category),name:$("#modelName").val(),id:'${obj.id}'}, function (data) {
+//                console.log('${json}');
+            });
+
+//            var data = [
+//                {"W": $(".hd").width()},
+//                {"H":column.H},
+//                {"text":column.text}
+//            ];
+//            console.log(JSON.stringify(data))
+//                $.ajax({
+//                    url:"${base}/platform/media/list/priceMulti",
+//                    type:"post",
+//                    datatype:"json",
+//                    data:JSON.stringify(data),
+//                    success:function( data ){
+//                        console.log(data)
+//                    },
+//                    error: function(){
+//                        alert("服务端错误");
+//                        return false
+//                    }
+//                })
+
+
+
+
+        });
+
+
+
+
+//        $(".bd").on("mousedown",".edit",function(){
+//            // $(this).addClass();
+//            $(".editCover").show();
+//        });
+//        $("#saveCover").click(function(){
+//            var coverArr = []; // 定义一个空数组
+//            var liTex = $('.editCover').find("input[type='text']"); // 获取所有文本框
+//            for (var i = 0; i < liTex.length; i++) {
+//                coverArr.push(liTex.eq(i).val()); // 将文本框的值添加到数组中
+//            }
+//            // console.log(JSON.stringify(coverArr));
+//            $(".editCover").hide();
+//            var coverUsers=[{
+//                "listX": $(".liList").position().left,
+//                "listY": $(".liList").position().top,
+//                "listW": $(".liList").width(),
+//                "listH": $(".liList").height()
+//            },{//遮罩数据
+//                "Column": coverArr
+//            }];
+//            console.log(JSON.stringify(coverUsers));
+//
+//        });
+        // $("#bd li").on("mousedown",function(){
+        //     $(this).find(".liList").draggable({ containment: "#bd", scroll: false });
+        // });
+
+
+
+
+
+    })
+
+
+    $(document).ready(function () {
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#recommendDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#overallDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
+<%}%>

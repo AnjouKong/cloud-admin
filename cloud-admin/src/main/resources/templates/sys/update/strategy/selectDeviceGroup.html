@@ -1,0 +1,123 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-left offscreen-left" style="padding-top:15px;">
+            <div class="form-group">
+                <input id="groupName" type="text" onclick="this.value='';" placeholder="请输入名称">
+            </div>
+        </div>
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="deviceGroup_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t " id="deviceGroupDatatable">
+                <tbody id="tbodyIfle">
+                <thead>
+                    <tr>
+                        <th>设备组id</th>
+                        <th>设备组名</th>
+                        <th>商户名称</th>
+                    </tr>
+                </thead>
+            </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var selectionIds = [];
+    var selectionNames = [];
+
+    var datatable_deviceGroup;
+    function initdatatable_deviceGroup() {
+       datatable_deviceGroup = $('#deviceGroupDatatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/deviceGroup/groupData",
+                "type": "post",
+                "data": function (d) {
+                    d.groupName = $('#groupName').val();
+                    d.tenantId ="${tenantId!}";
+                    d.tenancyName = $('#tenancyName').val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "id", "bSortable": false},
+                {"data": "groupName", "bSortable": false},
+                {"data": "tenantName", "bSortable": false}
+            ],
+            "columnDefs": [
+
+            ]
+        });
+        datatable_deviceGroup.on('click', 'tr', function () {
+           $(this).toggleClass('selected');
+            if($(this).context.firstChild.innerText !="表中数据为空"){
+                var selName = $(this).context.children[2].innerText+" "+$(this).context.children[1].innerText;
+                var selId = "${tenantId!}"+"#"+$(this).context.firstChild.innerText+"#"+selName;
+                if($(this).attr("class")=="odd selected" ||$(this).attr("class")=="even selected"){
+                    selectionIds.push(selId);
+                    selectionNames.push(selName);
+                }else{
+                    selectionIds.splice($.inArray(selId,selectionIds),1);
+                    selectionNames.splice($.inArray(selId,selectionNames),1);
+                }
+                $.unique(selectionIds);
+                $.unique(selectionNames);
+            }else{
+                $(this).removeClass('selected');
+            }
+        });
+        $("#groupName").on('keyup', function () {
+            datatable_deviceGroup.ajax.reload();
+        });
+    }
+    function deviceGroup_selectOn() {
+        var html='';
+        if (selectionNames.length > 0) {
+            var tenantIds = [];
+            if($("#tenantId").val() !=""){
+                tenantIds = $("#tenantId").val().split(",");
+            }
+            for(var i=0;i<selectionNames.length;i++){
+               var trId = selectionIds[i];
+               if($.inArray(trId,tenantIds)==-1){
+                     html +='<tr id="'+trId+'"><td align="left">'+selectionNames[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeTenantTr(\''+trId+'\')">×</a></td></tr>';
+                     tenantIds.push(trId);
+                     $("#tenantId").val(tenantIds)
+               }
+            }
+            console.log($("#tenantId").val())
+            $("#showTenantList").append(html);
+            $('#dialogUserSelect').modal('hide');
+        }else{
+            $('#dialogUserSelect').modal('hide');
+        }
+    }
+    function removeTenantTr(trId){
+       var ids = $("#tenantId").val().split(",");
+       ids.splice($.inArray(trId,ids),1);
+       $("#tenantId").val(ids)
+       document.getElementById(trId).remove();
+       console.log(ids)
+    }
+    $(document).ready(function () {
+        initdatatable_deviceGroup();
+    });
+</script>

@@ -1,0 +1,123 @@
+<%
+layout("/layouts/platform.html"){
+%>
+
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/vip/package" id="goback" data-pjax><i
+                    class="ti-angle-left"></i> 返回</a>
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/vip/packageTenant/selectTenant?packageId=${packageId!}" data-toggle="modal"
+               data-target="#dialogUserSelect"><i class="ti-plus"></i>选择商户</a>
+        </div>
+
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <input type="hidden" id="userId" value="${userId!}">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>商户标识</th>
+                    <th>名称</th>
+                    <th>所属者</th>
+                    <th>租户类型</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% for(o in obj){  %>
+                    <tr role="row" class="odd" id="${o.id}">
+                        <td class="sorting_1">${o.tenancyCode}</td>
+                        <td>${o.tenancyName}</td>
+                        <td>${o.sysUserName}</td>
+                        <% if(o.tenancyType=='0'){  %>
+                        <td>托管 </td>
+                        <%  } else { %>
+                        <td>私有化 </td>
+                        <%  } %>
+
+                        <% if(o.status=='1'){  %>
+                        <td><i class="fa fa-circle text-success ml5"></i></td>
+                        <%  } else { %>
+                        <td><i class="fa fa-circle text-danger ml5"></i></td>
+                        <%  } %>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                    <i class="ti-settings"></i> <span class="ti-angle-down"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="javascript:;" onclick="del('${o.id}')">移除</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                <%  } %>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div id="dialogUserSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 700px;">
+        <div class="modal-content" style="width: 700px;">
+
+        </div>
+    </div>
+</div>
+<!-- 删除 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除关系</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        关系删除后无法恢复，确定删除吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    function del(id) {
+        var dialog = $("#dialogDeleteCheck");
+        dialog.modal("show");
+        dialog.find("#ok").unbind("click");
+        dialog.find("#ok").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base!}/platform/vip/packageTenant/delete", {packageId:"${packageId!}",tenantId:id}, function (data) {
+                if (data.code == 0) {
+                    $("#"+id).remove();
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    $(document).ready(function () {
+        $("#dialogUserSelect").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
+
+<%}%>

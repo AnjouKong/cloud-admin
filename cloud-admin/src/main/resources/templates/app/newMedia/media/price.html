@@ -1,0 +1,181 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/newMedia/list" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/newMedia/list/editDo" method="post">
+                <input type="hidden" name="id" value="${obj.id!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group has-feedback">
+                            <label for="seriesName" class="col-sm-2 control-label">电影名称</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="seriesName" type="text" class="form-control"  readonly="readonly"  name="seriesName" value="${obj.seriesName}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="seriesCode" class="col-sm-2 control-label">媒资 code</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="seriesCode" value="${obj.seriesCode!}" class="form-control" name="seriesCode" placeholder="媒资 code" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="releaseYear" class="col-sm-2 control-label">影片年份</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="releaseYear" class="form-control" name="releaseYear"  placeholder="影片年份" value="${obj.releaseYear!}" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="seriesKeyword" class="col-sm-2 control-label">电影类型</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="seriesKeyword" name="seriesKeyword" value="${obj.seriesKeyword!}" data-parsley-required="true"
+                                       class="form-control" placeholder="电影类型">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="originalPrice" class="col-sm-2 control-label">设置原价</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="originalPrice" name="originalPrice" value="${obj.originalPrice!}"
+                                       class="form-control" placeholder="设置原价">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="score" class="col-sm-2 control-label">评分</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="score" name="score" value="${obj.score!}" data-parsley-required="true"
+                                       class="form-control" placeholder="评分">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryId" class="col-sm-2 control-label">影片范畴</label>
+                            <div class="col-sm-8" style=" padding-top: 7px;">
+                                <% for(o in catalog){
+                                %>
+                                <input type="radio" name="categoryId" value="${o.id}" <% if(obj.categoryId==o.id){%>checked<%} %> > ${o.categoryName}
+                                <%}%>
+
+                                <input type="hidden" id="categoryId"  value="${obj.categoryId}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">电影分类</label>
+                            <div class="col-sm-8" style=" padding-top: 7px;">
+                                <% for(o in tag){ %>
+                                    <input type="checkbox" name="mediasTags" value="${o.id}_${o.tagName}"
+
+                                        <% for(t in obj.mediaTagsList){%>
+                                            <% if(t.id==o.id){%>
+                                                checked
+                                            <%}%>
+                                        <%}%>
+                                    > ${o.tagName}
+
+                                <%}%>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">影片特性</label>
+                            <div class="col-sm-8">
+                                <% for(func in audioFuncs){
+                                %>
+                                <input type="radio" name="funcIds" value="${func.id}" <%if(!isEmpty(funcList)){for(o in funcList){if(o==func.id){%>checked<%}}}%>> ${func.funcName}
+                                <%}%>
+                                <input type="radio" name="funcIds" value=""> 无
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">上传海报</label>
+                            <div class="col-sm-8">
+                                <#upload id="file" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传海报" imgWidth="100" imgHeight="100" showImg="true"  multi="false" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+
+    function initTreeView() {
+        $("#jsTreeParentUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/sys/user/treeuser" : "${base}/platform/sys/user/treeuser?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectParentMenu();
+        });
+    }
+    //选择父菜单
+    function selectParentMenu() {
+        var tree = $.jstree.reference("#jsTreeParentUnit");
+        var node = tree.get_selected(true);
+       $("#unitAddForm #parentId").val(node[0].text);
+        $("#unitAddForm input[name='sysUserId']").val(node[0].id);
+        $("#unitAddForm input[name='sysUserName']").val(node[0].text);
+        $("#dialogSelectParentUnit").modal("hide");
+    }
+    $(document).ready(function () {
+     var url ="${base}/platform/newMedia/list?seriesName=${seriesName!}&sreleaseYear=${sreleaseYear!}&ereleaseYear=${ereleaseYear!}&screateTime=${screateTime!}"
+                            +"&ecreateTime=${ecreateTime!} &scharge=${scharge!}&echarge=${echarge!}&seriesKeyword=${seriesKeyword!}&originalCountry=${originalCountry!}"
+                            +"&categoryId=${categoryId!}&publish=${publish!}";
+        $("#goback").attr("href",url)
+        initTreeView();
+        $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+            console.log(unitAddForm)
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                            $("#goback").trigger("click")
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+</style>
+<%}%>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="getListBySeriesId_new">
+        <![CDATA[
+            SELECT
+              funcId,mergeId,ruleCode,seriesId,seriesNames,funcName
+            FROM
+              app_media_converge_main
+            WHERE mergeId IN
+              (SELECT
+                mergeId
+              FROM
+                app_media_converge_main a
+              WHERE a.seriesId = :seriesId)
+        ]]>
+    </sql-query>
+
+</dynamic-hibernate-statement>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="signin no-js" lang="${lang!}">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="${AppName!}">
+    <title>${AppName!}</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/modules/app/v1/css/mainDrag.css">
+    <script type="text/javascript" src="/static/plugins/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+    <div class="content-wrap">
+        <div class="wrapper">
+            <input type="hidden" id="sceneId" value="${sceneId}"/>
+            <input type="hidden" id="type" value="${type}"/>
+
+            <div class="drag">
+                <ul class="dragging pendant">
+                    <li class="weather">
+                        <img src="${base!}/static/img/weather.png"/>
+                        <div class="dateText">
+                            <p><span>2日星期六</span><span>晴</span></p>
+                            <p>22℃ ~ 27℃</p>
+                        </div>
+                    </li>
+                    <li class="date">
+                        <img src="${base!}/static/img/date.png"/>
+                        <div class="dateText">
+                            <p>2017/12/20</p>
+                            <p><span>周一</span><span>10:00</span></p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="fullSlide">
+                    <div class="bdTop gridster">
+                        <!--推荐位-->
+                        <!--<ul class="firstUl" style="display: block;" id="currentTabId"></ul>-->
+                    </div>
+                    <div class="hdDown">
+                        <ul>
+                            <!-- 栏目 -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<style>
+    .drag{
+        width:800px;
+        height:450px;
+        overflow:hidden;
+        position:relative;
+        border: 1px solid #333;
+        font-size: 12px;
+        margin: 10px auto;
+        background-size: 100% 100%;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var base = '${base!}';
+        $("aside").addClass("o_hide");
+        $("#type").val();
+        console.log($("#type").val());
+        if($("#type").val() == "latestRelease"){
+            // 最新发布版本
+            $.post(base+"/platform/scene/basic/preview", {id:$("#sceneId").val()}, function (data) {
+                var data = data.data;
+                preview(data);
+            });
+        }else{
+            // 历史版本
+            $.post(base+"/platform/scene/basic/previewHistory", {id:$("#sceneId").val()}, function (data) {
+                var data = data.data;
+                preview(data);
+            });
+        }
+        // tab标签切换
+        $(".hdDown ul").on("click","li",function(e){
+            $(".hdDown li").find("p").removeClass("on");
+            $(this).find("p").addClass("on");
+            var num = $(".hdDown li").index(this);
+            $(".bdTop ul.firstUl").hide();
+            $(".bdTop ul.firstUl").eq(num).show();
+        });
+        //  相应放大多少
+        var multiple = 1.5;
+        function preview(data){
+            if(data != null){
+                var dragStyle = data.style; // 容器drag的样式
+                $(".drag").css({
+                    "height":(dragStyle.height)*multiple,
+                    "width":(dragStyle.width)*multiple,
+                    "top":"0",
+                    "left":"0",
+                    "font-size":dragStyle.fontSize,
+                    "font-family":dragStyle.fontFamily,
+                    "color":dragStyle.fontColor,
+                    "background-color":dragStyle.backGroupColor,
+                    "background-image":"url("+dragStyle.backGroupImage+")"
+                });
+                $(".drag").attr({"id":data.id,"isAuthorize":data.isAuthorize,"backGroupImage":dragStyle.backGroupImage});
+                var subContainer = data.subContainer;
+                for(var s = 0; s < subContainer.length; s++){
+                    if(subContainer[s].subContainer[0].uiClassID == "PendantUI"){  //挂件
+                        // console.log("这个是挂件");
+                        var draggStyle = subContainer[s].style; // 挂件父级dragging的样式
+                        $(".dragging").css({"height":(draggStyle.height)*multiple,"width":(draggStyle.width)*multiple,"top":(draggStyle.parentTop)*multiple,"left":(draggStyle.parentLeft)*multiple});
+                        $(".dragging").attr("id",subContainer[s].id);
+                        var dragSub = subContainer[s].subContainer;
+                        for(var d = 0; d < dragSub.length; d++){
+                            var dragSubStyle = dragSub[d].style;
+                            if(dragSub[d].text == "天气" && dragSubStyle.parentLeft >= 0 && dragSubStyle.parentTop >= 0){
+                                $(".dragging .weather").css({"height":(dragSubStyle.height)*multiple,"width":dragSubStyle.width,"top":(dragSubStyle.parentTop)*multiple+"px","left":(dragSubStyle.parentLeft)*multiple+"px","display":"block" });
+                                $(".dragging .weather").attr("id",dragSub[d].id);
+                            };
+                            if(dragSub[d].text == "日期" && dragSubStyle.parentLeft >= 0 && dragSubStyle.parentTop >= 0){
+                                $(".dragging .date").css({"height":(dragSubStyle.height)*multiple,"width":dragSubStyle.width,"top":(dragSubStyle.parentTop)*multiple+"px","left":(dragSubStyle.parentLeft)*multiple+"px","display":"block" });
+                                $(".dragging .date").attr("id",dragSub[d].id);
+                            }
+                        };
+                    }else if(subContainer[s].subContainer[0].uiClassID == "ColumnUI"){
+                        // console.log("这个是导航");
+                        var fullStyle = subContainer[s].style; // 导航父级fullSlide的样式
+                        $(".fullSlide").css({"height":(fullStyle.height)*multiple,"width":(fullStyle.width)*multiple,"top":"0","left":"0"});
+                        $(".fullSlide").attr("id",subContainer[s].id);
+                        // $(".hdDown").css("padding-left","0");
+                        var fullSub = subContainer[s].subContainer;
+                        for(var f = 0; f < fullSub.length; f++){
+                            var columnStyle = fullSub[f].style; // 挂件父级hdDown li的样式
+                            //  多语言name 对象
+                            var fullName = fullSub[f].name;
+                            var disName;
+                            for(var key in fullName){
+                                if(key == "zh-Hans"){
+                                    disName = fullName[key];
+                                    break;
+                                }else{
+                                    disName = fullName[key];
+                                }
+                            };
+                            $(".hdDown").find("ul").append("<li style='font-size:"+columnStyle.fontSize+";color:"+columnStyle.fontColor+";background-color:"+columnStyle.backGroupColor+";background-image:url("+ columnStyle.backGroupImage+");" +
+                                "width:"+(columnStyle.width)*multiple+"px;height:"+(columnStyle.height)*multiple+"px;top:"+(columnStyle.parentTop)*multiple+";left:"+(columnStyle.parentLeft)*multiple+";' >" +
+                                "<p class='colEdit' ondblclick='double()' style='line-height:"+25*multiple+"px'>"+disName+"</p>" +
+                                "</li>");
+                            $(".bdTop").append("<ul class='firstUl' id='curr'></ul>");
+
+                            if(fullSub[f].sceneEvents[0].rule.id){
+                                var sceneStyle = fullSub[f].sceneEvents[0].rule.style; // 推荐位集合bdTop
+                                $(".bdTop").css({"height":(sceneStyle.height)*multiple,"width":(sceneStyle.width)*multiple,"top":(sceneStyle.parentTop)*multiple,"left":(sceneStyle.parentLeft)*multiple});
+                                $(".bdTop").attr("id", fullSub[f].sceneEvents[0].rule.id);
+                                var sceneList = fullSub[f].sceneEvents[0].rule.subContainer; // 推荐位遍历
+                                for(var e = 0; e < sceneList.length; e++){
+                                    var sceneLiList = sceneList[e].style; // 静态
+                                    var sceneLiWidth = parseInt(sceneLiList.width) + 14;
+                                    var sceneLiHeight = parseInt(sceneLiList.height) + 14;
+                                    //  多语言name 对象
+                                    var sceneNames = sceneList[e].name;
+                                    var disSceneName;
+                                    for(var keys in sceneNames){
+                                        if(keys == "zh-Hans"){
+                                            disSceneName = sceneNames[keys];
+                                            break;
+                                        }else{
+                                            disSceneName = sceneNames[keys];
+                                        }
+                                    };
+                                    $(".bdTop").find("ul#curr").append(
+                                        "<li class='firstLi' style='width:" + sceneLiWidth*multiple + "px;height:" + sceneLiHeight*multiple + "px;left:" +(sceneLiList.parentLeft)*multiple+ "px; top:" +(sceneLiList.parentTop)*multiple+ "px;'>" +
+                                        "<div class='liList' style='font-size:"+sceneLiList.fontSize+";color:"+sceneLiList.fontColor+";background-color:"+sceneLiList.backGroupColor+";background-image:url("+sceneLiList.backGroupImage+");" +
+                                        "width:"+(sceneLiList.width)*multiple+"px; height:"+(sceneLiList.height)*multiple+"px;left: "+7*multiple+"px; top: "+7*multiple+"px; position:absolute;' >"+
+                                        "<p class='edit' data-toggle='modal' data-target='#columnDetail' data-backdrop='static' data-keyboard='false'>"+disSceneName+"</p>"+
+                                        "</div></li>");
+                                    disSceneName = "";
+                                }
+                            }else{
+                                $(".bdTop").find("ul#curr").append('<p class="tishi" style="text-align: center;">跳转资源</p>');
+                            }
+                            $("ul.firstUl").removeAttr("id");
+                        }
+                        $(".hdDown li:first").trigger("click");
+                    }
+                }
+            };
+        };
+    });
+</script>
+<!--script-->
+</body>
+</html>
+
+

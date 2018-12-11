@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="signin no-js" lang="${lang!}">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="${AppName!}">
+    <title>${AppName!}</title>
+    <link rel="stylesheet" href="${base!}/static/plugins/stepy/jquery.stepy.css">
+    <link rel="stylesheet" href="${base!}/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${base!}/static/css/font-awesome.css">
+    <link rel="stylesheet" href="${base!}/static/css/themify-icons.css">
+    <link rel="stylesheet" href="${base!}/static/css/animate.min.css">
+    <link rel="stylesheet" href="${base!}/static/css/skins/palette.css">
+    <link rel="stylesheet" href="${base!}/static/css/fonts/font.css">
+    <link rel="stylesheet" href="${base!}/static/css/main.css">
+    <link rel="stylesheet" href="${base!}/static/css/panel.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/jstree/themes/default/style.min.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/treetable/jquery.treetable.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/chosen/chosen.min.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/datepicker/bootstrap-datetimepicker.min.css">
+
+    <link rel="stylesheet" href="${base!}/static/plugins/emoji/emoji.css">
+    <link rel="stylesheet" href="${base!}/static/plugins/x-editable/bootstrap-editable.css">
+    <!--[if lt IE 9]>
+    <script src="${base!}/static/js/html5shiv.js"></script>
+    <script src="${base!}/static/js/respond.min.js"></script>
+    <script src="${base!}/static/js/json2.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="${base!}/static/css/skins/palette.css" id="skin">
+    <script src="${base!}/static/plugins/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        var base = '${base!}';
+    </script>
+    <!--<link rel="stylesheet" href="${base!}/static/plugins/draggable/jquery-ui.css">-->
+    <script type="text/javascript" src="/static/stream/js/stream-v1.js?id=222"></script>
+    <!--颜色选择器-->
+    <script type="text/javascript" src="${base!}/static/modules/app/colpick.js"></script>
+    <link rel="stylesheet" href="${base!}/static/modules/app/css/colpick.css">
+    <!--可拖放网格布局-->
+    <!--<script src="${base!}/static/plugins/draggable/jquery-ui.js"></script>-->
+    <script type="text/javascript" src="${base!}/static/modules/app/v1/jquery.gridster.min.js"></script>
+    <link rel="stylesheet" href="${base!}/static/modules/app/v1/css/jquery.gridster.min.css">
+</head>
+<body>
+<div class="gallery-loader" style="background-color:transparent;">
+    <div class="loader"></div>
+</div>
+
+<div class="playground hidden-xs">
+    <div class="options">
+        <div class="pg-close ti-close"></div>
+        <div class="options-container color-options">
+            <h6>皮肤</h6>
+            <a onclick="sublime.changeTheme('palette.css')" href="${base!}/static/css/skins/palette.css"
+               class="css_orange cs_color cs_1 <% if(@shiro.getPrincipalProperty('loginTheme')==null || 'palette.css' == @shiro.getPrincipalProperty('loginTheme')){ %>active<% } %>">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </a>
+            <a onclick="sublime.changeTheme('palette.2.css')" href="${base!}/static/css/skins/palette.2.css"
+               class="css_orange cs_color cs_2 <% if('palette.2.css' == @shiro.getPrincipalProperty('loginTheme')){ %>active<% } %>">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </a>
+            <a onclick="sublime.changeTheme('palette.3.css')" href="${base!}/static/css/skins/palette.3.css"
+               class="css_orange cs_color cs_3 <% if('palette.3.css' == @shiro.getPrincipalProperty('loginTheme')){ %>active<% } %>">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </a>
+            <!--<a onclick="sublime.changeTheme('palette.4.css')" href="${base!}/static/css/skins/palette.4.css"-->
+            <!--class="css_orange cs_color cs_4 <% if('palette.4.css' == @shiro.getPrincipalProperty('loginTheme')){ %>active<% } %>">-->
+            <!--<div></div>-->
+            <!--<div></div>-->
+            <!--<div></div>-->
+            <!--<div></div>-->
+            <!--</a>-->
+        </div>
+        <div class="options-container">
+            <h6>布局</h6>
+            <a class="pg-val toggle-sidebar toggle-active <% if(@shiro.getPrincipalProperty('loginSidebar')){ %>active<% } %>"
+               href="javascript:;">
+                <img src="${base!}/static/img/panel/small.png" alt="">
+            </a>
+            <a class="pg-val toggle-scroll toggle-active <% if(@shiro.getPrincipalProperty('loginScroll')){ %>active<% } %>"
+               href="javascript:;">
+                <img src="${base!}/static/img/panel/scroll.png" alt="">
+            </a>
+            <a class="pg-val toggle-boxed toggle-active <% if(@shiro.getPrincipalProperty('loginBoxed')){ %>active<% } %>"
+               href="javascript:;">
+                <img src="${base!}/static/img/panel/boxed.png" alt="">
+            </a>
+        </div>
+        <small class="pg-footer"><i class="ti-info-alt mr5"></i>自定义皮肤和布局</small>
+    </div>
+</div>
+<div
+        class="app <% if(@shiro.getPrincipalProperty('loginSidebar')){ %> small-menu <% } %> <% if(@shiro.getPrincipalProperty('loginScroll')){ %> fixed-scroll <% } %> <% if(@shiro.getPrincipalProperty('loginBoxed')){ %> boxed <% } %>">
+    <header class="header header-fixed navbar">
+        <div class="brand">
+
+            <a href="javascript:;" class="ti-menu off-left visible-xs" data-toggle="offscreen" data-move="ltr"></a>
+
+
+            <a href="${base!}/platform/home" data-pjax class="navbar-brand">
+                <!--<img src="${base!}/static/img/logo.png" alt="" class="o_img <% if(!@shiro.getPrincipalProperty('loginSidebar')){ %>o_hide<% } %>">
+                <span class="heading-font o_img <% if(@shiro.getPrincipalProperty('loginSidebar')){ %>o_hide<% } %>">
+		            <img src="${base!}/static/img/logoa.png">
+                </span>-->
+                <span>云·联合视讯</span>
+            </a>
+
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="hidden-xs">
+
+                <a href="javascript:;" class="toggle-sidebar">
+                    <i class="ti-menu"></i>
+                </a>
+
+            </li>
+
+        </ul>
+        <ul id="topnav" class="nav navbar-nav hidden-xs">
+
+            <%
+            var menuList = @shiro.getRootMenuList();
+            for(menu in menuList){
+
+            %>
+            <li class="dropdown">
+                <a data-pjax="" data-id="${menu.id}"
+                   href="<% if(!isEmpty(menu.href)){ %><%if(@string.startWith(menu.href,'/')){%>${base}${menu.href!}<%}else{%>${menu.href!}<%}%> <% }else{ %>javascript:;<% } %>"
+                <%if(@string.startWith(menu.target,'_')){%>target="${menu.target!}"<%}else{%>${menu.target!}<%}%>>
+                <span>${menu.name}</span></a>
+            </li>
+            <%}%>
+
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <!--通知位置-->
+            <li class="language-dropdown dropdown hidden-xs">
+                <a href="javascript:;" data-toggle="dropdown" id="language">
+                    <img src="${base!}/static/img/flags/cn.png" class="flag">
+                    <ul class="dropdown-menu dropdown-menu-right animated fadeInUp">
+                        <li>
+                            <a href="javascript:sublime.changeLang('en_US');">
+                                <img src="${base!}/static/img/flags/us.png" class="flag">
+                                <span class="language">English</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:sublime.changeLang('zh_CN');">
+                                <img src="${base!}/static/img/flags/cn.png" class="flag">
+                                <span class="language">中文</span>
+                            </a>
+                        </li>
+                    </ul>
+            </li>
+            <li class="off-right">
+                <a href="javascript:;" data-toggle="dropdown">
+                    <span class="hidden-xs ml10">${@shiro.getUser().getName()}</span>
+                    <i class="ti-angle-down ti-caret hidden-xs"></i>
+                </a>
+                <ul class="dropdown-menu animated fadeInLeft">
+                    <li>
+                        <a href="${base!}/platform/sys/user/custom" data-toggle="modal"
+                           data-target="#homeDetail">常用菜单</a>
+                    </li>
+                    <li class="dropdown hidden-xs">
+                        <a href="javascript:;" class="pg-toggle">
+                            页面布局
+                        </a>
+                    </li>
+                    <li class="dropdown hidden-xs">
+                        <a href="${base!}/platform/sys/user/mode" data-toggle="modal"
+                           data-target="#homeDetail">
+                            加载方式
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${base!}/platform/sys/user/pass" data-toggle="modal"
+                           data-target="#homeDetail">修改密码</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="off-right">
+                <a href="${base!}/logout">
+                    <i class="ti-power-off"></i>
+                </a>
+            </li>
+        </ul>
+    </header>
+    <section class="layout">
+
+        <aside class="sidebar offscreen-left">
+
+            <nav class="main-navigation" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true"
+                 data-wheel-step="10">
+                <!--<p class="nav-title">MENU</p>-->
+                <ul class="nav">
+                    <li class="">
+                        <a href="javascript:;">
+                            <i class="ti-heart"></i>
+                            <span>常用菜单</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul id="leftnav" class="nav">
+                </ul>
+            </nav>
+        </aside>
+        <section class="main-content" id="container">
+        ${layoutContent}
+        </section>
+    </section>
+
+
+</div>
+<div id="homeDetail" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!--script-->
+<script src="${base!}/static/plugins/modernizr.js"></script>
+<script src="${base!}/static/js/jquery.pjax.js"></script>
+<script src="${base!}/static/bootstrap/js/bootstrap.js"></script>
+<script src="${base!}/static/plugins/jquery.form.js"></script>
+<script src="${base!}/static/plugins/parsley.min.js"></script>
+<script src="${base!}/static/plugins/parsley.zh_cn.js"></script>
+<script src="${base!}/static/plugins/jquery.sortable.js"></script>
+<script src="${base!}/static/plugins/jquery.nestable.js"></script>
+<script src="${base!}/static/plugins/icheck/icheck.js"></script>
+<script src="${base!}/static/plugins/jquery.slimscroll.min.js"></script>
+<script src="${base!}/static/plugins/jquery.easing.min.js"></script>
+<script src="${base!}/static/plugins/appear/jquery.appear.js"></script>
+<script src="${base!}/static/plugins/jquery.placeholder.js"></script>
+<script src="${base!}/static/plugins/fastclick.js"></script>
+<script src="${base!}/static/plugins/count-to/jquery.countTo.js"></script>
+<script src="${base!}/static/js/toast.js?time=22"></script>
+<script src="${base!}/static/plugins/chosen/chosen.jquery.min.js"></script>
+<script src="${base!}/static/plugins/treetable/jquery.treetable.js"></script>
+<script src="${base!}/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="${base!}/static/plugins/datatables/dataTables.bootstrap.js"></script>
+<script src="${base!}/static/plugins/jstree/jstree.min.js"></script>
+<script src="${base!}/static/plugins/switchery/switchery.js"></script>
+<script src="${base!}/static/plugins/stepy/jquery.stepy.js"></script>
+<script src="${base!}/static/plugins/stepy/jquery.validate.min.js"></script>
+<script src="${base!}/static/plugins/icheck/icheck.js"></script>
+<script src="${base!}/static/plugins/chosen/chosen.jquery.min.js"></script>
+<script src="${base!}/static/plugins/jquery.form.js"></script>
+<script src="${base!}/static/plugins/uploadifive/jquery.uploadifive.min.js"></script>
+<script src="${base!}/static/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="${base!}/static/plugins/datepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${base!}/static/plugins/emoji/emoji.js"></script>
+<script src="${base!}/static/plugins/sorttable/Sortable.min.js"></script>
+<script src="${base!}/static/plugins/jquery.qrcode.min.js"></script>
+<script src="${base!}/static/plugins/jquery.sparkline.js"></script>
+<script src="${base!}/static/plugins/x-editable/bootstrap-editable.js"></script>
+<script src="${base!}/static/plugins/moment.min.js"></script>
+
+<script src="${base!}/static/js/form.js"></script>
+<script src="${base!}/static/js/offscreen.js"></script>
+<script src="${base!}/static/js/main.js"></script>
+<script src="${base!}/static/js/page.js"></script>
+<script src="${base!}/static/js/date.js"></script>
+
+
+<script type="text/javascript">
+    function bindLeft() {
+        $('.main-navigation a[data-pjax]').on('click', function () {
+            $('.main-navigation a[data-pjax]').each(function () {
+                $(this).parent().removeClass('active');
+            });
+            $(this).parent().addClass('active');
+        });
+    }
+
+    $(document).ready(function () {
+
+        $(document).pjax('a[data-pjax]', '#container', {
+            maxCacheLength: 0,
+            push: false,
+            replace: true,
+            fragment: '#container',
+            timeout: 8000
+        });
+        //bindLeft();
+        $('#topnav a[data-pjax]').on('click', function () {
+            $.get("/platform/home/left?parentId=" + $(this).attr("data-id") + "&path=" + $(this).attr("href"), function (data) {
+                $("#leftnav").html(data);
+                bindLeft();
+//                $("aside").removeClass("o_hide");
+                $("aside").show();
+            }, "html");
+        });
+        $.get("/platform/home/path?url="+window.location.href,function (data) {
+            $("#leftnav").html(data);
+            bindLeft();
+        }, "html");
+        $(document).on('pjax:send', function () { //pjax链接点击后显示加载动画；
+            $(".gallery-loader").fadeIn();
+        });
+        $(document).on('pjax:complete', function () { //pjax链接加载完成后隐藏加载动画；
+            setTimeout(function () {
+                $(".gallery-loader").fadeOut()
+            }, 250);
+        });
+
+        try {
+            $(".gallery-loader").fadeOut();
+        } catch (e) {
+        }
+        $('#homeDetail').on('hidden.bs.modal', function () {
+            $(this).removeData("bs.modal");
+        });
+        $(".toggle-sidebar").click(function () {
+            $(".o_img").toggleClass("o_hide");
+        });
+    });
+</script>
+<!--script-->
+</body>
+</html>

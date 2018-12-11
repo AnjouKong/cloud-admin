@@ -1,0 +1,122 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/newMedia/list" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+    <div class="pull-right">
+        <div class="btn-group tool-button">
+            <button class="btn btn-primary navbar-btn" onclick="complete()"> 保存</button>
+        </div>
+    </div>
+</header>
+<div class="modal-body no-p">
+    <div class="panel">
+        <div class="panel-heading no-b">
+        </div>
+        <div class="panel-body" style="padding-top: 50px;">
+            <div class="cf nestable-lists">
+                <div class="dd" id="nestable3">
+                    <ol class="dd-list">
+                        <% for(obj in firstMenus){ %>
+                        <li class="dd-item dd3-item dd-level-1" data-id="${obj.id!}">
+                            <div class="dd-handle dd3-handle">Drag</div>
+                            <div class="dd3-content">${obj.tagName!}</div>
+                            <ol class="dd-list">
+                                    <div class="dd-handle dd3-handle">Drag</div>
+                                    <div class="dd3-content">
+                                        loading........
+                                    </div>
+                                </li>
+
+                            </ol>
+                        </li>
+                        <% }%>
+
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- 确认操作 -->
+<div id="confirmModel" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">同学辛苦了，休息一下</h4>
+            </div>
+            <div id="storyContent">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.dd-level-1').on('click', function(e, li){
+        var $this = $(this);
+        if($this.attr("data-expand")==="true"){
+            return;
+        }
+        var tagId = $this.attr("data-id");
+        $.get(" ${base}/platform/newMedia/list/sort/getMediaSeriesTag", {tagId:tagId}, function (data) {
+            var html="";
+            $.each(data,function(i,o){
+                html+='<li class="dd-item dd3-item" data-id="'+o.mediaSeriesId+'#'+o.tagId+'">\
+                <div class="dd-handle dd3-handle">Drag</div>\
+                <div class="dd3-content">\
+                <table>\
+                <tr>\
+                <td width="500px">片名：'+o.seriesName+'</td>' +
+                        '<td width="200px">国家：'+o.originalCountry+'</td>' +
+                        '<td width="200px">年份：'+o.releaseYear+'</td>' +
+                        '<td width="200px">评分：'+o.score+'</td>' +
+                        '<td width="200px">收费：'+o.showCharge+'</td>' +
+                        '</tr></table></div></li>';
+            });
+            $this.attr("data-expand","true");
+            $this.find(".dd-list").html(html);
+        }, "json");
+    });
+    var ids=[];
+    function getId(ob){
+        $.each(ob,function(i,o){
+            ids.push(o.id);
+            if(o.children){
+                getId(o.children);
+            }
+        });
+    }
+    function complete(){
+        //遮罩
+        var dialog = $("#confirmModel");
+
+        var rand = parseInt(Math.random() * 6);
+        var storyId = "story"+rand;
+        $("#storyContent").html($('#'+storyId).text());
+        dialog.modal("show");
+
+        ids=[];
+        getId($("#nestable3").nestable('serialize'));
+        $.post(" ${base}/platform/newMedia/list/sort/sortDo", {ids: ids.toString(),levelId:"${levelId!}"}, function (data) {
+            if (data.code == 0) {
+                dialog.modal("hide");
+                Toast.success(data.msg);
+            } else {
+                dialog.modal("hide");
+                Toast.error(data.msg);
+            }
+        }, "json");
+    }
+    $(function () {
+        $("#nestable3").nestable();
+        $('#nestable3').nestable('collapseAll');
+    });
+
+</script>
+
+
+<%}%>

@@ -1,0 +1,238 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/tenant" data-pjax id="goback"><i
+                class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-primary no-b">
+            <div class="list-group">
+                <a href="javascript:;" class="list-group-item">
+                    <b>基础信息</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="Email">
+                    商户邮箱：${obj.email!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="最大设备数量">
+                    最大设备数量：${obj.deviceNum!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="商户状态">
+                    用户状态：
+                    <% if(obj.status=='1'){ %>
+                    <i class="fa fa-circle text-success ml5"></i>
+                    <% }else{ %>
+                    <i class="fa fa-circle text-danger ml5"></i>
+                    <% } %>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="商户类型">
+                    商户类型：
+                    <% if(obj.tenancyType==1){ %>
+                    托管
+                    <% }else{ %>
+                    私有化
+                    <% } %>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="联系电话">
+                    联系电话：${obj.telephone!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="所属地区">
+                    所属地区：${obj.areaName!}
+                </a>
+
+                <%if(tenancyInfo != null){%>
+                <a href="javascript:;" class="list-group-item">
+                    <b>扩展信息</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="启用实施">
+                    启用实施：
+                    <%if(obj.isImplement==true){%>是<%}%>
+                    <%if(obj.isImplement==false){%>否<%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="启用PMS对接">
+                    启用应用升级：
+                    <%if(tenancyInfo.appSwitch=="1"){%>是<%}%>
+                    <%if(tenancyInfo.appSwitch=="0"){%>否<%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="启用PMS对接">
+                    启用PMS对接：
+                    <%if(tenancyInfo.enablePms==true){%>是<%}%>
+                    <%if(tenancyInfo.enablePms==false){%>否<%}%>
+                </a>
+                <%if(tenancyInfo.enablePms==true){%>
+                <a href="javascript:;" class="list-group-item" title="对接的pms厂商">
+                    对接的PMS厂商：${tenancyInfo.pmsName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="PMS服务地址">
+                    PMS服务地址：${tenancyInfo.pmsUrl!}
+                </a>
+                <%}%>
+                <a href="javascript:;" class="list-group-item" title="应用Id">
+                    应用Id：${tenancyInfo.appId!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="混淆码">
+                    混淆码：${tenancyInfo.appSecret!}
+                </a>
+                <%}else{%>
+                <a href="javascript:;" class="list-group-item">
+                    <b>扩展信息：</b>（该商户暂无扩展信息）
+                </a>
+                <%}%>
+                <a href="javascript:;" class="list-group-item">
+                    <b>其他信息：</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="多语言信息">
+                    多语言信息：
+                    <%if(languageList != null){%>
+                    <%for(o in languageList){%>
+                    ${o.languageName!}
+                    ${o.languageDicCode!}
+                    <%}%>
+                    <%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="媒资级别信息">
+                    媒资级别信息： ${level.levelName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="套餐包信息">
+                    套餐包名称： ${tenantPackage.packageName!}
+                </a>
+            </div>
+            <!-- 其他信息整合   -->
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#deviceUerGroup" data-toggle="tab">
+                        终端组信息
+                    </a>
+                </li>
+                <li>
+                    <a href="#scene" data-toggle="tab" onclick="sceneInfo()">
+                        场景信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in" id="scene">
+                    <div>
+                        <section class="content-wrap bg-white">
+                            <div class=panel-body>
+                                <div class="table-responsive no-border">
+                                    <table class="table table-bordered table-striped mg-t datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>场景名称</th>
+                                            <th>模板名称</th>
+                                            <th>描述</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="tab-pane fade in active" id="deviceUerGroup">
+                    <div class=panel-body>
+                        <div class="table-responsive no-border">
+                            <table class="table table-bordered table-striped mg-t">
+                                <tr>
+                                    <th>终端组名</th>
+                                    <th>终端组id</th>
+                                    <th>场景模板</th>
+                                </tr>
+                                <%if(!isEmpty(userGroup)){%>
+                                <%for(o in userGroup){%>
+                                <tr>
+                                    <th>${o.groupName!}</th>
+                                    <th>${o.id!}</th>
+                                    <th>${o.sceneName!}</th>
+                                </tr>
+                                <%}%>
+                                <%}%>
+                                <%if(isEmpty(userGroup)){%>
+                                <tr>
+                                    <th>暂无数据</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <%}%>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+    var datatable;
+
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching": false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "destroy": true,//解决cannot reinitialise dataTable
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/tenant/scene/data",
+                "type": "post",
+                "data": function (d) {
+                    d.sceneName = $('#sceneName').val();
+                    d.tenantId = "${obj.id!}";
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "sceneName", "bSortable": false},
+                {"data": "templateName", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<a href="${base!}/platform/scene/basic/previewHtml/' + row.sceneId + '" target="_blank">预览</a>';
+
+                    },
+                    "targets": 3
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+
+    function sceneInfo() {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    };
+</script>
+<%}%>

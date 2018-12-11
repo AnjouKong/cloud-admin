@@ -1,0 +1,224 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base!}/platform/operate/order" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-primary no-b">
+            <div class="list-group">
+                <a href="javascript:;" class="list-group-item" >
+                    <b>基础信息</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 商户">
+                    商户 ：${obj.tenantName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="房间号">
+                    房间号：${obj.roomId!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    支付用户 ：${obj.userId!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    收货人姓名 ：${obj.acceptName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    收货人电话 ：${obj.telPhone!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    会话token ：${obj.token!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    设备Id ：${obj.deviceId!}
+                </a>
+                <a href="javascript:;" class="list-group-item" >
+                    <b>订单信息</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="订单标题">
+                    订单标题 ：${obj.subject!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="订单描述">
+                    订单描述 ：${obj.body!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="银行卡类型">
+                    银行卡类型 ：${obj.bankType!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="设备号">
+                    设备号 ：${obj.deviceInfo!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="设备号">
+                    付款条码串 ：${obj.authCode!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="openid">
+                    openid ：${obj.openid!}
+                </a>
+
+                <a href="javascript:;" class="list-group-item" title="币种">
+                    币种 ：${obj.curType!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="订单编号">
+                    订单编号：${obj.orderNo!}
+                </a>
+                <a href="javascript:;" class="list-group-item" >
+                    <b>支付信息</b>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="支付方式">
+                    支付方式 ：
+                    <%if(obj.payType=="aliPay"){%>
+                    支付宝
+                    <%}%>
+                    <%if(obj.payType=="wxPay"){%>
+                    微信
+                    <%}%>
+
+                </a>
+                <a href="javascript:;" class="list-group-item" title="支付类型">
+                    支付类型 ：
+                    <%if(obj.transactionType=='JSAPI'){%>
+                    微信公众号支付
+                    <%}%>
+                    <%if(obj.transactionType=='NATIVE'){%>
+                    微信二维码支付
+                    <%}%>
+                    <%if(obj.transactionType=='APP'){%>
+                    微信移动支付
+                    <%}%>
+                    <%if(obj.transactionType=='SWEEPPAY'){%>
+                    支付宝二维码支付
+                    <%}%>
+                    <%if(obj.transactionType=='BAR_CODE'){%>
+                    支付宝条码付
+                    <%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="订单总额">
+                    订单总额 ：${obj.price!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="实付总额">
+                    实付总额 ：${obj.realAmount!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="运费金额">
+                    运费金额 ：${obj.payableFreight!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="实付运费">
+                    实付运费 ：${obj.realFreight!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="交易单号">
+                    交易单号 ：${obj.tradeNo!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    购买时间 ：${obj.createDateStr!}
+                </a>
+
+                <a href="javascript:;" class="list-group-item" title="支付回调通知时间">
+                    支付通知时间：${obj.notifyTime!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="购买人">
+                    购买人：${obj.buyerEr!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    软件版本：${obj.appVersion!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="订单状态">
+                    订单状态:
+                    <%if(obj.status=='1'){%>
+                    生成订单
+                    <%}%>
+                    <%if(obj.status=='2'){%>
+                    支付订单
+                    <%}%>
+                    <%if(obj.status=='3'){%>
+                    取消订单
+                    <%}%>
+                    <%if(obj.status=='4'){%>
+                    作废订单
+                    <%}%>
+                    <%if(obj.status=='5'){%>
+                    完成订单
+                    <%}%>
+                    <%if(obj.status=='6'){%>
+                    退款
+                    <%}%>
+                    <%if(obj.status=='7'){%>
+                    部分退款
+                    <%}%>
+                </a>
+
+                <a href="javascript:;" class="list-group-item" title="支付状态">
+                    支付状态：
+                    <%if(obj.payStatus=="Unpaid"){%>
+                    未付款
+                    <%}%>
+                    <%if(obj.payStatus=='Paid'){%>
+                    已付款
+                    <%}%>
+                    <%if(obj.payStatus=='Shipped'){%>
+                    已发货
+                    <%}%>
+                    <%if(obj.payStatus=='3'){%>
+                    确认收货
+                    <%}%>
+                    <%if(obj.payStatus=='4'){%>
+                    售后
+                    <%}%>
+                    <%if(obj.payStatus=='error'){%>
+                    付款异常
+                    <%}%>
+
+                </a>
+                <a href="javascript:;" class="list-group-item" >
+                    <b>扩展信息</b>
+                </a>
+            </div>
+            <!-- 其他信息整合   -->
+            <ul id="myTab" class="nav nav-tabs">
+                <li  class="active">
+                    <a href="#orderEventInfo" data-toggle="tab">
+                        订单事件信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="orderEventInfo">
+                    <div class=panel-body >
+                        <div class="table-responsive no-border">
+                            <table class="table table-bordered table-striped mg-t">
+                                <tr>
+                                    <th>版本信息</th>
+                                    <th>订单编号</th>
+                                    <th>订单事件</th>
+                                    <th>事件代码</th>
+                                    <th>事件时间</th>
+                                </tr>
+                                <%if(!isEmpty(orderEvent)){%>
+                                <%for(o in orderEvent){%>
+                                <tr>
+                                    <th>${o.apiVersion!}</th>
+                                    <th>${o.orderNo!}</th>
+                                    <th>${o.eventBody!}</th>
+                                    <th>${o.eventCode!}</th>
+                                    <th>${o.createDate!}</th>
+                                </tr>
+                                <%}%>
+                                <%}%>
+                                <%if(isEmpty(orderEvent)){%>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>暂无数据</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <%}%>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<%}%>

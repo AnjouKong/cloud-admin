@@ -1,0 +1,183 @@
+<div class="app">
+    <section class="layout">
+        <section class="main-content">
+            <aside class="sidebar-250 canvas-right bg-default ">
+                <header class="header navbar clearfix bb bg-default pl0 pr0">
+                    <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 资源类型</p>
+                </header>
+                <div class="content-wrap no-p" style=" min-height: 300px;">
+                    <div class="wrapper2">
+                        <div class="m5">
+                            <div id="jsTreeUnit_shutdown"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <section class="content-wrap bg-white">
+                <header class="header navbar bg-white shadow">
+                    <div class="pull-left offscreen-left" style="padding-top:15px;">
+                        <div class="form-group">
+                            <input id="resourceName_shutdown" type="text" onclick="this.value='';" placeholder="请输入名称">
+                        </div>
+                    </div>
+                    <div class="pull-right offscreen-right btn-group tool-button">
+                        <a class="btn btn-primary navbar-btn" onclick="_selectOn_shutdown()">确定</a>
+                    </div>
+                </header>
+                <div class=panel-body style="padding-top: 50px;">
+                    <div class="table-responsive no-border" style="padding-top: 5px;">
+                        <input type="hidden" id="resourceType_shutdown">
+                        <input type="hidden" id="channelId_shutdown">
+                        <table id="datatable_select_shutdown" class="table table-bordered table-striped mg-t datatable">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>图片</th>
+                                <th>描述</th>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+<style>
+    .css1{border:1px solid rgba(21, 172, 220, 0.32);padding:10px;position:relative;}
+    .css_a{position:absolute; top:0; right:0; z-index:99;padding-right:15px;cursor: pointer;}
+
+</style>
+<script language="JavaScript">
+    function initTreeView_shutdown() {
+         $("#jsTreeUnit_shutdown").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/scene/basic/tree" : "${base!}/platform/scene/basic/channelTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            $("#channelId_shutdown").val('');
+            if(selected.node.original.channelType==undefined){
+               $("#resourceType_shutdown").val(selected.selected);
+            }else{
+               $("#resourceType_shutdown").val(selected.node.original.channelType);
+               $("#channelId_shutdown").val(selected.selected);
+            }
+            if (datatable_select_shutdown) {
+                $(".cd-panel-content").find("input").val("");
+                datatable_select_shutdown.ajax.reload();
+            } else {
+                initdatatable_select_shutdown();
+            }
+        }).on("loaded.jstree", function (node, jstree) {
+           $(node.target).find("li:first").each(function(){
+             $("#resourceType_shutdown").val(this.id);
+           });
+            if (datatable_select_shutdown) {
+                $(".cd-panel-content").find("input").val("");
+                datatable_select_shutdown.ajax.reload();
+            } else {
+                initdatatable_select_shutdown();
+            }
+            $(node.target).find("li:first div").addClass("jstree-wholerow-clicked");
+        });
+    }
+    var datatable_select_shutdown;
+    function initdatatable_select_shutdown() {
+      datatable_select_shutdown = $('#datatable_select_shutdown').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "destroy": true,//解决cannot reinitialise dataTable
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/scene/basic/resourceData",
+                "type": "post",
+                "data": function (d) {
+                    d.name = $('#resourceName_shutdown').val();
+                    d.resourceType = $('#resourceType_shutdown').val();
+                    d.channelId = $('#channelId_shutdown').val();
+                    d.isDisabled = "1";
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "name", "bSortable": false},
+                {"data": "resource", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ],
+            "columnDefs": [{
+             "render": function (data, type, row) {
+                        if(data!=''){
+                            return '<img style="width:30px;height:30px;" src='+base+'"/mechanism/file/imageView/'+data+'">';
+                        }else{
+                             return "";
+                        }
+                    },
+                    "targets": 1
+            }]
+        });
+        datatable_select_shutdown.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#resourceName_shutdown").on('keyup', function () {
+            datatable_select_shutdown.ajax.reload();
+        });
+    }
+
+    function _selectOn_shutdown() {
+        var chks = datatable_select_shutdown.rows('.selected').data();
+        if (chks.length > 0) {
+            var html='';
+            $.each(datatable_select_shutdown.rows('.selected').data(), function (i, n) {
+                 if($("#shutdown_"+n.id).length==0){
+                    html+='<div class="css1" style="margin:15px;" id="shutdown_'+n.id+'" ><a class="css_a" title="移除" href="javascript:" onclick=removeShutdownModel("'+n.id+'") >X</a>';
+                    html+='<div class="form-group" >';
+                    html+='<div class="col-sm-3" style="padding-left:2%;"><input type="text" class="form-control" value="'+n.name+'('+n.resourceTypeText+')" readonly ><input type="hidden" name="resourceId" value="'+n.id+'"></div>';
+                    html+='<div class="col-sm-3" ><input type="number" class="form-control" name="index"  placeholder="显示顺序"></div>';
+                    html+='<div class="col-sm-3" ><input type="number" name="playTime" class="form-control"  placeholder="单个图片持续时间(秒)"></div>';
+                    html+='<div class="col-sm-3">是否向下授权<input type="checkbox" name="isAuthorize" class="js-switch-blue"></div></div>';
+
+                    html+='<div class="form-group">';
+                    html+='<div class="col-sm-3" style="padding-left:2%;"><input type="text" class="form-control" value="'+n.languageName+'" readonly ></div>';
+                    html+='<div class="col-sm-3">禁止强制跳过<input type="checkbox" name="skip" class="js-switch-blue" checked></div>';
+                    html+='<div class="col-sm-3" ><input type="number" name="skipTime" class="form-control"  placeholder="跳过时间(秒)"></div>';
+                    if(n.resource!=''){
+                       html+='<div class="col-sm-3" ><a title="预览" href='+base+'"/mechanism/file/imageView/'+n.resource+'" target="_blank"><img style="width:40px;height:40px;" src='+base+'"/mechanism/file/imageView/'+n.resource+'"></a></div>';
+                    }
+                    html+='</div></div>';
+             }
+            });
+            $("#showResource_shutdown").append(html);
+            $('#shutdownSelect').modal('hide');
+        }else{
+            Toast.warning("请先选择资源！");
+        }
+    }
+
+
+    function removeShutdownModel(divId){
+        $("#shutdown_"+divId).remove();
+    }
+
+    $(document).ready(function () {
+        initTreeView_shutdown();
+        initdatatable_select_shutdown();
+    });
+
+
+</script>

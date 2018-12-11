@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="findGuestInfo">
+        <![CDATA[
+		SELECT g.guestName as guestName,t.tenancyName as tenantName,c.roomNo as roomNo,t.id as id,c.checkInTime as checkInTime,c.checkOutTime as checkOutTime
+		        FROM t_tenant_pms_guest g,t_tenant_pms_check_in c,t_tenant t
+		    WHERE g.delFlag='0' AND t.delFlag='0' AND c.delFlag='0' AND g.tenantId=t.id AND g.checkInId=c.id
+
+         <#if tenancyName??>
+                and t.tenancyName like :tenancyName
+         </#if>
+         <#if guestName??>
+                and g.guestName like :guestName
+         </#if>
+
+	]]>
+    </sql-query>
+
+
+
+</dynamic-hibernate-statement>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="getPTinfoByTenantId">
+        <![CDATA[
+		SELECT b.packageName,c.tenancyName
+		        FROM APP_PACKAGE_TENANT a left join APP_PACKAGE_MAIN b on a.packageId=b.id
+		        left join T_TENANT c on a.tenantId=c.id
+		    WHERE a.tenantId =:tenantId
+
+	]]>
+    </sql-query>
+
+
+
+</dynamic-hibernate-statement>

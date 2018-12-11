@@ -1,0 +1,209 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/media/list" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/media/converge/editDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择规则</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input name="ruleName" id="ruleName" type="text" class="form-control" placeholder="属性信息不能重复"  data-parsley-required="true" disabled />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogSelectRuleUnit">
+                                            <i class="ti-plus"></i>选择
+                                        </button>
+			                         </span>
+                                </div>
+                                <input type="hidden" id="ruleCode"  name="ruleCode">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">${obj.seriesName}</label>
+                            <div class="col-sm-8" id="showFuncs">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择媒资</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="选择同类资源，选择后必须设置媒资属性" disabled/>
+                                    <span class="input-group-btn">
+                                                <a class="btn btn-primary"
+                                                   href="${base}/platform/media/converge/selectScreenSaverResource?levelId=${levelId!}"
+                                                   data-toggle="modal"
+                                                   data-target="#ScreenSaverSelect"><i class="ti-plus"></i>选择资源</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="showResource_screenSaver"></div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 选择规则 -->
+<div id="dialogSelectRuleUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择规则</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeRuleUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectRuleMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ScreenSaverSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 700px;">
+        <div class="modal-content" style="width: 700px;">
+
+        </div>
+    </div>
+</div>
+<style>
+    .css1{border:1px solid rgba(21, 172, 220, 0.32);padding:10px;position:relative;}
+    .css_a{position:absolute; top:0; right:0; z-index:99;padding-right:15px;cursor: pointer;}
+</style>
+<script language="JavaScript">
+    var showFuncsData="";
+    var innerShowFuncsData="";
+    function initRuleView() {
+        $("#jsTreeRuleUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/media/converge/rule/ruleTree" : "${base}/platform/media/converge/rule/ruleTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectRuleMenu();
+        });
+    }
+    //选择规则
+    function selectRuleMenu() {
+        var tree = $.jstree.reference("#jsTreeRuleUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm input[name='ruleCode']").val(node[0].id);
+        $("#unitAddForm input[name='ruleName']").val(node[0].text);
+
+        var innerShowFuncsData="";
+        //动态获字典数据
+        $.get("${base}/platform/media/converge/getSysDic", {ruleCode: node[0].id}, function (data) {
+            $("#showFuncs").empty();
+            if(data != null){
+                var html="";
+                showFuncsData = data;
+                innerShowFuncsData=data;
+                $.each(data, function (i, n) {
+                    html+='<input type="radio" name="${obj.id!}" value="'+n.id+'" /> '+n.name
+                })
+                html+='<input type="hidden" name="seriesId" value="${obj.id!}" />';
+                html+='<input type="hidden" name="seriesNames" value="${obj.seriesName!}" />';
+
+            };
+             $("#showFuncs").append(html);
+        });
+
+        //动态获取规则列表
+        $.get("${base}/platform/media/converge/getConvergeList", {ruleCode: node[0].id,seriesId:"${obj.id!}"}, function (data) {
+            $("#showResource_screenSaver").empty();
+            if(data != null){
+                var html="";
+                $.each(data.convergeList, function (i, n) {
+                     if(n.seriesId != "${obj.id!}"){
+                        html+='<div class="css1" style="margin:15px;" id="screenSaver_'+n.seriesId+'" ><a class="css_a" title="移除" href="javascript:" onclick=removeScreenSaverModel("'+n.seriesId+'") >×</a>';
+                        html+='<div class="form-group">\
+                            <label class="col-sm-2 control-label">'+n.seriesNames+'</label>\
+                            <div class="col-sm-8">';
+                             $.each(data.sysDictList, function (h, p) {
+                               html+=' <input type="radio" name="'+n.seriesId+'" value="'+p.id+'"';
+                               if(p.id== n.funcId){
+                                  html += 'checked';
+                                }
+                                html += '/>'+p.name;
+                            })
+                        html+=' <input type="hidden" name="seriesId" value="'+n.seriesId+'" /> ';
+                        html+=' <input type="hidden" name="seriesNames" value="'+n.seriesNames+'" /> ';
+                        html+='</div> </div>'
+                        html+='</div> </div>'
+                      }else{
+                         $(":radio[name=${obj.id!}][value='" + n.funcId + "']").prop("checked", "checked");
+                      }
+            });
+             $("#showResource_screenSaver").append(html);
+            }
+        });
+
+        $("#dialogSelectRuleUnit").modal("hide");
+    }
+    function removeScreenSaverModel(divId){
+        $("#screenSaver_"+divId).remove();
+    }
+
+    $(document).ready(function () {
+        var url ="${base}/platform/media/list?&levelId=${levelId!}&seriesName=${seriesName!}&sreleaseYear=${sreleaseYear!}&ereleaseYear=${ereleaseYear!}&screateTime=${screateTime!}"
+                            +"&ecreateTime=${ecreateTime!} &scharge=${scharge!}&echarge=${echarge!}&seriesKeyword=${seriesKeyword!}&originalCountry=${originalCountry!}"
+                            +"&categoryId=${categoryId!}&publish=${publish!}&status=${status!}";
+        $("#goback").attr("href",url);
+        initRuleView();
+        $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                            $("#goback").trigger("click")
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+</style>
+<%}%>

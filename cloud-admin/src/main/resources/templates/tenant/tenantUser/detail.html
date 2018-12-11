@@ -1,0 +1,31 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">${obj.userName!}</a>
+                        <small>${obj.loginName!}  [${obj.id!}]</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" title="所属商户">
+                        所属商户：${obj.tenantName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="Email">
+                        用户邮箱：${obj.email!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="联系电话">
+                        联系电话：${obj.telephone!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="联系地址">
+                        联系地址：${obj.address!}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

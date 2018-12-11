@@ -1,0 +1,118 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/sys/privateRoute" data-pjax id="goback"><i
+                    class="ti-angle-left"></i> 返回</a>
+                <a id="add" class="btn btn-primary navbar-btn" href="${base}/platform/sys/privateRoute/addMarry/${obj.id!}" data-pjax><i class="ti-plus"></i> 新增关系</a>
+            <button class="btn btn-primary navbar-btn" disabled> ${obj.routeName!}</button>
+        </div>
+
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable dataTable no-footer" id="DataTables_Table_0"
+                   role="grid" aria-describedby="DataTables_Table_0_info" style="width: 1390px;">
+                <thead>
+                <tr role="row">
+                    <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="匹配规则" style="width:35%;">匹配规则</th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="匹配Url" style="width: 35%;">匹配Url
+                    </th>
+                    <th rowspan="1" colspan="1">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%  for(o in obj.marryUrl){  %>
+
+                <tr role="row" class="odd" id="${obj.id!}">
+                    <td class="sorting_1">${o.key}</td>
+                    <td class="sorting_1">${o.value}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <i class="ti-settings"></i> <span class="ti-angle-down"></span></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="${base}/platform/sys/privateRoute/editMarry/${obj.id!}&${o.key}">修改</a>
+                                </li>
+                                <li><a href="javascript:;" onclick="del('${o.key}','${obj.id!}')">删除</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <%  }  %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- 删除 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除匹配信息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        匹配信息删除后无法恢复，确定删除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+
+    function del(key,id) {
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/sys/privateRoute/deleteMarry", {key:key,id:id}, function (data) {
+                if (data.code == 0) {
+                   $("#"+id).remove();
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    $(document).ready(function () {
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+
+</script>
+<%}%>

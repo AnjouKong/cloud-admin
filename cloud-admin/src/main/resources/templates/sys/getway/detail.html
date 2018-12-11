@@ -1,0 +1,62 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">${obj.tenancyName!}</a>
+                        <small>${obj.tenancyCode!}  [${obj.id!}]</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" title="Email">
+                        商户邮箱：${obj.email!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="商户状态">
+                        用户状态：
+                        <% if(obj.status==1){ %>
+                        <i class="fa fa-circle text-success ml5"></i>
+                        <% }else{ %>
+                        <i class="fa fa-circle text-danger ml5"></i>
+                        <% } %>
+
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="商户类型">
+                        商户类型：
+                        <% if(obj.tenancyType==1){ %>
+                        托管
+                        <% }else{ %>
+                        私有化
+                        <% } %>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="联系电话">
+                        联系电话：${obj.telephone!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="启用PMS对接">
+                        启用PMS对接：
+                        <%if(tenancyInfo.enablePms==true){%>是<%}%>
+                        <%if(tenancyInfo.enablePms==false){%>否<%}%>
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="对接的pms厂商">
+                        对接的pms厂商：${tenancyInfo.pmsName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="应用Id">
+                        应用Id：${tenancyInfo.appId!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="混淆码">
+                        混淆码：${tenancyInfo.appSecret!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="对接方式">
+                        对接方式：
+                        <%if(tenancyInfo.model==0){%>对接我们的服务<%}%>
+                        <%if(tenancyInfo.model==1){%>对接他们的服务<%}%>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

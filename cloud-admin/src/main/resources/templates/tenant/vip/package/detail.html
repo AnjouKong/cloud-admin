@@ -1,0 +1,74 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">套餐包信息</a>
+                        <small>${obj.packageName!}</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item">
+                        <b>基础信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="套餐包名">
+                        套餐包名：${obj.packageName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="套餐包名">
+                        温馨提示：${obj.note!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="背景图片">
+                        背景图片： <img src="${obj.backgroundPic}" alt="背景图片" height="100px" />
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item">
+                        <b>套餐包内容：</b>
+                    </a>
+                    <div class="tab-pane fade in active" >
+                        <div>
+                            <table  class="table table-bordered table-striped mg-t">
+                                <tr>
+                                    <th>名称</th>
+                                    <th>价格</th>
+                                    <th>套餐时间</th>
+                                    <th>是否推荐</th>
+                                </tr>
+                                <%if(!isEmpty(content)){%>
+                                <%for(o in content){%>
+                                <tr>
+                                    <th>${o.contentName!}</th>
+                                    <th>${o.price!}</th>
+                                    <th>${o.time!}${o.timeUnit!}</th>
+                                    <th>
+                                        <%if(o.isRecommend=="1"){%>
+                                        是
+                                        <%}else{%>
+                                        否
+                                        <%}%>
+
+                                    </th>
+                                </tr>
+                                <%}%>
+                                <%}%>
+                                <%if(isEmpty(content)){%>
+                                <tr>
+                                    <th>暂无数据</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <%}%>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+

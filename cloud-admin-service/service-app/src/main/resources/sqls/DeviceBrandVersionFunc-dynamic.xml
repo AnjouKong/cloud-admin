@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="findFuncs">
+        <![CDATA[
+            SELECT a.name as funcName,a.id,a.parentId FROM sys_dict a where a.parentId = :parentId and a.delFlag='0'
+        ]]>
+    </sql-query>
+</dynamic-hibernate-statement>

@@ -1,0 +1,180 @@
+<div class="app">
+    <section class="layout">
+        <section class="main-content">
+            <aside class="sidebar-250 canvas-right bg-default ">
+                <header class="header navbar clearfix bb bg-default pl0 pr0">
+                    <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 资源类型</p>
+                </header>
+                <div class="content-wrap no-p" style=" min-height: 300px;">
+                    <div class="wrapper2">
+                        <div class="m5">
+                            <div id="jsTreeUnit_music"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <section class="content-wrap bg-white">
+                <header class="header navbar bg-white shadow">
+                    <div class="pull-left offscreen-left" style="padding-top:15px;">
+                        <div class="form-group">
+                            <input id="resourceName_music" type="text" onclick="this.value='';" placeholder="请输入名称">
+                        </div>
+                    </div>
+                    <div class="pull-right offscreen-right btn-group tool-button">
+                        <a class="btn btn-primary navbar-btn" onclick="_selectOn_music()">确定</a>
+                    </div>
+                </header>
+                <div class=panel-body style="padding-top: 50px;">
+                    <div class="table-responsive no-border" style="padding-top: 5px;">
+                        <input type="hidden" id="resourceType_music">
+                        <input type="hidden" id="channelId_music">
+                        <table id="datatable_select_music" class="table table-bordered table-striped mg-t datatable">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>描述</th>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+<style>
+    .css1 {
+        border: 1px solid rgba(21, 172, 220, 0.32);
+        padding: 10px;
+        position: relative;
+    }
+
+    .css_a {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 99;
+        padding-right: 15px;
+        cursor: pointer;
+    }
+
+
+</style>
+<script language="JavaScript">
+    function initTreeView_music() {
+        $("#jsTreeUnit_music").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/scene/basic/tree?type=music" : "${base!}/platform/scene/basic/channelTree?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            $("#channelId_music").val('');
+            if (selected.node.original.channelType == undefined) {
+                $("#resourceType_music").val(selected.selected);
+            } else {
+                $("#resourceType_music").val(selected.node.original.channelType);
+                $("#channelId_music").val(selected.selected);
+            }
+            if (datatable_select_music) {
+                $(".cd-panel-content").find("input").val("");
+                datatable_select_music.ajax.reload();
+            } else {
+                datatable_select_music();
+            }
+        }).on("loaded.jstree", function (node, jstree) {
+            $(node.target).find("li:first").each(function () {
+                $("#resourceType_music").val(this.id);
+            });
+            if (datatable_select_music) {
+                $(".cd-panel-content").find("input").val("");
+                datatable_select_music.ajax.reload();
+            } else {
+                datatable_select_music();
+            }
+            $(node.target).find("li:first div").addClass("jstree-wholerow-clicked");
+        });
+    }
+
+    var datatable_select_music;
+
+    function datatable_select_music() {
+        datatable_select_music = $('#datatable_select_music').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching": false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "destroy": true,//解决cannot reinitialise dataTable
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/scene/basic/resourceData",
+                "type": "post",
+                "data": function (d) {
+                    d.name = $('#resourceName_music').val();
+                    d.resourceType = $('#resourceType_music').val();
+                    d.channelId = $('#channelId_music').val();
+                    d.isDisabled = "1";
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "name", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ],
+            "columnDefs": []
+        });
+        datatable_select_music.on('click', 'tr', function () {
+            if (!$(this).hasClass('selected')) {
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+        $("#resourceName_music").on('keyup', function () {
+            datatable_select_music.ajax.reload();
+        });
+    }
+
+    function _selectOn_music() {
+        var chks = datatable_select_music.rows('.selected').data();
+        if (chks.length > 0) {
+            $("#showResource_music").html('');
+            var html = '';
+            $.each(datatable_select_music.rows('.selected').data(), function (i, n) {
+                if ($("#music_" + n.id).length == 0) {
+                    html += '<div class="css1" style="margin:15px;" id="music_' + n.id + '" ><a class="css_a" title="移除" href="javascript:" onclick=removeMusicModel("' + n.id + '") >X</a>';
+                    html += '<div class="form-group" >';
+                    html += '<div class="col-sm-3" style="padding-left:2%;"><input type="text" class="form-control" value="' + n.name + '(' + n.resourceTypeText + ')" readonly ><input type="hidden" name="resourceId" value="' + n.id + '"></div>';
+                    html += '<div class="col-sm-3"><input type="text" class="form-control" value="' + n.languageName + '" readonly ></div>';
+                    html += '<div class="col-sm-2">是否向下授权<input type="checkbox" name="isAuthorize" class="js-switch-blue"></div>'
+                    html += '<div class="col-sm-2">是否在开机页播放<input type="checkbox" name="isBootPlay" class="js-switch-blue"></div>'
+                    html += '<div class="col-sm-2">是否在launcher播放<input type="checkbox" name="isLauncherPlay" class="js-switch-blue"></div></div>';
+                    html += '</div></div>';
+                }
+
+            });
+            $("#showResource_music").append(html);
+            $('#musicSelect').modal('hide');
+        } else {
+            Toast.warning("请先选择音乐！");
+        }
+    }
+
+    $(document).ready(function () {
+        initTreeView_music();
+        datatable_select_music();
+    });
+
+
+</script>

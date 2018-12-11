@@ -1,0 +1,82 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-left offscreen-left" style="padding-top:15px;">
+            <div class="form-group">
+                <input id="homePageName" type="text" onclick="this.value='';" placeholder="请输入vod专题">
+            </div>
+        </div>
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_homePage_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border" style="padding-top: 5px;" >
+            <input id="unitid" type="hidden">
+            <table id="datatable_select_homePage" class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>首页名称</th>
+                    <th>描述</th>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select_homePage;
+    function initdatatable_select_homePage() {
+        datatable_select_homePage = $('#datatable_select_homePage').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "ajax": {
+                "url": "${base}/platform/media/homePage/data",
+                "type": "post",
+                "data": function (d) {
+                    d.homePageName = $('#homePageName').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "homePageName", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ] 
+        });
+        datatable_select_homePage.on('click', 'tr', function () {
+              if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+        $("#homePageName").on('keyup', function () {
+            datatable_select_homePage.ajax.reload();
+        });
+    }
+
+    function _homePage_selectOn() {
+        var chks = datatable_select_homePage.rows('.selected').data();
+        if (chks.length > 0) {
+            var id = "";
+            var name="";
+            $.each(datatable_select_homePage.rows('.selected').data(), function (i, n) {
+                id=n.id;
+                name=n.homePageName;
+            });
+            $("#mediaHomePageId").val(id);
+            $("#mediaHomePage").val(name);
+            $('#dialogHomePageSelect').modal('hide');
+
+        }else{
+            Toast.warning("请先选择首页！");
+        }
+    }
+    $(document).ready(function () {
+        initdatatable_select_homePage();
+    });
+
+</script>

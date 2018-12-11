@@ -1,0 +1,173 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <!--<a class="btn btn-primary navbar-btn" href="${base}/platform/cibn/list/toChange" data-pjax><i class="ti-plus"></i> 媒资转换</a>-->
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input id="unitid" type="hidden">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>媒资 code</th>
+                    <th>分类 code</th>
+                    <th>影片年份</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="categoryId">分类</label><br />
+                <% for(o in catalog){
+                %>
+                <input type="checkbox" name="categoryId" value="${o.id}" > ${o.categoryName}
+                <%}%>
+                <input type="hidden" id="categoryId"  onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="sreleaseYear">上映时间</label>
+                <input type="text" id="sreleaseYear" name="sreleaseYear" onclick="this.value=''" class="form-control" placeholder="">
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="ereleaseYear"></label>
+                <input type="text" id="ereleaseYear" name="ereleaseYear" onclick="this.value=''" class="form-control" placeholder="">
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+            <!--<button id="changeBtn" type="button" class="btn btn-default">转换</button>-->
+        </div>
+    </div>
+</div>
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/cibn/list/data",
+                "type": "post",
+                "data": function (d) {
+                    var obj = document.getElementsByName("categoryId");
+                    var check_val = [];
+                    for(k in obj){
+                        if(obj[k].checked)
+                            check_val.push(obj[k].value);
+                    }
+                    $('#categoryId').val(check_val);
+                    d.categoryId = $('#categoryId').val();
+                    d.seriesName = $('#seriesName').val();
+                    d.sreleaseYear = $('#sreleaseYear').val();
+                    d.ereleaseYear = $('#ereleaseYear').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "seriesName", "bSortable": true},
+                {"data": "seriesCode", "bSortable": true},
+                {"data": "cpName", "bSortable": true},
+                {"data": "releaseYear", "bSortable": true},
+                {"data": "updateDateStr", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                                '<li><a href="${base}/platform/cibn/list/detail/' + row.id + '" data-toggle="modal" data-target="#dialogUserDetail">详情</a></li>' +
+                                '</ul></div>';
+                    },
+                    "targets": 5
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+        //时间插件
+        $("#sreleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sreleaseYear").datetimepicker("setEndDate",$("#ereleaseYear").val())
+        });
+        $("#ereleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ereleaseYear").datetimepicker("setStartDate",$("#sreleaseYear").val())
+        });
+    }
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

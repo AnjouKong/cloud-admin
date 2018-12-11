@@ -1,0 +1,111 @@
+<div class="app">
+    <section class="layout">
+        <section class="main-content">
+            <section class="content-wrap bg-white">
+                <header class="header navbar bg-white shadow">
+                    <div class="pull-left offscreen-left" style="padding-top:15px;">
+                        <div class="form-group">
+                            <input id="seriesName" type="text" onclick="this.value='';" placeholder="请输入名称">
+                        </div>
+                    </div>
+                    <div class="pull-right offscreen-right btn-group tool-button">
+                        <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+                    </div>
+                </header>
+                <div class=panel-body style="padding-top: 50px;">
+                    <div class="table-responsive no-border" style="padding-top: 5px;">
+                        <input type="hidden" id="resourceType_screenSaver">
+                        <table id="datatable_select" class="table table-bordered table-striped mg-t datatable">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>媒资 code</th>
+                                <th>影片类型</th>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+
+<script language="JavaScript">
+    var datatable_select;
+    function initdatatable_select() {
+      datatable_select = $('#datatable_select').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+             "destroy": true,//解决cannot reinitialise dataTable
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/media/list/data",
+                "type": "post",
+                "data": function (d) {
+                    d.levelId = "${levelId!}";
+                    d.seriesName =$("#seriesName").val();
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "seriesName", "bSortable": true},
+                {"data": "seriesCode", "bSortable": true},
+                {"data": "seriesKeyword", "bSortable": true}
+            ],
+            "columnDefs": []
+        });
+        datatable_select.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#seriesName").on('keyup', function () {
+            datatable_select.ajax.reload();
+        });
+    }
+
+    function _selectOn() {
+        var chks = datatable_select.rows('.selected').data();
+        if (chks.length > 0) {
+            var html='';
+            $.each(datatable_select.rows('.selected').data(), function (i, n) {
+                 if($("#screenSaver_"+n.id).length==0){
+                    html+='<div class="css1" style="margin:15px;" id="screenSaver_'+n.id+'" ><a class="css_a" title="移除" href="javascript:" onclick=removeScreenSaverModel("'+n.id+'") >×</a>';
+                    html+='<div class="form-group">\
+                        <label class="col-sm-2 control-label">'+n.seriesName+'</label>\
+                        <div class="col-sm-8">';
+                           $.each(showFuncsData, function (k, m) {
+                                html+='<input type="radio" name="'+n.id+'" value="'+m.id+'" /> '+m.name;
+                            })
+
+                           html+=' <input type="hidden" name="seriesId" value="'+n.id+'" /> ';
+                           html+=' <input type="hidden" name="seriesNames" value="'+n.seriesName+'" /> ';
+                     html+='</div> </div>'
+                     html+='</div> </div>'
+             }
+
+            });
+            $("#showResource_screenSaver").append(html);
+            $('#ScreenSaverSelect').modal('hide');
+        }else{
+            Toast.warning("请先选择媒资！");
+        }
+    }
+
+    function removeScreenSaverModel(divId){
+        $("#screenSaver_"+divId).remove();
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+</script>
+

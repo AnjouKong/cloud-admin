@@ -1,0 +1,329 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/application/version/${applicationId!}"
+           id="goback" data-pjax><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/operate/version/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <input type="hidden" id="applicationId" name="applicationId" value="${applicationId!}">
+                        <div class="form-group">
+                            <label for="tacticsName" class="col-sm-2 control-label">策略名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="tacticsName" class="form-control" name="tacticsName"
+                                       data-parsley-required="true" placeholder="策略名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tactics" class="col-sm-2 control-label">策略方式</label>
+                            <div class="col-sm-8" id="tactics" style=" padding-top: 7px;">
+                                <input type="radio" name="tactics" value="area" checked>地区
+                                <input type="radio" name="tactics" value="time">时间
+                                <input type="radio" name="tactics" value="tenant">商户
+                                <input type="radio" name="tactics" value="lastVersion">上一版本
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="forceUpdate" class="col-sm-2 control-label">是否强制更新</label>
+                            <div class="col-sm-8" id="forceUpdate" style=" padding-top: 7px;">
+                                <input type="radio" name="forceUpdate" value="false" checked>否
+                                <input type="radio" name="forceUpdate" value="true">是
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks" class="col-sm-2 control-label">描述</label>
+
+                            <div class="col-sm-8">
+                                <textarea id="remarks" name="remarks" class="form-control"
+                                          style="width:100%;height:150px;" placeholder="字数不能超过2000字"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group" id="area">
+                            <label for="remarks" class="col-sm-2 control-label">地区</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="areaId" type="text" class="form-control" placeholder="选择地区" disabled />
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectAreaUnit"><i class="ti-plus"></i>选择
+                                                    </button>
+			                         </span>
+                                </div>
+                                <input type="hidden" name="areaId" >
+                            </div>
+                        </div>
+                        <div class="form-group" id="time" style="display: none;">
+                            <label for="startTime" class="col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="startTime" name="startTime"
+                                       onclick="this.value=''" class="form-control" style="width:45%"
+                                       readonly>
+                            </div>
+                            <label for="endTime" class="col-sm-2 control-label">终止时间</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="endTime" name="endTime"
+                                       onclick="this.value=''" class="form-control" style="width:45%"
+                                       readonly>
+
+                            </div>
+
+                        </div>
+                        <div class="form-group" id="tenant" style="display: none;">
+                            <label for="remarks" class="col-sm-2 control-label">商户</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="parentId" type="text" class="form-control" placeholder="选择商户" disabled />
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectParentUnit"><i class="ti-plus"></i>选择
+                                                    </button>
+			                         </span>
+                                </div>
+                                <input type="hidden" name="tenantId" >
+                            </div>
+                        </div>
+                        <div class="form-group" id="lastVersion" style="display: none;">
+                            <label for="remarks" class="col-sm-2 control-label">上一版本</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="versionId" type="text" class="form-control" placeholder="选择版本" disabled />
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectVersionUnit"><i class="ti-plus"></i>选择
+                                                    </button>
+			                         </span>
+                                </div>
+                                <input type="hidden" name="versionId" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<!-- 选择商户 -->
+<div id="dialogSelectParentUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择商户</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeParentUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectParentMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 选择上一版本 -->
+<div id="dialogSelectVersionUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择版本</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeVersionUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectVersionMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 地区 -->
+<div id="dialogSelectAreaUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择地区</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeAreaUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectAreaMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+
+    function initTenantTreeView() {
+        $("#jsTreeParentUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/operate/tenant/treeTenancy" : "${base!}/platform/operate/tenant/treeTenancy?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectParentMenu();
+        });
+    }
+    function initAreaTreeView() {
+        $("#jsTreeAreaUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/area/treeArea" : "${base!}/platform/sys/area/treeArea?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectAreaMenu();
+        });
+    }
+    function initVersionTreeView() {
+        var applicationId=$("#applicationId").val();
+        $("#jsTreeVersionUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url:"${base!}/platform/operate/version/treeVersion?id="+applicationId
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectVersionMenu();
+        });
+    }
+
+    function selectParentMenu() {
+        var tree = $.jstree.reference("#jsTreeParentUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm #parentId").val(node[0].text);
+        $("#unitAddForm input[name='tenantId']").val(node[0].id);
+        $("#dialogSelectParentUnit").modal("hide");
+    }
+     function selectAreaMenu() {
+        var tree = $.jstree.reference("#jsTreeAreaUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm #areaId").val(node[0].text);
+        $("#unitAddForm input[name='areaId']").val(node[0].id);
+        $("#dialogSelectAreaUnit").modal("hide");
+    }
+
+    function selectVersionMenu() {
+        var tree = $.jstree.reference("#jsTreeVersionUnit");
+        var node = tree.get_selected(true);
+        $("#unitAddForm #versionId").val(node[0].text);
+        $("#unitAddForm input[name='versionId']").val(node[0].id);
+        $("#dialogSelectVersionUnit").modal("hide");
+    }
+    $(document).ready(function () {
+        initTenantTreeView();
+        initVersionTreeView();
+        initAreaTreeView();
+    //时间插件
+        $("#startTime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#startTime").datetimepicker("setEndDate",$("#endTime").val())
+        });
+        $("#endTime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#endTime").datetimepicker("setStartDate",$("#startTime").val())
+        });
+        $("#tactics").click(function(){
+                var obj = document.getElementsByName("tactics");
+                  var check_val = [];
+                   for(k in obj){
+                     if(obj[k].checked){
+                        $("#"+obj[k].value).show();
+                     }else{  $("#"+obj[k].value).hide(); }
+                   }
+         });
+         $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code==0) {
+                    Toast.success(data.msg);
+                    form.resetForm();
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+
+
+
+</script>
+<%}%>

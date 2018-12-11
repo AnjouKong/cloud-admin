@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>phenix-cloud-controller</artifactId>
+        <groupId>cn.phenix.admin</groupId>
+        <version>1.0.0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>service-sys</module>
+        <module>service-tenant</module>
+        <module>service-app</module>
+        <module>service-mechanism</module>
+        <module>service-mall</module>
+        <module>service-log</module>
+        <module>service-rpc</module>
+    </modules>
+    <artifactId>cloud-admin-service</artifactId>
+
+</project>

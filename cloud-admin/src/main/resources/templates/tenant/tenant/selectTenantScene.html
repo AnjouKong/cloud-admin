@@ -1,0 +1,87 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-left offscreen-left" style="padding-top:15px;">
+            <div class="form-group">
+                <input id="sceneName" type="text" onclick="this.value='';" placeholder="请输入模板名称">
+                <input id="tenantId" type="hidden" value="${tenantId!}" >
+                <input id="id" type="hidden" value="${id!}" >
+            </div>
+        </div>
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border" style="padding-top: 5px;" >
+            <table id="datatable_select" class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>模板名称</th>
+                    <th>描述</th>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select;
+    function initdatatable_select() {
+        datatable_select = $('#datatable_select').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "ajax": {
+                "url": "${base}/platform/tenant/scene/data",
+                "type": "post",
+                "data": function (d) {
+                    d.sceneName = $('#sceneName').val();
+                    d.tenantId = $('#tenantId').val();
+                }
+            },
+            "order": [[0, "desc"]],
+              "columns": [
+                {"data": "sceneName", "bSortable": false},
+                {"data": "remarks", "bSortable": false}
+            ],
+            "columnDefs": []
+        });
+        datatable_select.on('click', 'tr', function () {
+             if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+
+        $("#sceneName").on('keyup', function () {
+            datatable_select.ajax.reload();
+        });
+    }
+
+    function _selectOn() {
+        var chks = datatable_select.rows('.selected').data();
+        if (chks.length > 0) {
+
+           var sceneId=chks[0].id;
+           $.post("${base!}/platform/operate/deviceGroup/selectScene", {id:$("#id").val(),sceneId:sceneId }, function (data) {
+                    if (data.code == 0) {
+                          datatable.ajax.reload();
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                   $("#dialogSceneSelect").modal("hide");
+                }, "json");
+
+        }else{
+            Toast.warning("请选择模板！");
+        }
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+
+</script>

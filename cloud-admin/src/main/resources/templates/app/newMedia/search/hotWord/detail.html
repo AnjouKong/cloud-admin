@@ -1,0 +1,280 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/search/media" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-primary no-b">
+            <div class="col-xs-10" style="padding: 0;">
+                <a href="javascript:;" class="list-group-item" title="名称">
+                    名称：${obj.seriesName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="内容类型">
+                    内容类型 ：${obj.cpName!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="影片产地 ">
+                    影片产地 ：${obj.originalCountry!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="导演 ">
+                    导演  ：${obj.writerDisplay  !}
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 类型">
+                    类型 ：
+                    ${obj.categoryId}
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 标签" style=" border-bottom: 0;">
+                    标签 ：
+
+                    <% for(t in obj.mediaTagsList){%>
+                    ${t.tagName}
+                    <%}%>
+
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 价格">
+                    价格 ：${obj.charge!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 评分">
+                    评分 ：${obj.score!}
+                </a>
+            </div>
+            <div class="col-xs-2" style="padding-top: 0px;">
+                <img src="${obj.pictureUrl}" alt="海报" height="220px" />
+            </div>
+            <div class="col-xs-12" style="padding: 0;">
+                <a href="javascript:;" class="list-group-item" title="时长 ">
+                    时长 ：${obj.totalLength!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="语言">
+                    语言：${obj.seriesLanguage!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="影片年份 ">
+                    影片年份 ：${obj.releaseYear!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="节目集数 ">
+                    节目集数 ：${obj.volumnCount!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="发布状态">
+                    发布状态 ：
+                    <%if(obj.publish=='0'){%>
+                    未发布
+                    <%}%>
+                    <%if(obj.publish=='1'){%>
+                    已发布
+                    <%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="是否推荐">
+                    是否推荐 ：
+                    <%if(obj.isRecommend=='1'){%>
+                    已推荐
+                    <%}else{%>
+                    未推荐
+                    <%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="是否热搜">
+                    是否热搜 ：
+                    <%if(obj.isHotWord=='1'){%>
+                    热搜
+                    <%}else{%>非热搜
+                    <%}%>
+                </a>
+                <a href="javascript:;" class="list-group-item" title=" 影片描述">
+                    影片描述 ： ${obj.seriesDesc!}
+                </a>
+                <a href="javascript:;" class="list-group-item" id="seriesFunc">
+                    影片特性 ：
+                </a>
+            </div>
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#scene" data-toggle="tab">
+                        相关媒资
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#deviceUerGroup" data-toggle="tab" onclick="sourceList()">
+                        资源列表
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="scene">
+                    <div>
+                            <table  class="table table-bordered table-striped mg-t">
+                                <tr>
+                                    <th>媒资名称</th>
+                                    <th>媒资属性</th>
+                                </tr>
+                                <%if(!isEmpty(convergeList)){%>
+                                <%for(o in convergeList){%>
+                                <%if(o.seriesId !=obj.id){%>
+                                <tr>
+                                    <th>${o.seriesNames!}</th>
+                                    <th>${o.funcName!}</th>
+                                </tr>
+                                <%}%>
+                                <%}%>
+                                <%}%>
+                                <%if(isEmpty(convergeList)){%>
+                                <tr>
+                                    <th>暂无数据</th>
+                                    <th></th>
+                                </tr>
+                                <%}%>
+                            </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade in " id="deviceUerGroup">
+                    <div class=panel-body >
+                        <div class="table-responsive no-border">
+                            <section class="content-wrap bg-white">
+                                    <!--<div class="pull-right offscreen-right">
+                                        <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')">
+                                            <i class="fa fa-sliders"></i> 高级筛选
+                                        </button>
+                                    </div>-->
+                                <div>
+                                        <input id="unitid" type="hidden">
+                                        <table class="table table-bordered table-striped mg-t datatable">
+                                            <thead>
+                                            <tr>
+                                                <th>媒资库标识</th>
+                                                <th>节目分集数</th>
+                                                <th>媒资库海报</th>
+                                        </table>
+                                </div>
+                            </section>
+                            <div class="cd-panel from-right">
+                                <header class="cd-panel-header">
+                                    <h4>高级筛选</h4>
+                                </header>
+                                <div class="cd-panel-container">
+                                    <div class="cd-panel-content shadow">
+                                        <div class="form-group">
+                                            <label for="programCode">媒资库标识</label>
+                                            <input type="text" id="programCode" name="programCode" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="programVolumnCount">节目分集数</label>
+                                            <input type="text" id="programVolumnCount" name="programVolumnCount" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="seriesID"></label>
+                                            <input type="hidden" id="seriesID" name="seriesID" value="${obj.id}"  class="form-control" placeholder="" autofocus>
+                                        </div>
+                                        <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 用户详情 -->
+                            <div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "destroy": true,//解决cannot reinitialise dataTable
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/newMedia/resource/data",
+                "type": "post",
+                "data": function (d) {
+                    d.programCode = $('#programCode').val();
+                    d.programVolumnCount = $('#programVolumnCount').val();
+                    d.seriesID = $('#seriesID').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "programCode", "bSortable": true},
+                {"data": "programVolumnCount", "bSortable": true},
+                {"data": "programPictureUrl", "bSortable": true}
+            ]
+
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+   function sourceList() {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    };
+
+</script>
+<script language="JavaScript">
+    $(document).ready(function () {
+     var url ="${base}/platform/search/media?seriesName=${seriesName!}&sreleaseYear=${sreleaseYear!}&ereleaseYear=${ereleaseYear!}&screateTime=${screateTime!}"
+                            +"&ecreateTime=${ecreateTime!} &scharge=${scharge!}&echarge=${echarge!}&seriesKeyword=${seriesKeyword!}&originalCountry=${originalCountry!}"
+                            +"&categoryId=${categoryId!}&publish=${publish!}";
+        $("#goback").attr("href",url)
+
+        var func ="${obj.funcIds!}";
+
+        <%for(o in audioFuncs){ %>
+            if(func !="" && func != null){
+             func = func.replace("${o.id}","${o.funcName}");
+            }
+        <%}%>
+        <%for(o in videoFuncs){ %>
+            if(func !="" && func != null){
+             func = func.replace("${o.id}","${o.funcName}");
+            }
+        <%}%>
+        $("#seriesFunc").html("影片特性："+func);
+    });
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+</style>
+<%}%>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+
+    <sql-query name="findUserDataByRoleIdAndName">
+        <![CDATA[
+		SELECT a.* FROM sys_user a WHERE 1=1
+		<#if roleId??>
+		    and a.id NOT IN(SELECT b.userId FROM sys_user_role b WHERE b.roleId=:roleId)
+		</#if>
+		<#if name??>
+		    and (a.loginName like :name or a.name like :name)
+		</#if>
+	]]>
+    </sql-query>
+
+    <sql-query name="insertUserRole">
+        <![CDATA[
+		insert into sys_user_role(roleId,userId) values(:roleId,:userId)
+	]]>
+    </sql-query>
+
+    <sql-query name="deleteUserRole">
+        <![CDATA[
+		delete from sys_user_role where roleId=:roleId and userId=:userId
+	]]>
+    </sql-query>
+
+</dynamic-hibernate-statement>

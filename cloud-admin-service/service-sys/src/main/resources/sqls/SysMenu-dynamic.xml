@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <hql-query name="findMenuByUserId">
+        <![CDATA[
+		select distinct m from SysMenu m, SysRole r, SysUser u where m in elements (r.menuList) and r in elements (u.roleList)
+				and m.delFlag=:delFlag and r.delFlag=:delFlag and u.delFlag=:delFlag and u.id=:id
+
+				<#if type??>
+                    and m.type =:type
+                </#if>
+                <#if (parentId)??>
+                    and m.parent.id =:parentId
+                </#if>
+				order by m.sort
+	]]>
+    </hql-query>
+
+    <hql-query name="findMenuByUserIdAndType">
+        <![CDATA[
+		select distinct m from SysMenu m, SysRole r, SysUser u where m in elements (r.menuList) and r in elements (u.roleList)
+				and m.delFlag=:delFlag and r.delFlag=:delFlag and u.delFlag=:delFlag and u.id=:uid and m.type=:type
+				order by m.sort
+	]]>
+    </hql-query>
+
+    <hql-query name="findMenusAndButtonsByRole">
+        <![CDATA[
+		 select distinct m from SysMenu m,SysRole r where m in elements (r.menuList) and m.delFlag=:delFlag and r.delFlag=:delFlag
+		 <#if roleId??>
+		    and r.id=:roleId
+		 </#if>
+         <#if type??>
+		    and m.type =:type
+		</#if>
+         order by m.sort
+	]]>
+    </hql-query>
+
+    <hql-query name="findAllMenu">
+        <![CDATA[
+		select m from SysMenu m where m.delFlag='0' and m.id !='0'
+		<#if path??>
+		    and m.path =:path
+		</#if>
+		<#if type??>
+		    and m.type =:type
+		</#if>
+		<#if (parentId)??>
+		    and m.parent.id =:parentId
+		</#if>
+		order by m.sort
+	]]>
+    </hql-query>
+
+</dynamic-hibernate-statement>

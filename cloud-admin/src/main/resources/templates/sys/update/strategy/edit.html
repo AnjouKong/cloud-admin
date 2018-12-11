@@ -1,0 +1,699 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/sys/update/strategy" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/sys/update/strategy/editDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <input type="hidden" name="id" value="${obj.id!}">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">策略名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="name" value="${obj.name!}" class="form-control" name="name" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime" class="col-sm-2 control-label">更新开始时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="startTime" value="${obj.startTime!}" class="form-control" name="startTime" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime" class="col-sm-2 control-label">更新结束时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="endTime" value="${obj.endTime!}" class="form-control" name="endTime" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="effectiveStartDate" class="col-sm-2 control-label">更新有效期开始日</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="effectiveStartDate" value="${obj.effectiveStartDate!}" class="form-control" name="effectiveStartDate" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="effectiveStartDate" class="col-sm-2 control-label">更新有效期结束日</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="effectiveEndDate" value="${obj.effectiveEndDate!}" class="form-control" name="effectiveEndDate" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="upgradeWay" class="col-sm-2 control-label">更新方式</label>
+                            <div class="col-sm-8" id="upgradeWay" style=" padding-top: 7px;">
+                                <input type="radio" name="upgradeWay" value="1"<%if(obj.upgradeWay=="1"){%>checked<%}%> >强制
+                                <input type="radio" name="upgradeWay" value="2"<%if(obj.upgradeWay=="2"){%>checked<%}%>>可取消
+                                <input type="radio" name="upgradeWay" value="3"<%if(obj.upgradeWay=="3"){%>checked<%}%>>静默升级
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fdStatus" class="col-sm-2 control-label">存储状态</label>
+                            <div class="col-sm-8" id="fdStatus" style=" padding-top: 7px;">
+                                <input type="radio" name="fdStatus" value="1" <%if(obj.fdStatus=="1"){%>checked<%}%>>暂存
+                                <input type="radio" name="fdStatus" value="2" <%if(obj.fdStatus=="2"){%>checked<%}%>>发布
+                                <input type="radio" name="fdStatus" value="3" <%if(obj.fdStatus=="3"){%>checked<%}%>>废除
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="promotionWay" class="col-sm-2 control-label">升级方式</label>
+                            <div class="col-sm-8" id="promotionWay" style=" padding-top: 7px;">
+                                <input type="radio" name="promotionWay" value="1" <%if(obj.promotionWay=="1"){%>checked<%}%>>升级
+                                <input type="radio" name="promotionWay" value="2" <%if(obj.promotionWay=="2"){%>checked<%}%>>卸载
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">升级应用</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input name="launcherVersionName" id="launcherVersionName" type="text" class="form-control" placeholder="版本为必选项" disabled value="<%if(!isEmpty(obj.launcherVersion)){%>应用:${obj.launcherVersion.launcher.name},版本:${obj.launcherVersion.version}<%}%>" required/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#dialogLauncherVersion">
+                                            <i class="ti-plus"></i>选择
+                                        </button>
+			                         </span>
+                                </div>
+                                <input type="hidden" id="launcherVersionId" name="launcherVersionId" value="<%if(!isEmpty(obj.launcherVersion)){%>${obj.launcherVersion.id}<%}%>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="effectiveStartDate" class="col-sm-2 control-label">上一版本</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="lastVersion" value="${obj.lastVersion!}" class="form-control" name="lastVersion" data-parsley-required="true" placeholder="">
+                            </div>
+                        </div>
+                        <ul id="myTab" class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#areaTab" data-toggle="tab">
+                                    地区
+                                </a>
+                            </li>
+
+                            <li class="">
+                                <a href="#tenantTab" data-toggle="tab" onclick="initTenantInfo()">
+                                    商户
+                                </a>
+                            </li>
+
+                            <li class="">
+                                <a href="#brandTab" data-toggle="tab">
+                                    品牌
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="form-group"></div>
+                            <div class="tab-pane fade in active" id="areaTab">
+                                <div class="form-group">
+                                    <label for="areaId" class="col-sm-2 control-label">地区</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input name="areaName" id="areaName" type="text" class="form-control" placeholder="若不选择，默认全部地区" disabled value=""/>
+                                            <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#dialogSelectAreaUnit">
+                                            <i class="ti-plus"></i>选择
+                                        </button>
+			                         </span>
+                                        </div>
+                                        <input type="hidden" id="areaId" name="areaId" value="">
+                                        <input type="hidden" id="provinceId" name="provinceId" value="">
+                                        <input type="hidden" id="cityId" name="cityId" value="">
+                                    </div>
+                                </div>
+                                <!--   显示地区信息   -->
+                                <div align="center">
+                                    <h4><b>地区信息列表</b></h4>
+                                </div>
+                                <div class="table-responsive no-border">
+                                    <table class="table table-bordered table-striped mg-t" id="showAreaList">
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade in " id="tenantTab">
+                                <div align="center">
+                                    <h4><b>商户列表</b></h4>
+                                </div>
+                                <section class="content-wrap bg-white">
+                                    <div align="right">
+                                        <input id="search_tenancyName" type="text" onclick="this.value='';" placeholder="请输入名称">
+                                    </div>
+                                    <div class=panel-body >
+                                        <div class="table-responsive no-border">
+                                            <input id="unitid" type="hidden">
+                                            <table class="table table-bordered table-striped mg-t datatable">
+                                                <thead>
+                                                <tr>
+                                                    <th>商户标识</th>
+                                                    <th>名称</th>
+                                                    <th>所属者</th>
+                                                    <th>所属地区</th>
+                                                    <th>租户类型</th>
+                                                    <th>状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </section>
+                                <input id="tenantId" name="tenantId" hidden>
+                                <!--   显示商户信息   -->
+                                <div align="center">
+                                    <h4><b>终端组列表</b></h4>
+                                </div>
+                                <div class="table-responsive no-border">
+                                    <table class="table table-bordered table-striped mg-t" id="showTenantList">
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade in " id="brandTab">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">品牌规格</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input name="specificationName" id="specificationName" type="text" class="form-control" placeholder="若不选择，默认全部品牌" disabled value=""/>
+                                            <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#dialogSelectSpecification">
+                                            <i class="ti-plus"></i>选择
+                                        </button>
+			                         </span>
+                                        </div>
+                                        <input type="hidden" id="specificationId" name="specificationId" value="">
+                                        <input type="hidden" id="specId" name="specId" value="">
+                                        <input type="hidden" id="brandId" name="brandId" value="">
+                                    </div>
+                                </div>
+                                <!--   显示品牌信息   -->
+                                <div align="center">
+                                    <h4><b>品牌信息列表</b></h4>
+                                </div>
+                                <div class="table-responsive no-border">
+                                    <table class="table table-bordered table-striped mg-t" id="showBrandList">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<div id="dialogUserSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 700px;">
+        <div class="modal-content" style="width: 700px;">
+
+        </div>
+    </div>
+</div>
+<!-- 地区 -->
+<div id="dialogSelectAreaUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择地区(需勾选省份下市区)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTreeAreaUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectAreaMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 品牌型号 -->
+<div id="dialogSelectSpecification" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择品牌型号(需勾选品牌下型号)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsSpecificationUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectSpecificationMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 选择版本 -->
+<div id="dialogLauncherVersion" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择版本</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsLauncherVersionUnit" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="selectLauncherVersionMenu()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+     var datatable;
+     function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "destroy": true,
+            "language": {
+                "url": "${base!}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base!}/platform/operate/tenant/data",
+                "type": "post",
+                "data": function (d) {
+                     d.tenancyName = $('#search_tenancyName').val();
+                    // d.appSwitch = "1";
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "tenancyCode", "bSortable": true},
+                {"data": "tenancyName", "bSortable": true},
+                {"data": "sysUserName", "bSortable": true},
+                {"data": "areaName", "bSortable": true},
+                {"data": "tenancyType", "bSortable": true},
+                {"data": "status", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<a href="${base}/platform/sys/update/strategy/selectDeviceGroup?tenantId='+row.id+
+                        '" data-toggle="modal" data-target="#dialogUserSelect">选择终端组</a>';
+                    },
+                    "targets": 6
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data==1) {
+                            return "私有化";
+                        } else {
+                            return "托管";
+                        }
+                    },
+                    "targets": 4
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data==1) {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="status_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 5
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+         $("#search_tenancyName").on('keyup', function () {
+            datatable.ajax.reload();
+        });
+        $("#DataTables_Table_0_wrapper").css("margin-bottom",$("table").find(".dropdown-menu:last").height() - 41);
+    }
+    function initTenantInfo(){
+        initDatatable();
+    }
+
+    function initAreaTreeView() {
+        $("#jsTreeAreaUnit").jstree({
+            plugins: ["wholerow", "checkbox"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/area/strategyTree" : "${base!}/platform/sys/area/strategyTree?pid=" + node.id
+                    }
+                }
+            },
+            checkbox: {
+                three_state: false,
+                cascade: 'down|up|undetermined'
+            }
+        }).on("loaded.jstree", function (event, data) {
+            if($("#provinceId").val() !=""){
+                var provinceIds = $("#provinceId").val().split(",");
+                var cityIds = $("#cityId").val().split(",");
+                for(j = 0; j < provinceIds.length; j++) {
+                     if(cityIds[j] !=""){
+                         $('#jsTreeAreaUnit').jstree('open_node',provinceIds[j],function(){
+                            for(j = 0; j < cityIds.length; j++) {
+                                $('#jsTreeAreaUnit').jstree('select_node',cityIds[j],true);
+                             }
+                        });
+                     }else{
+                        $('#jsTreeAreaUnit').jstree('select_node',provinceIds[j],true);
+                        $('#jsTreeAreaUnit').jstree('open_node',provinceIds[j],function(){});
+                     }
+
+                }
+            }
+        }).bind('click.jstree', function(e,data) {
+            var pid = event.target.id.split("_anchor");
+            $('#jsTreeAreaUnit').jstree('open_node',pid[0],function(){});
+
+        });;
+    }
+    function initSpecificationTreeView() {
+        $("#jsSpecificationUnit").jstree({
+            plugins: ["wholerow", "checkbox"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/device/brand/strategyTree" : "${base!}/platform/device/brand/strategyTree?brandId=" + node.id
+                    }
+                }
+            },
+            checkbox: {
+                three_state: false,
+                cascade: 'down|up|undetermined'
+            }
+
+        }).on("loaded.jstree", function (event, data) {
+            if($("#brandId").val() !=""){
+                var brandIds = $("#brandId").val().split(",");
+                var specIds = $("#specId").val().split(",");
+                for(j = 0; j < brandIds.length; j++) {
+                     if(specIds[j] !=""){
+                         $('#jsSpecificationUnit').jstree('open_node',brandIds[j],function(){
+                            for(j = 0; j < specIds.length; j++) {
+                                $('#jsSpecificationUnit').jstree('select_node',specIds[j],true);
+                             }
+                        });
+                     }else{
+                        $('#jsSpecificationUnit').jstree('select_node',brandIds[j],true);
+                     }
+
+                }
+            }
+        }).bind('click.jstree', function(e,data) {
+            var pid = event.target.id.split("_anchor");
+            $('#jsSpecificationUnit').jstree('open_node',pid[0],function(){});
+
+        });;
+    }
+    function initLauncherVersionView() {
+        $("#jsLauncherVersionUnit").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/update/version/launcherTree" : "${base!}/platform/sys/update/version/launcherTree?launcherId=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectLauncherVersionMenu();
+        });
+    }
+     function selectAreaMenu() {
+        var tree = $.jstree.reference("#jsTreeAreaUnit");
+        var node = tree.get_selected(true);
+        var ids=[];
+        var texts=[];
+        for(var i=0;i<node.length;i++){
+            if(node[i].parent==="#" ){
+                if(node[i].original.areaCode !== null){
+                    //ids.push("root#"+node[i].id+"#"+node[i].text);
+                    //texts.push(node[i].text);
+                    ids.push(node[i].id+"#"+node[i].id+"#"+node[i].text+"#"+node[i].original.areaCode);
+                    texts.push(node[i].text);
+                }
+            }else{
+                ids.push(node[i].parent+"#"+node[i].id+"#"+tree.get_node (node[i].parent).text+"  "+ node[i].text+"#"+node[i].original.areaCode);
+                texts.push(tree.get_node (node[i].parent).text+"  "+ node[i].text);
+            };
+        }
+
+        var areaIds = [];
+            if($("#areaId").val() !=""){
+                areaIds = $("#areaId").val().split(",");
+        }
+        var html = '';
+        for(var i=0;i<texts.length;i++){
+            var trId = ids[i];
+            if($.inArray(trId,areaIds)==-1){
+                html +='<tr id="'+trId+'"><td align="left">'+texts[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeAreaTr(\''+trId+'\')">×</a></td></tr>';
+                areaIds.push(trId);
+                $("#areaId").val(areaIds)
+            }
+        }
+        $("#showAreaList").append(html);
+        console.log($("#areaId").val())
+        $("#dialogSelectAreaUnit").modal("hide");
+    }
+    function removeAreaTr(trId){
+       var ids = $("#areaId").val().split(",");
+       ids.splice($.inArray(trId,ids),1);
+       $("#areaId").val(ids)
+       document.getElementById(trId).remove();
+    }
+    function selectSpecificationMenu() {
+        var tree = $.jstree.reference("#jsSpecificationUnit");
+        var node = tree.get_selected(true);
+        var ids=[];
+        var texts=[];
+        for(var i=0;i<node.length;i++){
+            if(node[i].parent==="#"){
+
+           }else{
+                ids.push(node[i].parent+"#"+node[i].id+"#"+tree.get_node (node[i].parent).text+"  "+ node[i].text);
+                texts.push(tree.get_node (node[i].parent).text+"  "+ node[i].text);
+            };
+        }
+
+        var specificationIds = [];
+        if($("#specificationId").val() !=""){
+            specificationIds = $("#specificationId").val().split(",");
+        }
+        var html = '';
+        for(var i=0;i<texts.length;i++){
+            var trId = ids[i];
+            if($.inArray(trId,specificationIds)==-1){
+                html +='<tr id="'+trId+'"><td align="left">'+texts[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeBrandTr(\''+trId+'\')">×</a></td></tr>';
+                specificationIds.push(trId);
+                $("#specificationId").val(specificationIds)
+            }
+
+        }
+        $("#showBrandList").append(html);
+        console.log($("#specificationId").val())
+        $("#dialogSelectSpecification").modal("hide");
+    }
+    function removeBrandTr(trId){
+       var ids = $("#specificationId").val().split(",");
+       ids.splice($.inArray(trId,ids),1);
+       $("#specificationId").val(ids)
+       console.log($("#specificationId").val())
+       document.getElementById(trId).remove();
+    }
+    function selectLauncherVersionMenu() {
+        var tree = $.jstree.reference("#jsLauncherVersionUnit");
+        var node = tree.get_selected(true);
+        if(node[0].parent === "#"){
+            Toast.error("必须精确到应用下的版本！");
+            return false;
+        }
+        $("#unitAddForm #launcherVersionId").val(node[0].id);
+        $("#unitAddForm input[name='launcherVersionName']").val("应用:"+tree.get_node (node[0].parent).text+",版本:"+node[0].text);
+        $("#dialogLauncherVersion").modal("hide");
+    }
+    function removeTenantTr(trId){
+       var ids = $("#tenantId").val().split(",");
+       ids.splice($.inArray(trId,ids),1);
+       $("#tenantId").val(ids)
+       document.getElementById(trId).remove();
+       console.log(ids)
+    }
+   $(document).ready(function () {
+        var tenantIds=[];
+        var tenantNames=[];
+       <%if(!isEmpty(groupList)){%><% for(o in groupList) { %>
+                tenantIds.push("${o.tenantId}"+"#"+"${o.groupId}"+"#"+"${o.name}");
+                tenantNames.push("${o.name}");
+       <%}}%>
+        $("#tenantId").val(tenantIds);
+        var html = '';
+        for(var i=0;i<tenantNames.length;i++){
+           var trId =tenantIds[i];
+           html +='<tr id="'+trId+'"><td align="left">'+tenantNames[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeTenantTr(\''+trId+'\')">×</a></td></tr>';
+        }
+        $("#showTenantList").html(html);
+
+        var brandSpecNames=[];
+        var brandIds=[];
+        var specificationIds=[];
+        var ruleIds = [];
+        <%if(!isEmpty(specNamesList)){%><% for(o in specNamesList) { %>
+                brandIds.push("${o.brandId}")
+                specificationIds.push("${o.specificationId}")
+                brandSpecNames.push("${o.name}");
+                if("${o.specificationId}" !=""){
+                    ruleIds.push("${o.brandId}"+"#"+"${o.specificationId}"+"#"+"${o.name}");
+                }else{
+                    ruleIds.push("root"+"#"+"${o.brandId}"+"#"+"${o.name}");
+                }
+       <%}}%>
+        //$("#specificationName").val(brandSpecNames);
+        $("#specificationId").val(ruleIds);
+        $("#specId").val(specificationIds);
+        $("#brandId").val(brandIds);
+        var html = '';
+        for(var i=0;i<brandSpecNames.length;i++){
+            var trId = ruleIds[i];
+            html +='<tr id="'+trId+'"><td align="left">'+brandSpecNames[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeBrandTr(\''+trId+'\')">×</a></td></tr>';
+        }
+        $("#showBrandList").html(html);
+
+        var cityIds=[];
+        var provinceIds=[];
+        var cityNames=[];
+        var areaIds=[];
+        <%if(!isEmpty(cityNamesList)){%><% for(o in cityNamesList) { %>
+                cityIds.push("${o.cityId}");
+                provinceIds.push("${o.provinceId}");
+                cityNames.push("${o.name}")
+
+                if("${o.cityId}" !=""){
+                    areaIds.push("${o.provinceId}"+"#"+"${o.cityId}"+"#"+"${o.name}"+"#"+"${o.areaCode}");
+                }else{
+                    areaIds.push("root"+"#"+"${o.provinceId}"+"#"+"${o.name}");
+                }
+       <%}}%>
+        //$("#areaName").val(cityNames);
+        $("#areaId").val(areaIds);
+        $("#provinceId").val(provinceIds);
+        $("#cityId").val(cityIds);
+        var html = '';
+        for(var i=0;i<cityNames.length;i++){
+            var trId =areaIds[i];
+            html +='<tr id="'+trId+'"><td align="left">'+cityNames[i]+'</td><td align="right"><a style="cursor: pointer" onclick="javascript:removeAreaTr(\''+trId+'\')">×</a></td></tr>';
+            //html +='<tr><th>'+cityNames[i]+'</th></tr>';
+        }
+        $("#showAreaList").html(html);
+
+        initLauncherVersionView();
+        initAreaTreeView();
+        initSpecificationTreeView();
+
+        //时间插件
+        $("#startTime").datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'hh:00',//显示格式
+            minView: "1",//设置只显示到小时
+            startView:"1",
+            initialDate: new Date(),
+            autoclose: true,//选中自动关闭
+            locale: moment.locale('zh-cn')
+        }).on("click",function(){
+        });
+        $("#endTime").datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'hh:00',//显示格式
+            minView: "1",//设置只显示到小时
+            startView:"1",
+            initialDate: new Date(),
+            autoclose: true,//选中自动关闭
+            locale: moment.locale('zh-cn')
+        }).on("click",function(){
+        });
+        $("#dialogUserSelect").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+         //时间插件
+        $("#effectiveStartDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#effectiveStartDate").datetimepicker("setEndDate",$("#effectiveEndDate").val())
+        });
+        $("#effectiveEndDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#effectiveEndDate").datetimepicker("setStartDate",$("#effectiveStartDate").val())
+        });
+        $('#unitAddForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>

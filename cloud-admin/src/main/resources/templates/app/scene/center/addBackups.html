@@ -1,0 +1,1249 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<script src="${base!}/static/plugins/ueditor/ueditor.config.js"></script>
+<script src="${base!}/static/plugins/ueditor/ueditor.all.min.js"></script>
+<section class="content-wrap bg-white ddd">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button close_size">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/scene/center" id="goback"  data-pjax><i class="ti-angle-left"></i> 返回</a>
+            <a class="btn btn-primary navbar-btn" href="#" id="newWindow" data-toggle="dropdown"
+               style="margin-bottom: 0;"><i class=""></i>分辨率</a>
+            <ul class="dropdown-menu size">
+                <li><a href="#" id="small">分辨率：1280*720</a></li>
+                <li><a href="#" id="big">分辨率：1920*1080</a></li>
+            </ul>
+            <!--<a class="btn btn-primary navbar-btn" href="#" id="emptied" style="margin-bottom: 0;"><i class="ti-close"></i>清空</a>-->
+        </div>
+    </header>
+    <div class="content-wrap">
+        <div class="wrapper">
+            <div class="col-md-12 form-horizontal option">
+                <div class="form-group">
+                    <label class="labelText control-label">模板名称：</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="modelName" name="modelName" onclick="this.value=''" class="form-control"
+                               placeholder="名称" autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">整体：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn labelBtnDrag" id="overallEdit" data-toggle='modal'
+                               data-target='#overallDetail'>编辑</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">挂件：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn labelBtnDrag" id="date">日期</label>
+                        <label class="labelBtn labelBtnDrag" id="weather">天气</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="labelText control-label">窗口：</label>
+                    <div class="col-sm-8 dropDown">
+                        <label class="labelBtn" data-toggle="dropdown">推荐位</label>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="addBD1">宽高 1：1</a></li>
+                            <li><a href="#" id="addBD2">宽高 1：2</a></li>
+                            <li><a href="#" id="addBD3">宽高 2：1</a></li>
+                            <li><a href="#" id="addBD4">宽高 2：2</a></li>
+                            <li><a href="#" id="addBD5">宽高 3：2</a></li>
+                            <li><a href="#" id="addBD6">宽高 4：2</a></li>
+                        </ul>
+                        <!--<label class="labelBtn labelBtnDrag" id="">标签</label>-->
+                        <!--<label class="labelBtn labelBtnDrag" id="">图片</label>-->
+                        <!--<label class="labelBtn labelBtnDrag" id="">图片集合</label>-->
+                        <!--<label class="labelBtn labelBtnDrag" id="">视频</label>-->
+                        <!--<label class="labelBtn labelBtnDrag" id="">图文</label>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="labelText control-label">导航：</label>
+                    <div class="col-sm-8">
+                        <label class="labelBtn" id="addHD">栏目</label>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="dropDown">-->
+            <!--<button id="addHD" data-toggle="dropdown">添加栏目</button>-->
+            <!--<ul class="dropdown-menu">-->
+            <!--<li><a href="#">分辨率：1280*720</a></li>-->
+            <!--<li><a href="#">分辨率：1920*1080</a></li>-->
+            <!--</ul>-->
+            <!--</div>-->
+
+            <!--<button id="addBD">添加资源</button>-->
+            <!--<button id="save">保存</button>-->
+            <!--<a href="indexCanvas.html"><button id="">预览</button></a>-->
+            <div class="drag">
+
+                <!--<div class="addMake">-->
+                <div class="dragging">
+                    <div class="weather">
+                        <img src="${base!}/static/img/date.png" height="64" width="64"/>
+                        <div class="dateText">
+                            <p><span>2日星期六</span><span>晴</span></p>
+                            <p>22℃ ~ 27℃</p>
+                        </div>
+                    </div>
+                    <div class="date">
+                        <img src="${base!}/static/img/date.png" height="64" width="64"/>
+                        <div class="dateText">
+                            <p>2017/9/4</p>
+                            <p><span>周一</span><span>10:00</span></p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="fullSlide">
+                    <div class="bdTop" id="bdTop">
+                        <!--<ul>-->
+                        <!-- <li>
+                            <div class="liList" id="preview" style="width:155px; height:230px; border:1px solid gray; " > -->
+                        <!-- <div class="drag"></div> -->
+                        <!-- <div class="downBtn" ></div>
+                        <div class="downRightBtn"></div>
+                        <div class="centerRightBtn"></div> -->
+                        <!-- <div class="centerLeftBtn"></div> -->
+                        <!-- <p class="editMongodb">编辑</p>
+                    </div>
+                </li> -->
+
+                        <!--</ul>-->
+
+                    </div>
+                    <div class="hdDown">
+                        <ul>
+                            <!-- <li>推荐</li>
+                            <li>我的酒店</li>
+                            <li>高清影院</li>
+                            <li>娱乐</li>
+                            <li>酒店服务</li>  -->
+                        </ul>
+                    </div>
+                    <!--<button type='button' class='setStatus' data-toggle="dropdown">设置状态</button>-->
+                    <!--<ul class="dropdown-menu size" style="top: calc(80% - 87px);left: 83%;">-->
+                    <!--<li><a href="#" id="">扁平化</a></li>-->
+                    <!--<li><a href="#" id="">卡片化</a></li>-->
+                    <!--<li><a href="#" id="">弹出化</a></li>-->
+                    <!--</ul>-->
+                </div>
+                <!--</div>-->
+            </div>
+            <div class="col-md-12 saveTemp" style="margin-left: 100px;">
+                <div class="btn-group tool-button">
+                    <a class="btn btn-primary navbar-btn" href="#" data-pjax>预览</a>
+                    <a class="btn btn-primary navbar-btn" href="#" id="save" data-pjax>保存</a>
+                    <a class="btn btn-primary navbar-btn" href="#" data-pjax>清空</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<a class="exit-offscreen"></a>
+<!-- 整体编辑 -->
+<div id="overallDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">栏目编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">背景：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallBG" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#333">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">字体：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallFont" name="" value=""
+                                               data-parsley-required="true"
+                                               class="form-control" placeholder="例如：16px">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">字体颜色：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="overallColor" name="" value=""
+                                               data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#ffffff">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">风格：</label>
+                                    <div class="col-xs-8" style="margin-top: 6px;">
+                                        <input type="radio" name="styleTypes" value="0" data-parsley-required="true"
+                                               checked>扁平化
+                                        <!--<input type="radio" name="styleTypes" value="1" data-parsley-required="true">卡片化-->
+                                        <!--<input type="radio" name="styleTypes" value="2" data-parsley-required="true">弹出化-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="overall" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 栏目编辑 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">栏目编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="栏目名称">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 推荐位编辑 -->
+<div id="recommendDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="recClose" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">推荐位编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">名称：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="recName" name="" value="" class="form-control"
+                                               placeholder="推荐位名称">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">背景：</label>
+                                    <div class="col-xs-8">
+                                        <input type="text" id="recBG" name="" value="" data-parsley-required="true"
+                                               class="form-control" placeholder="例如：#333">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">是否授权：</label>
+                                    <div class="col-xs-8 authority">
+                                        <input type="radio" name="authority" value="0" data-parsley-required="true"
+                                               checked>是
+                                        <input type="radio" name="authority" value="1" data-parsley-required="true">否
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">事件：</label>
+                                    <div class="col-xs-8" style="margin-top: 6px;">
+                                        <% for(o in event) { %>
+                                        <input type="radio" name="event" value="${o.key}"  >${o.value}
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">类型：</label>
+                                    <div class="col-xs-8 editRadio" style="margin-top: 6px;">
+                                        <input type="radio" name="TypesOf" value="0" data-parsley-required="true"
+                                               checked>图片
+                                        <input type="radio" name="TypesOf" value="1" data-parsley-required="true">文本
+                                        <!--<input type="radio" name="TypesOf" value="2" data-parsley-required="true">视频-->
+                                        <input type="radio" name="TypesOf" value="3" data-parsley-required="true">app
+                                        <input type="radio" name="TypesOf" value="4" data-parsley-required="true">图片列表
+                                        <!--<input type="radio" name="TypesOf" value="5" data-parsley-required="true">视频列表-->
+                                    </div>
+                                    <button type="button" id="add" class="btn btn-primary"
+                                            style="margin-right:10px;float:right;">新建
+                                    </button>
+                                </div>
+
+
+                                <div id="addImg" style="display:none;">
+                                    <form id="addImgForm" role="form" class="form-horizontal parsley-form"
+                                          action="${base}/platform/cms/img/addDo" method="post">
+                                        <div class="form-group">
+                                            <label for="nameImg" class="col-sm-2 control-label">图片名称</label>
+                                            <input type="hidden" name="disabled" value="false">
+                                            <div class="col-sm-8">
+                                                <input type="text" id="nameImg" class="form-control" name="name"
+                                                       data-parsley-required="true"
+                                                       placeholder="名称">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameImg" class="col-sm-2 control-label">上传图片</label>
+
+                                            <div class="col-sm-8">
+                                                <#upload id="picImg" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div id="addArticle" style="display:none;">
+                                    <form id="addArticleForm" role="form" class="form-horizontal parsley-form"
+                                          data-parsley-validate
+                                          action="${base}/platform/cms/article/addDo" method="post">
+                                        <div class="form-group">
+                                            <label for="title" class="col-sm-2 control-label">文章标题</label>
+                                            <input type="hidden" name="disabled" value="false">
+                                            <div class="col-sm-8">
+                                                <input type="text" id="title" class="form-control" name="title"
+                                                       value="" placeholder="文章标题">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="info" class="col-sm-2 control-label">文章简介</label>
+
+                                            <div class="col-sm-8">
+                                                <textarea id="info" name="info" class="form-control"
+                                                          style="width:100%;height:80px;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="info" class="col-sm-2 control-label">标题图</label>
+
+                                            <div class="col-sm-8">
+                                                <div id="queue"></div>
+                                                <div>
+                                                    <#upload id="picArcticle" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传" imgWidth="50" imgHeight="50" showImg="true"  multi="true" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="content" class="col-sm-2 control-label">文章内容</label>
+
+                                            <div class="col-sm-8">
+                                                <textarea id="content" name="content"
+                                                          style="width:100%;height:200px;"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+
+                                <div id="addApp" style="display:none;">
+                                    <form id="addAppForm" role="form" class="form-horizontal parsley-form"
+                                          action="${base}/platform/cms/app/addDo" method="post">
+                                        <div class="form-group">
+                                            <label for="nameApp" class="col-sm-2 control-label">App名称</label>
+                                            <input type="hidden" name="disabled" value="false">
+                                            <div class="col-sm-8">
+                                                <input type="text" id="nameApp" class="form-control" name="name"
+                                                       data-parsley-required="true"
+                                                       placeholder="名称">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameApp" class="col-sm-2 control-label">上传图片</label>
+
+                                            <div class="col-sm-8">
+                                                <#upload id="picApp" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传" imgWidth="50" imgHeight="50" showImg="true"  multi="false" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameApp" class="col-sm-2 control-label">上传App</label>
+
+                                            <div class="col-sm-8">
+                                                <#upload id="fileApp" name="attMains2"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="apk"  btnText="上传"  multi="false" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="addImgCollection" style="display:none;">
+                                    <form id="addImgCollectionForm" role="form" class="form-horizontal parsley-form"
+                                          action="${base}/platform/cms/imgCollection/addDo" method="post">
+
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-2 control-label">图片集名称</label>
+                                            <input type="hidden" name="disabled" value="false">
+                                            <div class="col-sm-8">
+                                                <input type="text" id="name" class="form-control" name="name"
+                                                       data-parsley-required="true"
+                                                       placeholder="名称">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-2 control-label">上传图片</label>
+
+                                            <div class="col-sm-8">
+                                                <#upload id="fileImgCollection" name="attMains1"  exts=".jpg,.jpeg,.gif,.png,.bmp" fdKey="pic"  btnText="上传" imgWidth="50" imgHeight="50" showImg="true"  multi="true" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <div class="table-responsive no-border">
+                                            <table class="table table-bordered table-striped mg-t datatableImg">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t datatableImgCollection">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <!--<th>地址</th>-->
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t datatableApp">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped mg-t datatableArticle">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>图片</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="recCancel" type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="recEdit" type="button" class="btn btn-primary" data-loading-text="正在修改...">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .drag{
+        width:800px;
+        height:450px;
+        overflow:hidden;
+        position:relative;
+        border: 1px solid #333;
+        font-size: 12px;
+        margin-left: 115px;
+        /*display:none;*/
+    }
+    .dropDown{position: relative;}
+    /*.option{display:none;}*/
+    /*.saveTemp{display:none;}*/
+    .option .labelText{width: 100px; float:left;margin-right:15px;}
+    .option .col-sm-8{padding: 0;}
+    .drag .fullSlide .hdDown ul li p{
+        width: 85px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .setStatus{
+        position: absolute;
+        right: 8px;
+        top: 81%;
+        width: 80px;
+        height: 30px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        text-align: center;
+        display: none;
+        z-index: 9;
+    }
+    /* 本例子css */
+    .drag .fullSlide .slideBox{ width:100%; height:100%; overflow:hidden; position:relative; }
+    .drag .fullSlide .slideBox .hd{ height:15px; overflow:hidden; position:absolute; right:5px; bottom:5px; z-index:1; }
+    .drag .fullSlide .slideBox .hd ul{ overflow:hidden; zoom:1; display:block;  }
+    .drag .fullSlide .slideBox .hd ul li{ float:left; margin-right:2px;  width:15px; height:15px;border-radius: 7px; line-height:14px; text-align:center; background:#fff; cursor:pointer; }
+    .drag .fullSlide .slideBox .hd ul li.on{ background:#f00; color:#fff; }
+    .drag .fullSlide .slideBox .bd{ position:relative; height:100%; z-index:0;   }
+    .drag .fullSlide .slideBox .bd ul{ width: 100%; height: 100%;display: block;}
+    .drag .fullSlide .slideBox .bd ul li{ width: 100%; height: 100%; zoom:1; vertical-align:middle; padding:0;}
+    .drag .fullSlide .slideBox .bd img{ width:450px; height:230px; display:block;  }
+
+</style>
+<!-- 拖拽和轮播 -->
+<script src="/static/plugins/draggable/jquery.ui.core.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.widget.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.mouse.js"></script>
+<script src="/static/plugins/draggable/jquery.ui.draggable.js"></script>
+<script src="/static/plugins/draggable/jquery.SuperSlide.2.1.1.js"></script>
+<!--<script src="/static/plugins/draggable/TouchSlide.1.1.js"></script>-->
+<!--<script src="/static/plugins/draggable/mainDrag.js"></script>-->
+<!--<script src="/static/plugins/draggable/jquery-ui.min.js"></script>-->
+<script>
+    var datatableImg;
+    var chks;
+    var chkIds;
+     var postType;
+    function initDatatableImg() {
+        datatableImg = $('.datatableImg').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/cms/img/data",
+                "type": "post",
+                "data":{ disabled : false }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "name", "bSortable": false},
+                {"data": "picUrl", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                     return '<a href="${base}/platform/scene/interface/pic?type=img&id=' + row.id + '" target="_blank" ><img src="'+data+'" alt="图片" height="30px" width="30px;"></a>';
+  //                      return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle">' +
+   //                         '<a href="${base}/platform/scene/interface/pic?type=img&id=' + row.id + '" target="_blank" >查看</a>' +
+  //                          '</button></div>';
+
+                    },
+                    "targets":1
+                }
+            ]
+        });
+
+        datatableImg.on('click', 'tr', function () {
+            if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+
+    }
+    var datatableImgCollection;
+    function initdatatableImgCollection() {
+        datatableImgCollection = $('.datatableImgCollection').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/cms/imgCollection/data",
+                "type": "post",
+                "data":{ disabled : false }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "name", "bSortable": false},
+                {"data": "picUrl", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        var imgCollection='<a href="${base}/platform/scene/interface/pic?type=imgCollection&id=' + row.id + '" target="_blank" >';
+                        for(var i=0;i<data.length;i++){
+                            imgCollection+='<img src="'+data[i]+'" alt="图片" height="30px" width="30px;">';
+                        }
+                     return imgCollection+'</a>';
+
+                    },
+                    "targets":1
+                }
+            ]
+        });
+        datatableImgCollection.on('click', 'tr', function () {
+            if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+
+    }
+    var datatableApp;
+    function initDatatableApp() {
+        datatableApp = $('.datatableApp').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/cms/app/data",
+                "type": "post",
+                "data":{ disabled : false }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "name", "bSortable": false},
+                {"data": "picUrl", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<a href="${base}/platform/scene/interface/pic?type=app&id=' + row.id + '" target="_blank" ><img src="'+data+'" alt="图片" height="30px" width="30px;"></a>';
+                    },
+                    "targets":1
+                }
+            ]
+        });
+        datatableApp.on('click', 'tr', function () {
+            if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+
+    }
+    var datatableArticle;
+    function initDatatableArticle() {
+        datatableArticle = $('.datatableArticle').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/cms/article/data",
+                "type": "post",
+                "data":{ disabled : false }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "title", "bSortable": false},
+                {"data": "picUrl", "bSortable": false}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                     return '<a href="${base}/platform/scene/interface/pic?type=article&id=' + row.id + '" target="_blank" ><img src="'+data+'" alt="图片" height="30px" width="30px;"></a>';
+                    },
+                    "targets":1
+                }
+            ]
+        });
+        datatableArticle.on('click', 'tr', function () {
+            if(!$(this).hasClass('selected')){
+                $("tbody tr").removeClass('selected');
+            }
+            $(this).toggleClass('selected');
+        });
+    }
+    $(function(){
+        // 拖拽位置
+        $( "#weather" ).on("click",function(){
+            $( ".weather" ).show();
+            $( ".weather" ).draggable({ containment: ".dragging", scroll: false });
+        })
+        $( "#date" ).on("click",function(){
+            $( ".date" ).show();
+            $( ".date" ).draggable({ containment: ".dragging", scroll: false });
+        })
+        // 分辨率窗口大小
+        $(".size").on("click","#big",function(){
+            $(".option").show();
+            $(".saveTemp").show();
+//            $(".drag").show().addClass("big");
+            $(".drag").show().css({"width":"960px","height":"540px"});
+            $(".close_size").removeClass("open");
+        });
+        $(".size").on("click","#small",function(){
+            $(".option").show();
+//            $(".drag").show().addClass("small");
+            $(".drag").show().css({"width":"800px","height":"450px"});
+            $(".close_size").removeClass("open");
+        });
+        //  整体编辑
+        $("#overall").on("click",function(){
+            $(".drag").css({"background":$("#overallBG").val(),"font-size":$("#overallFont").val(),"color":$("#overallColor").val()});
+            $(".drag").attr("styleTypes",$(".styleTypes").find("input[type='radio']:checked").val());
+            $("#overallDetail").modal("hide");
+        });
+        // 添加推荐位
+        $("#addBD1").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(25% - 14px); height:49%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+//                '<img src="" width="100%" height="100%" alt="">'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $("#addBD2").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(25% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $("#addBD3").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(50% - 14px); height:49%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $("#addBD4").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(50% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $("#addBD5").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(75% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $("#addBD6").click(function(){
+            $(".bdTop").find("ul#currentTabId").append(
+                '<li class="firstLi"><div class="liList" style="width:calc(100% - 14px); height:100%; border:1px solid gray; position:absolute; left: 7px; top: 0;" >'+
+                '<button type="button" class="close bitClose">×</button>'+
+                '<p class="edit" data-toggle="modal" data-target="#recommendDetail" data-backdrop="static" data-keyboard="false"></p>'+
+                '</div></li>');
+        });
+        $(".bdTop").on("click", ".bitClose", function(){
+            $(this).parent().parent('li').remove();
+        })
+
+        //编辑推荐位
+        $(".bdTop").on("click",".edit",function(){
+            var currentId = $(this).attr("id","currentId");
+
+            if($("#currentId").text() != ""){
+                $("#recName").val($("#currentId").text());
+                $("#recBG").val($("#currentId").parent(".liList").css("background-color"));
+            }else{
+                $("#recName").val("");
+                $("#recBG").val("");
+            }
+            $("tbody tr").removeClass('selected');
+            $(".authority").find("input:first").attr("checked",true);
+            $(".editRadio").find("input:first").attr("checked",true);
+            $(".datatableImg").parent("div").show();
+            $(".datatableImgCollection,.datatableApp,.datatableArticle").parent("div").hide();
+
+            // 推荐类型接口---类型选择
+            $(".editRadio").on("click","input",function(){
+                var inputNum = $(this).val();
+                 $("#addImg,#addImgCollection,#addArticle,#addApp").hide();
+                switch (inputNum) {
+                    case "0":// 图片
+                        $(".datatableImg").parent("div").show();
+                        $(".datatableImgCollection,.datatableApp,.datatableArticle").parent("div").hide();
+                        break;
+                    case "1":// 文本
+                        $(".datatableArticle").parent("div").show();
+                        $(".datatableImg,.datatableImgCollection,.datatableApp").parent("div").hide();
+                        break;
+                    case "2":// 视频
+                    case "5":// 视频列表
+                        $(".datatableImg,.datatableImgCollection,.datatableArticle,.datatableApp").parent("div").hide();
+//                        alert("待定！");
+                        break;
+                    case "3":// app
+                        $(".datatableApp").parent("div").show();
+                        $(".datatableImg,.datatableImgCollection,.datatableArticle").parent("div").hide();
+                        break;
+                    case "4":// 图片列表
+                        $(".datatableImgCollection").parent("div").show();
+                        $(".datatableImg,.datatableApp,.datatableArticle").parent("div").hide();
+                        break;
+                }
+            })
+        });
+        // 推荐位弹出框取消
+        $("#recommendDetail").on("click","#recCancel,#recClose",function(){
+            $("#addImg,#addImgCollection,#addArticle,#addApp").hide();
+            $(".bdTop p").removeAttr("id");
+        });
+
+        //  编辑推荐位弹出框
+        $("#recommendDetail").on("click","#recEdit",function(){
+            if($("input#recName").val() == ""){
+                alert("填写名称！")
+            }else{
+                var inputType = $('.editRadio input:radio[name="TypesOf"]:checked').val();
+                switch (inputType) {
+                    case "0":// 图片
+                        postType = "img";
+                        chks = datatableImg.rows('.selected').data();
+                        if(!$('#addImg').is(':hidden')) {
+                            if($("#nameImg").val()==""){
+                                alert("请填写图片名称");
+                                return false;
+                            }
+                             $("#addImgForm").submit();
+                        } else {
+                             saveFeaturedFirst();
+                        }
+                        break;
+                    case "1":// 文本
+                        postType = "article";
+                        chks = datatableArticle.rows('.selected').data();
+                        if(!$('#addArticle').is(':hidden')) {
+                            if($("#title").val()==""){
+                                alert("请填写文章名称");
+                                return false;
+                            }
+                            $("#addArticleForm").submit();
+                        } else {
+                             saveFeaturedFirst();
+                        }
+                        break;
+                    case "2":// 视频
+                    case "5":// 视频列表
+                        $(".datatableImg,.datatableImgCollection,.datatableArticle,.datatableApp").parent("div").hide();
+                        break;
+                    case "3":// app
+                        postType = "app";
+                        chks = datatableApp.rows('.selected').data();
+                        if(!$('#addApp').is(':hidden')) {
+                            if($("#nameApp").val()==""){
+                                alert("请填写App名称");
+                                return false;
+                            }
+                            $("#addAppForm").submit();
+                        } else {
+                             saveFeaturedFirst();
+                        }
+                        break;
+                    case "4":// 图片列表
+                        postType = "imgCollection";
+                        chks = datatableImgCollection.rows('.selected').data();
+                        if(!$('#addImgCollection').is(':hidden')) {
+                            if($("#nameImgCollection").val()==""){
+                                alert("请填写图片集名称");
+                                return false;
+                            }
+                             $("#addImgCollectionForm").submit();
+                        } else {
+                             saveFeaturedFirst();
+                        }
+                        break;
+                }
+
+            }
+        });
+        $(".bdTop").on("mousedown","li",function(){
+            $(".liList" ).draggable({ containment: "#bdTop", scroll: false });
+        });
+
+        // 添加栏目
+        $("#addHD").click(function(){
+            // alert("s"); data-toggle='modal' data-target='#dialogUserDetail'
+            if($(".hdDown").find("li").length < 6){
+                $(".hdDown").find("ul").append("<li><input type='text' name='edit' value='' placeholder='编辑'><button type='button' class='close columnClose'>×</button></li>");
+//                $(".hdDown").find("ul").append("<li><p class='columnEdit' onclick='aa()' ondblclick='bb()' data-toggle='modal' data-target='#dialogUserDetail'>编辑</p><button type='button' class='close columnClose'>×</button></li>");
+                $(".bdTop").append("<ul class='firstUl' data-ulname='asd'></ul>");
+                $(".bdTop ul.firstUl").hide().removeAttr("id");
+                $(".bdTop ul.firstUl").eq(0).show().attr("id","currentTabId");
+                $(".hdDown li").find("input").removeClass("on");
+                $(".hdDown li").eq(0).find("input").addClass("on");
+            }else{
+                alert("添加的太多了！")
+            }
+            if($(".hdDown").find("li").length > 2){
+                $(".setStatus").show();
+            }
+//            if($(".hdDown").find("li").length > 5){
+//                $(".fullSlide .hdDown").css("margin-left","-290px");
+//            }
+        });
+        // tab标签切换
+        $(".hdDown ul").on("click","li",function(){
+            $(".bdTop ul.firstUl").removeAttr("id");
+            $(".hdDown li").find("input").removeClass("on");
+            $(this).find("input").addClass("on");
+            var num = $(".hdDown li").index(this);
+//            $(this).addClass("on").slblings().removeClass("on");
+//            console.log($(".hdDown li").index(this));
+            $(".bdTop ul.firstUl").hide();
+            $(".bdTop ul.firstUl").eq(num).show();/*.slblings().hide()*/
+            //  当前添加id
+            $(".bdTop ul.firstUl").eq(num).attr("id","currentTabId");
+            // 删除标签
+            $(".hdDown").on("click", ".columnClose", function(){
+//                console.log( $(".bdTop ul").eq(num));
+                $(".bdTop ul#currentTabId").remove();
+                $(this).parent('li').remove();
+//                $(".hdDown li").eq(0).trigger("click");
+            })
+        })
+        // 保存
+        $("#save").click(function() {
+            // 整体dragging
+            var drag = {
+                dragW : $(".drag").width(),
+                dragH : $(".drag").height(),
+                dragBG : $(".drag").css("background-color"),
+                dragSize : $(".drag").css("font-size"),
+                dragFamily : $(".drag").css("font-family"),
+                dragColor : $(".drag").css("color"),
+                styleTypes : $(".drag").attr("styleTypes")
+            };
+//            console.log(drag);
+
+            // 挂件
+            var pendant = [{
+                pendantW: $(".dragging").position().left,
+                pendantH: $(".dragging").position().top
+//                pendantSize : $(".dragging").css("font-size"),
+//                pendantFamily : $(".dragging").css("font-family"),
+//                pendantColor : $(".dragging").css("color")
+            },{ //天气
+                pendantTX: $(".weather").position().left,
+                pendantTY: $(".weather").position().top,
+                pendantTW: $(".weather").width(),
+                pendantTH: $(".weather").height()
+            },{//日期
+                pendantRX: $(".date").position().left,
+                pendantRY: $(".date").position().top,
+                pendantRW: $(".date").width(),
+                pendantRH: $(".date").height()
+            }];
+            // 将推荐位数据放进json
+            var ulList = $(".bdTop").find("ul.firstUl");
+            var listUl = {}; // ul
+            for(var i = 0; i < ulList.length; i++){ // ul
+                ulList.eq(i).css({"display":"block","opacity":"0"});
+//                if(ulList.eq(i).html()!= ""){
+                var liList = ulList.eq(i).find("li.firstLi");
+                var listChild = []; // li
+                for(var e = 0; e < liList.length; e++) { // li
+                    var liImg = []; // 定义图片一个空数组
+                    var imgSrc = liList.eq(e).find(".liList img"); // 获取所有文本框
+                    for (var s = 0; s < imgSrc.length; s++) {
+                        liImg.push(imgSrc.eq(s).attr("src")); // 将src的值添加到数组中
+                    }
+//                    console.log(liImg)
+                    //http://phenix-att-test.oss-cn-shanghai.aliyuncs.com/201711/B1513186861_36011.jpg
+                    //http://phenix-att-test.oss-cn-shanghai.aliyuncs.com/201711/A481201524_22515.jpg
+                    var listLi = {
+                        W : liList.eq(e).find(".liList").width(),
+                        H : liList.eq(e).find(".liList").height(),
+                        TX: liList.eq(e).find(".liList").position().left,
+                        TY: liList.eq(e).find(".liList").position().top,
+                        text: liList.eq(e).find(".liList p").text(),
+                        authority: liList.eq(e).find(".liList").attr("authority"),
+                        imgList: liImg
+                    }
+                    listChild.push(listLi);
+                }
+//                }
+                listUl[i] = listChild;
+                ulList.eq(i).css({"display":"none","opacity":"1"});
+                $("ul#currentTabId").css({"display":"block","opacity":"1"});
+//                listUl.push(listChild);
+            }
+//            console.log(listUl);
+            // 推荐位
+            var bit = {
+                bitW : $(".fullSlide").width(),
+                bitH : $(".fullSlide").height(),
+                bitTX: $(".fullSlide").position().left,
+                bitTY: $(".fullSlide").position().top,
+//                bitSize : $(".fullSlide").css("font-size"),
+//                bitFamily : $(".fullSlide").css("font-family"),
+//                bitColor : $(".fullSlide").css("color"),
+                bitList : listUl
+            }
+//            console.log(bit);
+
+            // 栏目
+            var numArr = []; // 定义一个空数组
+            var txt = $('.hdDown').find("input[type='text']"); // 获取所有文本框
+            for (var i = 0; i < txt.length; i++) {
+                numArr.push(txt.eq(i).val()); // 将文本框的值添加到数组中
+            }
+            var column = {
+                columnW : $(".hdDown").width(),
+                columnH : $(".hdDown").height(),
+                columnTX: $(".hdDown").position().left,
+                columnTY: $(".hdDown").position().top,
+                columnText: numArr
+            }
+//            console.log(column);
+
+            var category = {
+                "drag":drag, // 整体
+                "pendant":pendant,// 挂件
+                "bit" : bit, // 推荐位
+                "column":column // 导航
+            }
+            $.post("${base}/platform/scene/center/addDo", {params:JSON.stringify(category),name:$("#modelName").val()}, function (data) {
+//                console.log(data);
+                if (data.code==0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                } else {
+                    Toast.error(data.msg);
+                }
+            });
+
+        });
+        //新建类型源
+        $("#add").click(function() {
+                var inputType = $('.editRadio input:radio[name="TypesOf"]:checked').val();
+                $("tbody tr").removeClass('selected');
+                switch (inputType) {
+                    case "0":// 图片
+                        $("#addImg").show();
+                        $(".datatableImg").parent("div").hide();
+                        break;
+                    case "1":// 文本
+                          $("#addArticle").show();
+                        $(".datatableArticle").parent("div").hide();
+                        break;
+                    case "2":// 视频
+                    case "5":// 视频列表
+                    case "3":// app
+                         $("#addApp").show();
+                        $(".datatableApp").parent("div").hide();
+                        break;
+                    case "4":// 图片列表
+                         $("#addImgCollection").show();
+                        $(".datatableImgCollection").parent("div").hide();
+                        break;
+                }
+        });
+        //上传图片保存
+        $('#addImgForm').ajaxForm({
+          dataType: 'json',
+          success: function (data, statusText, xhr, form) {
+            if (data.code==0) {
+             chkIds = data.data.id;
+             form.resetForm();
+             saveFeaturedFirst();
+             } else {
+              Toast.error(data.msg);
+           }
+         }
+       });
+        //上传新闻保存
+        $('#addArticleForm').ajaxForm({
+          dataType: 'json',
+          success: function (data, statusText, xhr, form) {
+            if (data.code==0) {
+             chkIds = data.data.id;
+             form.resetForm();
+             saveFeaturedFirst();
+             } else {
+              Toast.error(data.msg);
+           }
+         }
+       });
+        //上传App保存
+        $('#addAppForm').ajaxForm({
+          dataType: 'json',
+          success: function (data, statusText, xhr, form) {
+            if (data.code==0) {
+             chkIds = data.data.id;
+             form.resetForm();
+             saveFeaturedFirst();
+             } else {
+              Toast.error(data.msg);
+           }
+         }
+       });
+       //上传图片集保存
+        $('#addImgCollectionForm').ajaxForm({
+          dataType: 'json',
+          success: function (data, statusText, xhr, form) {
+            if (data.code==0) {
+             chkIds = data.data.id;
+             form.resetForm();
+             saveFeaturedFirst();
+             } else {
+              Toast.error(data.msg);
+           }
+         }
+       });
+
+
+    })
+
+
+            //保存推荐位
+            function saveFeaturedFirst(){
+                $(".bdTop p").each(function(){
+                    var current = $(this);
+                    if(current.attr('id') == 'currentId'){
+                        current.text($("input#recName").val());//填充内容
+                        current.parent(".liList").css({"background":$("#recBG").val()});//填充内容
+                        var authorityNum = $(".authority").find("input[type='radio']:checked").val();
+                        current.parent(".liList").attr("authority",authorityNum);
+                        // 列表数据选择
+
+                        // 回显图片
+                        if (chks.length > 0 ||typeof(chkIds)!="undefined") {
+                            var id;
+                           if(typeof(chkIds)!="undefined") {
+                                id=chkIds;
+                           }else{
+                            id=chks[0].id;
+                           }
+                            $.post("${base}/platform/scene/interface/getPicUrl", {id:id,type:postType}, function (data) {
+                                console.log(current);
+                                var dataList = data.data;
+                                if(current.parent(".liList").find("img").length > 0){
+                                    $(".slideBox").remove();
+                                }
+                                if(dataList.length == "1"){
+                                    if(current.parent(".liList").find("img").length > 0){
+                                        current.parent(".liList").find("img").attr("src",data.data);
+                                    }else{
+                                        current.parent(".liList").append('<img src="'+data.data+ '" width="100%" height="100%" alt="">');
+                                    }
+                                }else{
+                                    current.parent(".liList").append(
+                                        '<div id="slideBox" class="slideBox">'+
+                                            '<div class="hd">'+
+                                                '<ul></ul>'+
+                                            '</div>'+
+                                            '<div class="bd">'+
+                                                '<ul></ul>'+
+                                            '</div>'+
+                                        '</div>'
+                                    );
+                                    for(var i=0;i<dataList.length;i++){
+                                        $(".hd ul").append('<li></li>');
+                                        $(".bd ul").append('<li><img src="' +dataList[i]+ '" /></li>');
+                                    }
+                                    jQuery(".slideBox").slide({mainCell:".bd ul",autoPlay:true});
+                                }
+                            });
+                        }else{
+                            alert("请选择一条数据或重新上传图片");
+                        }
+                        $("#recommendDetail").modal("hide");
+                        $("#addImg,#addImgCollection,#addArticle,#addApp").hide();
+                        $(".bdTop p").removeAttr("id");
+                    }
+                })
+        }
+
+
+    var ue;
+    $(document).ready(function () {
+        initDatatableImg();
+        initdatatableImgCollection();
+        initDatatableApp();
+        initDatatableArticle();
+        setTimeout(function () {
+            ue= new baidu.editor.ui.Editor();
+            ue.render('content');
+        },500);
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#recommendDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#overallDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+
+
+
+
+</script>
+<%}%>

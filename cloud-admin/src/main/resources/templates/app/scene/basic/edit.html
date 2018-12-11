@@ -1,0 +1,918 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/scene/basic" data-pjax id="goback"><i
+                class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/scene/basic/editDo" method="post">
+                <input id="id" name="id" type="hidden" value="${obj.id!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group has-feedback">
+                            <label for="categoryId" class="col-sm-2 control-label">所属分类</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="categoryId" type="text" class="form-control" placeholder="请选择分类" disabled
+                                           value="<%if(!isEmpty(category)){%>${category.name}<%}%>"/>
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelect"><i class="ti-plus"></i>选择
+                                                    </button>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="categoryId"
+                                       value="<%if(!isEmpty(category)){%>${category.id}<%}%>">
+                            </div>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="mediaHomePage" class="col-sm-2 control-label">vod首页</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="mediaHomePage" type="text" class="form-control" placeholder="请选择vod首页"
+                                           value="${obj.homePageName!}" disabled/>
+                                    <span class="input-group-btn">
+			                             			<a href="${base}/platform/scene/basic/selectMediaHomePage"
+                                                       class="btn btn-primary" data-toggle="modal"
+                                                       data-target="#dialogHomePageSelect"><i class="ti-plus"></i>选择vod首页
+                                                    </a>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="mediaHomePageId" id="mediaHomePageId"
+                                       value="${obj.mediaHomePageId!}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sceneName" class="col-sm-2 control-label">名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="sceneName" class="form-control" name="sceneName"
+                                       data-parsley-required="true"
+                                       placeholder="名称" value="${obj.sceneName!}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="resolution" class="col-sm-2 control-label">适用分辨率</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="resolution" class="form-control" name="resolution"
+                                       placeholder="适用分辨率" value="${obj.resolution!}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">语言设置</label>
+                            <input type="hidden" name="languageDic" id="languageDic">
+                            <div class="col-sm-8" id="language">
+                                <% for(dic in languageDic){ %>
+                                <input type="checkbox" name="language" value="${dic.code}"
+                                <% for(l in language){
+                                if(l.languageCode==dic.code){ %>
+                                checked
+                                <% } } %>
+                                > ${dic.name}
+                                <% } %>
+                            </div>
+                        </div>
+                        <input type="hidden" name="style" value="suspension">
+
+
+                        <div class="form-group">
+                            <label for="resolution" class="col-sm-2 control-label">适用比例</label>
+
+                            <div class="col-sm-8">
+                                <select id="proportion" name="proportion" class="form-control">
+                                    <option value="16:9"
+                                    <%if(obj.proportion=='16:9'){%> selected <%}%> >16:9</option>
+                                    <!--<option value="4:3">4:3</option>-->
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="showPrice" class="col-sm-2 control-label">vod详情页显示价格</label>
+
+                            <div class="col-sm-8">
+                                <div class="mr15">
+                                    <input type="checkbox" id="showPrice" name="showPrice" class="js-switch-blue"
+                                    <%if(obj.showPrice=='1'){%>checked<%}%> >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="openTheme" class="col-sm-2 control-label">开启主题包</label>
+                            <div class="col-sm-8">
+                                <div class="mr15">
+                                    <input type="checkbox" id="openTheme" name="openTheme" class="js-switch-blue"
+                                    <%if(obj.openTheme){%>checked<%}%>>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="openTheme" class="col-sm-2 control-label">主题包上传</label>
+                            <div class="col-sm-8">
+                                <div class="col-sm-6">
+                                    <#upload id="theme" name="attMains1" exts=".skin" fdKey="theme"
+                                    modelName="${modelName}" modelId="${obj.id}" method="edit" btnText="上传"
+                                    multi="false" showUploadInfo="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks" class="col-sm-2 control-label">描述</label>
+
+                            <div class="col-sm-8">
+                                <textarea id="remarks" name="remarks" class="form-control"
+                                          style="width:100%;height:150px;"
+                                          placeholder="字数不能超过2000字">${obj.remarks!}</textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" name="editorId" id="editorId" value="${editorId!}">
+                        <input type="hidden" name="readerId" id="readerId" value="${readerId!}">
+
+                        <% if(isCreator){ %>
+                        <div class="form-group has-feedback">
+                            <label for="reader" class="col-sm-2 control-label">可查看者</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="reader" type="text" class="form-control" placeholder="请选择可查看者" disabled
+                                           value="${readerName!}"/>
+
+                                    <span class="input-group-btn">
+			                             			<a href="${base}/platform/scene/basic/selectReader"
+                                                       class="btn btn-primary" data-toggle="modal"
+                                                       data-target="#dialogSelect_reader"><i class="ti-plus"></i>选择
+                                                    </a>
+			                             		</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="editor" class="col-sm-2 control-label">可编辑者</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="editor" type="text" class="form-control" placeholder="请选择可编辑者" disabled
+                                           value="${editorName!}"/>
+
+                                    <span class="input-group-btn">
+			                             			<a href="${base}/platform/scene/basic/selectEditor"
+                                                       class="btn btn-primary" data-toggle="modal"
+                                                       data-target="#dialogSelect_editor"><i class="ti-plus"></i>选择
+                                                    </a>
+			                             		</span>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                        <!--      事件   -->
+                        <ul id="myTab" class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#open" data-toggle="tab">
+                                    开机事件
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#screenSaver" data-toggle="tab">
+                                    屏保事件
+                                </a>
+                            </li>
+
+                            <li class="">
+                                <a href="#dormancy" data-toggle="tab">
+                                    休眠事件
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#backgroundMusic" data-toggle="tab">
+                                    背景音乐
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#close" data-toggle="tab">
+                                    关机事件
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#themePackage" data-toggle="tab">
+                                    主题包事件
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="form-group"></div>
+                            <div class="tab-pane fade in active" id="open">
+
+
+                                <div class="form-group">
+                                    <label for="bootResourceArr" class="col-sm-2 control-label">选择资源</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                   placeholder="选择资源，排序顺序按数字从小到大的顺序升序排列" disabled/>
+
+                                            <input type="hidden" id="bootResourceArr" class="form-control"
+                                                   name="bootResourceArr">
+
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-primary"
+                                                   href="${base}/platform/scene/basic/selectBootResource"
+                                                   data-toggle="modal"
+                                                   data-target="#bootSelect"><i class="ti-plus"></i>选择资源</a>
+                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--   显示开机信息   -->
+                                <div id="showResource_boot">
+                                    <% for(s in resourceList){
+                                    if(s.eventType == 'boot'){ %>
+                                    <div class="css1" style="margin:15px;" id="boot_${s.resourceId}">
+                                        <a class="css_a" title="移除" href="javascript:"
+                                           onclick=removeBootModel("${s.resourceId}")>X</a>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control"
+                                                       value="${s.resourceName}(${s.resourceType})" readonly>
+                                                <input type="hidden" name="resourceId" value="${s.resourceId}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" class="form-control" name="index"
+                                                       placeholder="显示顺序" value="${s.index}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="playTime" class="form-control"
+                                                       placeholder="单个图片持续时间(秒)" value="${s.playTime}">
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                是否向下授权<input type="checkbox" name="isAuthorize" <%if(s.isAuthorize){%>
+                                                checked <%}%>>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control" value="${s.languageName}"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                禁止强制跳过<input type="checkbox" name="skip" <%if(s.skip){%> checked <%}%>>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="skipTime" class="form-control"
+                                                       placeholder="跳过时间(秒)" value="${s.skipTime}">
+                                            </div>
+                                            <% if(s.resource!=''){ %>
+                                            <div class="col-sm-3"><a title="预览"
+                                                                     href="${base}/mechanism/file/imageView/${s.resource}"
+                                                                     target="_blank"><img
+                                                    style="width:40px;height:40px;"
+                                                    src="${base}/mechanism/file/imageView/${s.resource}"></a></div>
+                                            <% } %>
+
+                                            <% if(s.video){ %>
+                                            <div class="col-sm-3">设为物理开机资源 <input type="checkbox"
+                                                                                  id="isPhysicalBootResource_${s.id}"
+                                                                                  name="isPhysicalBootResource"
+                                                                                  onclick="otherEmpty('${s.id}')"
+                                                <%if(s.isPhysicalBootResource){%> checked <%}%>>
+                                            </div>
+                                            <% } %>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                是否轮播 <input type="checkbox" name="carousel" <%if(s.carousel){%> checked
+                                                <%}%>>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } } %>
+                                </div>
+
+                            </div>
+                            <div style="padding-left: 20px;" class="tab-pane fade in " id="screenSaver">
+                                <div class="form-group">
+                                    <label for="screenSaverMinute" class="col-sm-2 control-label">屏保时间</label>
+
+                                    <div class="col-sm-8">
+                                        <input id="screenSaverMinute" class="form-control" name="screenSaverMinute"
+                                               type="number"
+                                               value="${obj.screenSaverMinute!}"
+                                               data-parsley-type="integer"
+                                               placeholder="请输入屏保时间，单位为分钟；若不设置此项或设置此项为0，则无屏保事件">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="screenSaverResourceArr" class="col-sm-2 control-label">选择资源</label>
+                                    <div class="col-sm-8">
+
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                   placeholder="选择资源，排序顺序按数字从小到大的顺序升序排列" disabled/>
+
+                                            <input type="hidden" id="screenSaverResourceArr" class="form-control"
+                                                   name="screenSaverResourceArr">
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-primary"
+                                                   href="${base}/platform/scene/basic/selectScreenSaverResource"
+                                                   data-toggle="modal"
+                                                   data-target="#ScreenSaverSelect"><i class="ti-plus"></i>选择资源</a>
+                                             </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--   显示屏保信息   -->
+                                <div id="showResource_screenSaver">
+                                    <% for(s in resourceList){
+                                    if(s.eventType == 'screenSaver'){ %>
+                                    <div class="css1" style="margin:15px;" id="screenSaver_${s.resourceId}">
+                                        <a class="css_a" title="移除" href="javascript:"
+                                           onclick=removeScreenSaverModel("${s.resourceId}")>X</a>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control"
+                                                       value="${s.resourceName}(${s.resourceType})" readonly>
+                                                <input type="hidden" name="resourceId" value="${s.resourceId}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" class="form-control" name="index"
+                                                       placeholder="显示顺序" value="${s.index}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="playTime" class="form-control"
+                                                       placeholder="单个图片持续时间(秒)" value="${s.playTime}">
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                是否向下授权<input type="checkbox" name="isAuthorize" <%if(s.isAuthorize){%>
+                                                checked <%}%>>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control" value="${s.languageName}"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                禁止强制跳过<input type="checkbox" name="skip" <%if(s.skip){%> checked <%}%>>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="skipTime" class="form-control"
+                                                       placeholder="跳过时间(秒)" value="${s.skipTime}">
+                                            </div>
+                                            <% if(s.resource!=''){ %>
+                                            <div class="col-sm-3"><a title="预览"
+                                                                     href="${base}/mechanism/file/imageView/${s.resource}"
+                                                                     target="_blank"><img
+                                                    style="width:40px;height:40px;"
+                                                    src="${base}/mechanism/file/imageView/${s.resource}"></a></div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <% } } %>
+
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade in" id="dormancy">
+                                <div class="form-group">
+                                    <label for="dormancyMinute" class="col-sm-2 control-label">休眠时间</label>
+
+                                    <div class="col-sm-8">
+                                        <input id="dormancyMinute" class="form-control" name="dormancyMinute"
+                                               type="number"
+                                               data-parsley-type="integer"
+                                               placeholder="请输入休眠时间，单位为分钟；若不设置此项或设置此项为0，则无休眠事件"
+                                               value="${obj.dormancyMinute!}">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade in" id="backgroundMusic">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">选择背景音乐</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                   placeholder="请选择音乐资源" disabled/>
+
+                                            <input type="hidden" id="musicResourceArr" class="form-control"
+                                                   name="musicResourceArr">
+
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-primary"
+                                                   href="${base}/platform/scene/basic/selectMusicResource"
+
+                                                   data-toggle="modal"
+                                                   data-target="#musicSelect"><i class="ti-plus"></i>选择音乐</a>
+                                             </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!--   显示背景音乐   -->
+                                <div id="showResource_music">
+                                    <% for(s in resourceList){
+                                    if(s.eventType == 'backgroundMusic'){ %>
+                                    <div class="css1" style="margin:15px;" id="music_${s.resourceId}">
+                                        <a class="css_a" title="移除" href="javascript:"
+                                           onclick=removeMusicModel("${s.resourceId}")>X</a>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control"
+                                                       value="${s.resourceName}(${s.resourceType})" readonly>
+                                                <input type="hidden" name="resourceId" value="${s.resourceId}">
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                <input type="text" class="form-control" value="${s.languageName}"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-sm-2 ">
+                                                是否向下授权<input type="checkbox" name="isAuthorize" <%if(s.isAuthorize){%>
+                                                checked <%}%>>
+                                            </div>
+                                            <div class="col-sm-2 ">
+                                                是否在开机页播放<input type="checkbox" name="isBootPlay" <%if(s.isBootPlay){%>
+                                                checked <%}%>>
+                                            </div>
+                                            <div class="col-sm-2 ">
+                                                是否在launcher播放<input type="checkbox" name="isLauncherPlay"
+                                                <%if(s.isLauncherPlay){%>
+                                                checked <%}%>>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <% } } %>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade in" id="close">
+                                <div class="form-group">
+                                    <label for="shutdownResourceArr" class="col-sm-2 control-label">选择资源</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                   placeholder="选择资源，排序顺序按数字从小到大的顺序升序排列" disabled/>
+
+                                            <input type="hidden" id="shutdownResourceArr" class="form-control"
+                                                   name="shutdownResourceArr">
+
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-primary"
+                                                   href="${base}/platform/scene/basic/selectShutdownResource"
+
+                                                   data-toggle="modal"
+                                                   data-target="#shutdownSelect"><i class="ti-plus"></i>选择资源</a>
+                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--   显示关机信息   -->
+                                <div id="showResource_shutdown">
+                                    <% for(s in resourceList){
+                                    if(s.eventType == 'shutdown'){ %>
+                                    <div class="css1" style="margin:15px;" id="shutdown_${s.resourceId}">
+                                        <a class="css_a" title="移除" href="javascript:"
+                                           onclick=removeShutdownModel("${s.resourceId}")>X</a>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control"
+                                                       value="${s.resourceName}(${s.resourceType})" readonly>
+                                                <input type="hidden" name="resourceId" value="${s.resourceId}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" class="form-control" name="index"
+                                                       placeholder="显示顺序" value="${s.index}">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="playTime" class="form-control"
+                                                       placeholder="单个图片持续时间(秒)" value="${s.playTime}">
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                是否向下授权<input type="checkbox" name="isAuthorize" <%if(s.isAuthorize){%>
+                                                checked <%}%>>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control" value="${s.languageName}"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                禁止强制跳过<input type="checkbox" name="skip" <%if(s.skip){%> checked <%}%>>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="number" name="skipTime" class="form-control"
+                                                       placeholder="跳过时间(秒)" value="${s.skipTime}">
+                                            </div>
+                                            <% if(s.resource!=''){ %>
+                                            <div class="col-sm-3"><a title="预览"
+                                                                     href="${base}/mechanism/file/imageView/${s.resource}"
+                                                                     target="_blank"><img
+                                                    style="width:40px;height:40px;"
+                                                    src="${base}/mechanism/file/imageView/${s.resource}"></a></div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <% } } %>
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="tab-pane fade in" id="themePackage">
+                                <div class="form-group">
+                                    <label for="themePackageResourceArr" class="col-sm-2 control-label">选择主题包</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                   placeholder="选择资源，排序顺序按数字从小到大的顺序升序排列" disabled/>
+
+                                            <input type="hidden" id="themePackageResourceArr" class="form-control"
+                                                   name="themePackageResourceArr">
+
+                                            <span class="input-group-btn">
+                                            <a class="btn btn-primary"
+                                               href="${base}/platform/scene/basic/selectThemePackageResource"
+
+                                               data-toggle="modal"
+                                               data-target="#themePackageSelect"><i
+                                                    class="ti-plus"></i>选择主题包</a>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--   显示主题包   -->
+                                <div id="showResource_theme">
+                                    <% for(s in resourceList){
+                                    if(s.eventType == 'themePackage'){ %>
+                                    <div class="css1" style="margin:15px;" id="theme_${s.resourceId}">
+                                        <a class="css_a" title="移除" href="javascript:"
+                                           onclick=removeThemeModel("${s.resourceId}")>X</a>
+                                        <div class="form-group">
+                                            <div class="col-sm-3" style="padding-left:2%;">
+                                                <input type="text" class="form-control"
+                                                       value="${s.resourceName}(${s.resourceType})" readonly>
+                                                <input type="hidden" name="resourceId" value="${s.resourceId}">
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                <input type="text" class="form-control" value="${s.languageName}"
+                                                       readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <% } } %>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-center">
+                            <label></label>
+
+                            <div>
+                                <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley"
+                                        data-loading-text="正在提交...">提 交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<div id="dialogHomePageSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="musicSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="ScreenSaverSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="bootSelect" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="shutdownSelect" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="themePackageSelect" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="dialogSelect_reader" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="dialogSelect_editor" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content" style="width: 1000px;">
+
+        </div>
+    </div>
+</div>
+<div id="dialogSelect" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择分类</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTree" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="select()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .css1 {
+        border: 1px solid rgba(21, 172, 220, 0.32);
+        padding: 10px;
+        position: relative;
+    }
+
+    .css_a {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 99;
+        padding-right: 15px;
+        cursor: pointer;
+    }
+</style>
+<script language="JavaScript">
+    function initTreeView() {
+        $("#jsTree").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/sys/category/tree/${modelName}/" : "${base!}/platform/sys/category/tree/${modelName}/?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            select();
+        });
+    }
+
+    //选择父菜单
+    function select() {
+        var tree = $.jstree.reference("#jsTree");
+        var node = tree.get_selected(true);
+        if (node == '') {
+            $("#addForm #categoryId").val('');
+            $("#addForm input[name='categoryId']").val('');
+            $("#dialogSelect").modal("hide");
+            return;
+        }
+        $("#addForm #categoryId").val(node[0].text);
+        $("#addForm input[name='categoryId']").val(node[0].id);
+        $("#dialogSelect").modal("hide");
+    }
+
+    $(document).ready(function () {
+        initTreeView();
+        myForm.init();
+        $("#save").on("click", function () {
+            //多语言
+            var language = [];
+            $("#language input[name='language']:checked").each(function () {
+                var i = $(this).val();
+                language.push(i);
+            });
+            if (language == '') {
+                Toast.error("请选择语言");
+                return false;
+            }
+            $("#languageDic").val(language);
+
+            //开机事件
+            var bootResourceArr = [];
+            $("#showResource_boot").children("div").each(function () {
+                var bootResource = {};
+                $(this).find("input[name='resourceId']").each(function () {
+                    bootResource['resourceId'] = $(this).val();
+                });
+                $(this).find("input[name='index']").each(function () {
+                    bootResource['index'] = $(this).val();
+                });
+                $(this).find("input[name='playTime']").each(function () {
+                    bootResource['playTime'] = $(this).val();
+                });
+                $(this).find("input[name='skip']:checked").each(function () {
+                    bootResource['skip'] = $(this).val();
+                });
+                $(this).find("input[name='skipTime']").each(function () {
+                    bootResource['skipTime'] = $(this).val();
+                });
+                $(this).find("input[name='isAuthorize']:checked").each(function () {
+                    bootResource['isAuthorize'] = $(this).val();
+                });
+                $(this).find("input[name='isPhysicalBootResource']:checked").each(function () {
+                    bootResource['isPhysicalBootResource'] = $(this).val();
+                });
+                $(this).find("input[name='carousel']:checked").each(function () {
+                    bootResource['carousel'] = $(this).val();
+                });
+                bootResourceArr.push(bootResource);
+            });
+            $("#bootResourceArr").val(JSON.stringify(bootResourceArr));
+
+            //主题包事件
+            var themePackageResourceArr = [];
+            $("#showResource_theme").children("div").each(function () {
+                var themePackageResource = {};
+                $(this).find("input[name='resourceId']").each(function () {
+                    themePackageResource['resourceId'] = $(this).val();
+                });
+                themePackageResourceArr.push(themePackageResource);
+            });
+            $("#themePackageResourceArr").val(JSON.stringify(themePackageResourceArr));
+
+            //屏保事件
+            var screenSaverResourceArr = [];
+            $("#showResource_screenSaver").children("div").each(function () {
+                var screenSaverResource = {};
+                $(this).find("input[name='resourceId']").each(function () {
+                    screenSaverResource['resourceId'] = $(this).val();
+                });
+                $(this).find("input[name='index']").each(function () {
+                    screenSaverResource['index'] = $(this).val();
+                });
+                $(this).find("input[name='playTime']").each(function () {
+                    screenSaverResource['playTime'] = $(this).val();
+                });
+                $(this).find("input[name='skip']:checked").each(function () {
+                    screenSaverResource['skip'] = $(this).val();
+                });
+                $(this).find("input[name='skipTime']").each(function () {
+                    screenSaverResource['skipTime'] = $(this).val();
+                });
+                $(this).find("input[name='isAuthorize']:checked").each(function () {
+                    screenSaverResource['isAuthorize'] = $(this).val();
+                });
+                screenSaverResourceArr.push(screenSaverResource);
+            });
+            $("#screenSaverResourceArr").val(JSON.stringify(screenSaverResourceArr));
+
+            //关机事件
+            var shutdownResourceArr = [];
+            $("#showResource_shutdown").children("div").each(function () {
+                var shutdownResource = {};
+                $(this).find("input[name='resourceId']").each(function () {
+                    shutdownResource['resourceId'] = $(this).val();
+                });
+                $(this).find("input[name='index']").each(function () {
+                    shutdownResource['index'] = $(this).val();
+                });
+                $(this).find("input[name='playTime']").each(function () {
+                    shutdownResource['playTime'] = $(this).val();
+                });
+                $(this).find("input[name='skip']:checked").each(function () {
+                    shutdownResource['skip'] = $(this).val();
+                });
+                $(this).find("input[name='skipTime']").each(function () {
+                    shutdownResource['skipTime'] = $(this).val();
+                });
+                $(this).find("input[name='isAuthorize']:checked").each(function () {
+                    shutdownResource['isAuthorize'] = $(this).val();
+                });
+                shutdownResourceArr.push(shutdownResource);
+            });
+            $("#shutdownResourceArr").val(JSON.stringify(shutdownResourceArr));
+
+            //背景音乐
+            var musicResourceArr = [];
+            $("#showResource_music").children("div").each(function () {
+                var musicResource = {};
+                $(this).find("input[name='resourceId']").each(function () {
+                    musicResource['resourceId'] = $(this).val();
+                });
+                $(this).find("input[name='isAuthorize']:checked").each(function () {
+                    musicResource['isAuthorize'] = $(this).val();
+                });
+                $(this).find("input[name='isBootPlay']:checked").each(function () {
+                    musicResource['isBootPlay'] = $(this).val();
+                });
+                $(this).find("input[name='isLauncherPlay']:checked").each(function () {
+                    musicResource['isLauncherPlay'] = $(this).val();
+                });
+                musicResourceArr.push(musicResource);
+            });
+            $("#musicResourceArr").val(JSON.stringify(musicResourceArr));
+
+
+            $('#addForm').submit();
+        });
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+
+    function removeBootModel(divId) {
+        $("#boot_" + divId).remove();
+    }
+
+    function removeScreenSaverModel(divId) {
+        $("#screenSaver_" + divId).remove();
+    }
+
+    function removeShutdownModel(divId) {
+        $("#shutdown_" + divId).remove();
+    }
+
+    function removeMusicModel(divId) {
+        $("#music_" + divId).remove();
+    }
+
+    function removeThemeModel(divId) {
+        $("#theme_" + divId).remove();
+    }
+
+    function otherEmpty(id) {
+        var targetId = "isPhysicalBootResource_" + id;
+        $("input[name='isPhysicalBootResource']").each(function () {
+            if (targetId != this.id) {
+                $(this).attr("checked", false);
+            }
+        })
+    }
+</script>
+
+<%}%>

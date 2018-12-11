@@ -1,0 +1,427 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <!--<a class="checkEdit btn-primary" id="checkAll" href="#">全部选中</a>-->
+            <!--<a class="checkEdit btn-primary" id="piliang" href="#">批量设置</a>-->
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')">
+                <i class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input id="unitid" type="hidden">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>影片特性</th>
+                    <th>影片类型</th>
+                    <th>年份</th>
+                    <th>是否热搜</th>
+                    <th>价格</th>
+                    <th>评分</th>
+                    <th>地区</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="categoryId">电影名称</label><br/>
+                <input type="text" id="seriesName" name="seriesName" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="categoryId">分类</label><br/>
+                <% for(o in allCatalog){ %>
+                <input type="checkbox" name="categoryId" value="${o.id}"> ${o.categoryName}
+                <%}%>
+                <br/>
+                <input type="hidden" id="categoryId" onclick="this.value=''" class="form-control" placeholder=""
+                       autofocus>
+            </div>
+            <div class="form-group">
+                <label for="sreleaseYear">上映时间</label>
+                <input type="text" id="sreleaseYear" name="sreleaseYear" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="ereleaseYear"></label>
+                <input type="text" id="ereleaseYear" name="ereleaseYear" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="screateTime">更新时间</label>
+                <input type="text" id="screateTime" name="screateTime" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="ecreateTime"></label>
+                <input type="text" id="ecreateTime" name="ecreateTime" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="scharge">价格</label><br/>
+                <input type="text" id="scharge" name="scharge" onclick="this.value=''" class="form-control" placeholder=""
+                       autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="echarge"></label>
+                <input type="text" id="echarge" name="echarge" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="originalCountry">影片产地</label><br/>
+                <input type="text" id="originalCountry" name="originalCountry" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="originalCountry">电影类型</label><br/>
+                <input type="text" id="seriesKeyword" name="seriesKeyword" onclick="this.value=''" class="form-control"
+                       placeholder="" autofocus>
+            </div>
+
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+            <!--<button id="changeBtn" type="button" class="btn btn-default">转换</button>-->
+        </div>
+    </div>
+</div>
+<!-- 批量设置 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除标签</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        标签删除后无法恢复，确定删除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="levelId" value="1">
+<div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/search/media/data",
+                "type": "post",
+                "data": function (d) {
+                    $("#checkAll").text("全部选中");
+                    var obj = document.getElementsByName("categoryId");
+                    var check_val = [];
+                    for(k in obj){
+                        if(obj[k].checked)
+                            check_val.push(obj[k].value);
+                    }
+                    $('#categoryId').val(check_val);
+
+                    var obj3 = document.getElementsByName("publish");
+                    var check_val3 = [];
+                    for(k in obj3){
+                        if(obj3[k].checked){
+                            check_val3.push(obj3[k].value);
+                        }
+                    }
+                    $('#publish').val(check_val3);
+
+                    d.categoryId = $('#categoryId').val();
+                    d.seriesName = $('#seriesName').val();
+                    d.sreleaseYear = $('#sreleaseYear').val();
+                    d.ereleaseYear = $('#ereleaseYear').val();
+                    d.seriesName = $('#seriesName').val();
+                    d.screateTime = $('#screateTime').val();
+                    d.ecreateTime = $('#ecreateTime').val();
+                    d.cpName = $('#cpName').val();
+                    d.publish = $('#publish').val();
+                    d.scharge= $('#scharge').val();
+                    d.echarge= $('#echarge').val();
+                    d.score= $('#score').val();
+                    d.seriesKeyword= $('#seriesKeyword').val();
+                    d.originalCountry= $('#originalCountry').val();
+                }
+            },
+            "order": [[7,"desc"]],
+            "columns": [
+                {"data": "seriesName", "bSortable": true},
+                {"data": "funcIds", "bSortable": true},
+                {"data": "seriesKeyword", "bSortable": true},
+                {"data": "releaseYear", "bSortable": true},
+                {"data": "isHotWord", "bSortable": true},
+                {"data": "showCharge", "bSortable": true},
+                {"data": "score", "bSortable": true},
+                {"data": "originalCountry", "bSortable": true},
+                {"data": "updateDateStr", "bSortable": true}
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                    if(row.isHotWord =='1'){
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                               '<li><a href="${base}/platform/search/media/detail?id=' + row.id +
+                                '&seriesName='+$("#seriesName").val()+
+                                '&sreleaseYear='+$("#sreleaseYear").val()+
+                                '&ereleaseYear='+$("#ereleaseYear").val()+
+                                '&screateTime='+$("#screateTime").val()+
+                                '&ecreateTime='+$("#ecreateTime").val()+
+                                '&scharge='+$("#scharge").val()+
+                                '&echarge='+$("#echarge").val()+
+                                '&seriesKeyword='+$("#seriesKeyword").val()+
+                                '&originalCountry='+$("#originalCountry").val()+
+                                '&categoryId='+$("#categoryId").val()+
+                                '&publish='+$("#publish").val()+
+                               '">详情</a></li>' +
+
+                                '<li><a onclick=setHotWord("'+$("#levelId").val()+'","'+row.id+'",0) data-pjax style="cursor:pointer">取消热搜</a></li>'+
+                            '</ul></div>';
+
+                    }else{
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                            ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                           '<li><a href="${base}/platform/search/media/detail?id=' + row.id +
+                            '&seriesName='+$("#seriesName").val()+
+                            '&sreleaseYear='+$("#sreleaseYear").val()+
+                            '&ereleaseYear='+$("#ereleaseYear").val()+
+                            '&screateTime='+$("#screateTime").val()+
+                            '&ecreateTime='+$("#ecreateTime").val()+
+                            '&scharge='+$("#scharge").val()+
+                            '&echarge='+$("#echarge").val()+
+                            '&seriesKeyword='+$("#seriesKeyword").val()+
+                            '&originalCountry='+$("#originalCountry").val()+
+                            '&categoryId='+$("#categoryId").val()+
+                            '&publish='+$("#publish").val()+
+                           '">详情</a></li>' +
+
+                            '<li><a onclick=setHotWord("'+$("#levelId").val()+'","'+row.id+'",1) data-pjax style="cursor:pointer">设为热搜</a></li>'+
+                        '</ul></div>';
+                    }
+                    },
+                    "targets":9
+                },{
+                    "render": function (data, type, row) {
+                        if(data == "1"){
+                          return "<font color='red'>热搜</font>";
+                        }else{
+                            return "非热搜";
+                        }
+                    },
+                    "targets":4
+                }
+                ,{
+                    "render": function (data, type, row) {
+                     <%for(o in videoFuncs){ %>
+                        if(data !="" && data != null){
+                            data =data.replace("${o.id}","${o.funcName}")
+                        }
+                    <%}%>
+                    <%for(o in audioFuncs){ %>
+                        if(data !="" && data != null){
+                            data =data.replace("${o.id}","${o.funcName}")
+                        }
+                    <%}%>
+                        return  data;
+                    },
+                    "targets":1
+               }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+
+        //点击全选操作
+        $("#checkAll").on('click', function () {
+            $("tbody tr").toggleClass('selected');
+            if($("#checkAll").text() == "全部选中"){
+                $("tbody tr").addClass('selected');
+                $(this).text("取消选中");
+            }else{
+                $("tbody tr").removeClass('selected');
+                $(this).text("全部选中");
+            }
+        });
+
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload(function(){},false);
+        });
+        //时间插件
+        $("#sreleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sreleaseYear").datetimepicker("setEndDate",$("#ereleaseYear").val())
+        });
+        $("#ereleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ereleaseYear").datetimepicker("setStartDate",$("#sreleaseYear").val())
+        });
+
+        $("#screateTime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#screateTime").datetimepicker("setEndDate",$("#ecreateTime").val())
+        });
+        $("#ecreateTime").datetimepicker({
+           format: 'yyyy-mm-dd',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ecreateTime").datetimepicker("setStartDate",$("#screateTime").val())
+        });
+    }
+
+
+      function setHotWord(levelId,mediaId,isHotWord) {
+        $.post("${base}/platform/search/media/setHotWord", {"mediaId": mediaId,"levelId":levelId,"isHotWord":isHotWord}, function (data) {
+            if (data.code==0) {
+                Toast.success(data.msg);
+                setTimeout(function () {
+                    datatable.ajax.reload(null,false);
+                }, 10);
+            } else {
+                Toast.error(data.msg);
+            }
+
+        }, "json");
+    }
+ //第二次请求
+    function GetTags(id) {
+    var levelId = id;
+        $.ajax({
+            type: "post",
+            url: "${base}/platform/media/list/getTags",
+            datatype: "json",
+            data:{levelId:levelId},
+            success: function (data) {
+            var html ="";
+            for(var i=0;i<data.length;i++){
+                html += '<input type="checkbox" name="mediasTags" value="'+data[i].id+'_'+data[i].tagName+'">'+data[i].tagName
+            }
+            $("#setTags").html(html)
+           }
+        });
+        }
+    $(document).ready(function () {
+        initDatatable();
+        //以下赋值为了带条件返回
+// ----------------------------------------赋值开始----------------------------------------------------------------------------------
+
+        $("#sreleaseYear").val("${sreleaseYear!}");
+        $("#ereleaseYear").val("${ereleaseYear!}");
+        $("#ecreateTime").val("${ecreateTime!}");
+        $("#screateTime").val("${screateTime!}");
+        $("#scharge").val("${scharge!}");
+        $("#echarge").val("${echarge!}");
+        $("#seriesName").val("${seriesName!}");
+        $("#seriesKeyword").val("${seriesKeyword!}");
+        $("#originalCountry").val("${originalCountry!}");
+
+        var pubValue ="${publish!}".split(",")
+        if( "${publish!}" != ""&& pubValue.length>0){
+            for(var i=0;i<pubValue.length;i++){
+                $("input:checkbox[name='publish'][value="+pubValue[i]+"]").attr("checked",'true');
+            }
+        }
+
+        var categoryIdVal ="${categoryId!}".split(",")
+        if("${categoryId!}" != "" && categoryIdVal.length>0){
+             for(var i=0;i<categoryIdVal.length;i++){
+                $("input:checkbox[name='categoryId'][value="+categoryIdVal[i]+"]").attr("checked",'true');
+             }
+        }
+// ----------------------------------------赋值结束-----------------------------------------------------------------------------------
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#priceMulti").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+</script>
+</div>
+<style type="text/css">
+    input[type=checkbox].checkInput{ float: left; width: 18px; height: 18px; vertical-align: middle; margin: 17px 10px 17px 0px;}
+    .checkEdit{border-radius: 3px;vertical-align: top; float: left; text-align: center; height: 26px; line-height: 26px; padding: 0 12px; border: 1px solid #999;margin: 13px 0px;}
+</style>
+<%}%>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+
+    <sql-query name="updateDeviceUserProxy">
+        <![CDATA[
+            UPDATE t_tenant SET hasPrivate=:hasPrivate,ip=:ip,playPort=:playPort,proxyPort=:proxyPort,resourceProxyPort=:resourceProxyPort
+               WHERE delFlag=0 AND id=:id
+        ]]>
+    </sql-query>
+</dynamic-hibernate-statement>

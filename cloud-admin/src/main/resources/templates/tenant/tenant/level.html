@@ -1,0 +1,181 @@
+<%
+layout("/layouts/platform.html"){
+%>
+
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/tenant" id="goback" data-pjax><i
+                    class="ti-angle-left"></i> 返回</a>
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/tenant/selectLevel" data-toggle="modal"
+               data-target="#dialogUserSelect"><i class="ti-plus"></i>选择级别</a>
+            <button class="btn btn-danger navbar-btn" onclick="delCheck()"><i class="ti-close"></i>删除本商户与级别关系</button>
+
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" id="levelName"> ${level.levelName!}
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <input type="hidden" id="levelId" value="${level.id!}">
+        <input type="hidden" id="tenantId" value="${tenantId!}">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>媒资 code</th>
+                    <th>来源（网站）</th>
+                    <th>年份</th>
+                    <th>发布状态</th>
+                    <th>审核状态</th>
+                    <th>价格</th>
+                    <th>更新时间</th>
+            </table>
+        </div>
+    </div>
+</section>
+<div id="dialogUserSelect" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 700px;">
+        <div class="modal-content" style="width: 700px;">
+
+        </div>
+    </div>
+</div>
+<!-- 删除 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除关系</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        关系删除后无法恢复，确定删除吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+     datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/media/list/data",
+                "type": "post",
+                "data": function (d) {
+                    d.levelId = $('#levelId').val();
+                }
+            },
+            "order": [[7,"desc"]],
+            "columns": [
+                {"data": "seriesName", "bSortable": true},
+                {"data": "seriesCode", "bSortable": true},
+                {"data": "cpName", "bSortable": true},
+                {"data": "releaseYear", "bSortable": true},
+                {"data": "publish", "bSortable": true},
+                {"data": "status", "bSortable": true},
+                {"data": "charge", "bSortable": true},
+                {"data": "updateDateStr", "bSortable": true}
+            ],
+            "columnDefs": [
+               {
+                    "render": function (data, type, row) {
+                         if(data =='1'){
+                            return "审核通过";
+
+                        }else
+                         if(data =='2'){
+                            return "审核拒绝";
+                        }else
+                         if(data =='3'){
+                            return "待审核";
+                        }else
+                        {
+                          return "初始";
+                        }
+                    },
+                    "targets":5
+                },{
+                    "render": function (data, type, row) {
+                         if(data == true){
+                            return "已发布";
+
+                        }else{
+                            return "未发布";
+                        }
+                    },
+                    "targets":4
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+    }
+    function delCheck(){
+         var levelId=$("#levelId").val();
+         if(levelId=="0"){return false;}
+            var dialog = $("#dialogDeleteCheck");
+            dialog.modal("show");
+            dialog.find("#ok").unbind("click");
+            dialog.find("#ok").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+
+           $.post("${base}/platform/operate/tenant/pushLevel", {id:$("#tenantId").val(),levelId: 0 }, function (data) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    $("#levelId").val(0);
+                    $("#levelName").text("无");
+                    datatable.ajax.reload();
+                } else {
+                    Toast.error(data.msg);
+                }
+                 btn.button("reset");
+                 dialog.modal("hide");
+            }, "json");
+         });
+
+
+    }
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserSelect").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+
+
+</script>
+
+<%}%>

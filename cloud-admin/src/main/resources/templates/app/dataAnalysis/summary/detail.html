@@ -1,0 +1,116 @@
+<script language="JavaScript">
+    var kjl = Math.round("${obj.loginNum!}" / "${obj.roomNum!}" * 10000) / 100.00 + "%";
+    $("#kjl").html("开机率:"+(kjl=="NaN%"?0:kjl));
+    var kjdbl = Math.round("${obj.playDeviceNum!}" / "${obj.loginNum!}" * 10000) / 100.00 + "%";
+    $("#kjdbl").html("开机点播率:"+(kjdbl=="NaN%"?0:kjdbl));
+    var ffcgl = Math.round("${obj.paidNum!}" / "${obj.orderNum!}" * 10000) / 100.00 + "%";
+    $("#ffcgl").html("付费成功率:"+(ffcgl=="NaN%"?0:ffcgl));
+    var dbffl = Math.round("${obj.paidNum!}" / "${obj.playDeviceNum!}" * 10000) / 100.00 + "%";
+    $("#dbffl").html("点播付费率:"+(dbffl=="NaN%"?0:dbffl));
+    var kjffl = Math.round("${obj.paidNum!}" / "${obj.loginNum!}" * 10000) / 100.00 + "%";
+    $("#kjffl").html("开机付费率:"+(kjffl=="NaN%"?0:kjffl));
+    var ztffl = Math.round("${obj.paidNum!}" / "${obj.roomNum!}" * 10000) / 100.00 + "%";
+    $("#ztffl").html("整体付费率:"+(ztffl=="NaN%"?0:ztffl));
+    var zffje = ("${obj.sumPrice!}"===""?0:"${obj.sumPrice!}");
+    $("#zffje").html("总付费金额:"+zffje);
+    var arpu = Math.round(zffje/ "${obj.roomNum!}" * 100) / 100.00 ;
+    $("#arpu").html("ARPU值:"+(arpu=="NaN%"?0:arpu));
+    var kdj = Math.round(zffje/ "${obj.paidNum!}" * 100) / 100;
+    $("#kdj").html("客单价:"+(kdj=="NaN%"?0:kdj));
+</script>
+
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">${obj.tenantName!}</a>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>基本信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        商户名称：${obj.tenantName!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        房间数 ：${obj.roomNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        开机数 ：${obj.loginNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        设备数 ：${obj.deviceNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        点播设备数 ：${obj.playDeviceNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        点播总数 ：${obj.playNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        订单总数 ：${obj.orderNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        付款总数 ：${obj.paidNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        未付款总数  ：${obj.unpaidNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        已发货总数 ：${obj.shippedNum!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" title="">
+                        数据日期 ：${obj.createDay!}
+                    </a>
+
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>统计信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="kjl">
+                        开机率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="kjdbl">
+                        开机点播率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="ffcgl">
+                        付费成功率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="dbffl">
+                        点播付费率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="kjffl">
+                        开机付费率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="ztffl">
+                        整体付费率(%)：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="zffje">
+                        总付费金额：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="arpu">
+                        ARPU值：
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="" id="kdj">
+                        客单价：
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

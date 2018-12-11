@@ -1,0 +1,131 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/sys/update/strategy" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-primary no-b">
+            <div class="list-group">
+                <a href="javascript:;" class="list-group-item" >
+                    <b>基础信息：</b>
+                </a>
+
+                <a href="javascript:;" class="list-group-item" title="">
+                    策略名称：${obj.name!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    更新开始时间：${obj.startTime!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    更新结束时间：${obj.endTime!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    更新有效期开始日：${obj.effectiveStartDate!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    更新有效期结束日：${obj.effectiveEndDate!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    上一版本：${obj.lastVersion!}
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    更新方式：
+                    <% if(obj.upgradeWay=="1"){ %>
+                    强制
+                    <% } %>
+                    <% if(obj.upgradeWay=="2"){ %>
+                    可取消
+                    <% } %>
+                    <% if(obj.upgradeWay=="3"){ %>
+                    静默升级
+                    <% } %>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    存储状态：
+                    <% if(obj.fdStatus=="1"){ %>
+                    暂存
+                    <% } %>
+                    <% if(obj.fdStatus=="2"){ %>
+                    发布
+                    <% } %>
+                    <% if(obj.fdStatus=="3"){ %>
+                    废除
+                    <% } %>
+                </a>
+                <a href="javascript:;" class="list-group-item" title="">
+                    升级方式：
+                    <% if(obj.promotionWay=="1"){ %>
+                    升级
+                    <% } %>
+                    <% if(obj.promotionWay=="2"){ %>
+                    卸载
+                    <% } %>
+                </a>
+
+                <a href="javascript:;" class="list-group-item" title="">
+                    版本信息：
+                    <%if(!isEmpty(obj.launcherVersion)){%>${obj.launcherVersion.version}<%}%>
+                </a>
+            </div>
+
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#cityInfo" data-toggle="tab">
+                        省市信息
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#tenantInfo" data-toggle="tab">
+                        商户信息
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#brandInfo" data-toggle="tab">
+                        品牌信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="cityInfo">
+                    <div>
+                        <%if(!isEmpty(cityNamesList)){for(o in cityNamesList){%>
+                        <a href="javascript:;" class="list-group-item" title="省市信息">
+                            ${o.name}
+                        </a>
+                        <% }} %>
+                    </div>
+                </div>
+                <div class="tab-pane fade in " id="tenantInfo">
+                    <div>
+                        <%if(!isEmpty(groupList)){%>
+                        <% for(o in groupList) { %>
+                        <a href="javascript:;" class="list-group-item" title="商户信息">
+                            ${o.name!}
+                        </a>
+                        <% }} %>
+                    </div>
+                </div>
+                <div class="tab-pane fade in " id="brandInfo">
+                    <div>
+                        <%if(!isEmpty(specNamesList)){%>
+                        <% for(o in specNamesList) { %>
+                        <a href="javascript:;" class="list-group-item" title="品牌信息">
+                            ${o.name}
+                        </a>
+                        <% }} %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+
+</script>
+<%}%>

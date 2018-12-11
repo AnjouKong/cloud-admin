@@ -1,0 +1,212 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/cms/custom" id="goback" data-pjax><i
+                class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/cms/custom/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group has-feedback">
+                            <label for="channelId" class="col-sm-2 control-label">所属栏目</label>
+
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="channelId" type="text" class="form-control" placeholder="请选择栏目" disabled
+                                           value="<%if(!isEmpty(channel)){%>${channel.name}<%}%>"/>
+
+                                    <span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelect"><i class="ti-plus"></i>选择
+                                                    </button>
+			                             		</span>
+                                </div>
+                                <input type="hidden" name="channelId"
+                                       value="<%if(!isEmpty(channel)){%>${channel.id}<%}%>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="name" class="form-control" name="name"
+                                       data-parsley-required="true"
+                                       placeholder="名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="callbackUrl" class="col-sm-2 control-label">回调事件</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="callbackUrl" id="callbackUrl">
+                                    <option value="">请选择回调地址</option>
+                                    <% for(url in service){ %>
+                                    <option value="${url.id}">${url.serviceName} ${url.serviceUrl}</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">语言设置</label>
+                            <input type="hidden" name="languageDic" id="languageDic">
+                            <div class="col-sm-8" id="language">
+                                <% for(l in language){ %>
+                                <input type="checkbox" name="language" value="${l.code}">${l.name}
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">禁用</label>
+                            <div class="col-sm-8 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks" class="col-sm-2 control-label">描述</label>
+
+                            <div class="col-sm-8">
+                                <textarea id="remarks" name="remarks" class="form-control"
+                                          style="width:100%;height:150px;" placeholder="字数不能超过2000字"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-center">
+                            <label></label>
+
+                            <div>
+                                <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley"
+                                        data-loading-text="正在提交...">提 交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<div id="dialogSelect" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择栏目</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTree" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="select()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    function initTreeView() {
+        $("#jsTree").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base!}/platform/cms/channel/tree?type=custom" : "${base!}/platform/cms/channel/tree?type=custom&pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            select();
+        });
+    }
+    //选择父菜单
+    function select() {
+        var tree = $.jstree.reference("#jsTree");
+        var node = tree.get_selected(true);
+        $("#addForm #channelId").val(node[0].text);
+        $("#addForm input[name='channelId']").val(node[0].id);
+        $("#dialogSelect").modal("hide");
+    }
+    $(document).ready(function () {
+        initTreeView();
+        myForm.init();
+        $("#save").on("click", function () {
+            var language = [];
+            $("#language input[name='language']:checked").each(function () {
+                var i = $(this).val();
+                language.push(i);
+            });
+            if (language == '') {
+                language.push("zh-Hans");
+            }
+            $("#languageDic").val(language);
+             $('#addForm').submit();
+
+            /*var t = $('#addForm').serializeArray();
+            var data = {};
+            t.forEach(function (p1, p2, p3) {
+                data[p1.name] = p1.value;
+            });
+            console.log(data);*/
+/*
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '${base}/platform/cms/app/addDo',
+                data: data,
+                success: function (data, statusText, xhr, form) {
+                    if (data.code == 0) {
+                        Toast.success(data.msg);
+                        setTimeout(function () {
+                            $("#goback").trigger("click");
+                        }, 10);
+                        form.resetForm();
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    form.find("button:submit").button("reset");
+                },
+                error: function (err) {
+                },
+            })
+*/
+        });
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 10);
+                    form.resetForm();
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+
+<%}%>

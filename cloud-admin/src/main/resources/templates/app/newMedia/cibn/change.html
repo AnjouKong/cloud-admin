@@ -1,0 +1,151 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="unitAddForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="" method="post">
+                <input type="hidden" name="id" value="${obj.id!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="categoryId" class="col-sm-2 control-label">分类</label>
+                            <div class="col-sm-8" style="margin-top: 6px;">
+                            <% for(o in catalog){
+                            %>
+                                <input type="checkbox" name="categoryId" value="${o.id}" > ${o.categoryName}
+                            <%}%>
+                            </div>
+                            <input type="hidden" id="categoryId"  onclick="this.value=''" class="form-control" placeholder="" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="sreleaseYear" class="col-sm-2 control-label">上映时间</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="sreleaseYear" name="sreleaseYear" onclick="this.value=''" class="form-control" placeholder="">
+                            </div>
+                            <span class="line">~~~</span>
+                            <label for="ereleaseYear"></label>
+                            <div class="col-sm-3">
+                                <input type="text" id="ereleaseYear" name="ereleaseYear" onclick="this.value=''" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 80px;">
+                            <button id="searchBtn" type="button" class="btn btn-primary col-sm-offset-4 col-sm-1">查询</button>
+                            <button id="changeBtn" type="button" class="btn btn-primary col-sm-1" style="margin-left: 20px;">转换</button>
+                        </div>
+                        <div class="form-group">
+                            <div  class="col-sm-offset-4" id="noticeArea"> </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<!-- 确认操作 -->
+<div id="confirmModel" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">正在转换，请稍后！</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    $("#changeBtn").on('click', function () {
+          var obj = document.getElementsByName("categoryId");
+          var check_val = [];
+          for(k in obj){
+             if(obj[k].checked)
+             check_val.push(obj[k].value);
+          }
+         if(check_val.length == 0){
+             Toast.warning("请选择分类！");
+            return ;
+         }
+         var bool = window.confirm("确定要转换吗？");
+
+        if(bool){
+            //遮罩
+            var dialog = $("#confirmModel");
+            dialog.modal("show");
+//            $('#confirmModel').modal({backdrop: 'static', keyboard: false});
+
+            $('#categoryId').val(check_val);
+
+            $(this).ajaxSubmit({
+                type: 'post',
+                url: '${base}/platform/newCibn/list/change',
+                data: {
+                    'sreleaseYear': $('#sreleaseYear').val(),
+                    'ereleaseYear':  $('#ereleaseYear').val(),
+                    'categoryId' : $('#categoryId').val()
+                },
+                success: function(data) {
+                    dialog.modal("hide");
+                    Toast.success("转换成功");
+                }
+            });
+
+        }
+    });
+    $("#searchBtn").on('click', function () {
+
+        var obj = document.getElementsByName("categoryId");
+        var check_val = [];
+        for(k in obj){
+            if(obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        $('#categoryId').val(check_val);
+        if(check_val.length == 0){
+            Toast.warning("请选择分类！");
+            return ;
+        }
+
+        $(this).ajaxSubmit({
+            type: 'post',
+            url: '${base}/platform/newCibn/list/search',
+            data: {
+                'sreleaseYear': $('#sreleaseYear').val(),
+                'ereleaseYear':  $('#ereleaseYear').val(),
+                'categoryId' : $('#categoryId').val()
+            },
+            success: function(data) {
+                 $("#noticeArea").html("当前条件下共 "+data+" 条数据需要转换");
+            }
+        });
+
+    });
+    $(function () {
+        //时间插件
+        $("#sreleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sreleaseYear").datetimepicker("setEndDate",$("#ereleaseYear").val())
+        });
+        $("#ereleaseYear").datetimepicker({
+            format: 'yyyy',
+            startView: 'decade',
+            minView:'decade',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#ereleaseYear").datetimepicker("setStartDate",$("#sreleaseYear").val())
+        });
+    })
+
+</script>
+<style type="text/css">
+    input{vertical-align: text-bottom;}
+    .line{text-align: center;margin-top: 10px;  width: 20px; float: left;}
+</style>
+<%}%>

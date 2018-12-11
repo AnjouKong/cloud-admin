@@ -1,0 +1,1 @@
+cloud-admin/src/main/resources/static/modules/app/custom/scene.js

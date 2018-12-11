@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dynamic-hibernate-statement>
+    <sql-query name="findSecondMenus_new">
+        <![CDATA[
+            select st.tag_id as tagId,st.media_series_id as mediaSeriesId,s.seriesName as seriesName
+               ,s.charge as charge,s.score as score,s.releaseYear as releaseYear,s.originalCountry as originalCountry
+                from media_series_tag st left join media_series s on st.media_series_id=s.id
+                where  s.publish = 1  AND s.delFlag = '0'
+                ORDER BY st.location IS NULL,st.location ASC,s.releaseYear DESC,s.seriesName DESC,s.id DESC
+        ]]>
+    </sql-query>
+
+    <sql-query name="getSecondMenu_new">
+        <![CDATA[
+            select st.tag_id as tagId,st.media_series_id as mediaSeriesId,s.seriesName as seriesName
+               ,s.charge as charge,s.score as score,s.releaseYear as releaseYear,s.originalCountry as originalCountry
+                from media_series_tag st left join media_series s on st.media_series_id=s.id
+                where  s.publish = 1  AND s.delFlag = '0' and st.tag_id=:tagId
+                ORDER BY st.location IS NULL,st.location ASC,s.releaseYear DESC,s.seriesName DESC,s.id DESC
+        ]]>
+    </sql-query>
+    <sql-query name="getSecondSubjectMenu_new">
+        <![CDATA[
+            select st.tag_id as tagId,st.media_subject_id as mediaSubjectId,s.subjectName as subjectName
+                from app_media_subject_tag st left join app_media_subject s on st.media_subject_id=s.id
+                where s.delFlag = '0' and st.tag_id=:tagId
+                ORDER BY st.location IS NULL,st.location ASC
+        ]]>
+    </sql-query>
+    <sql-query name="seriesVoSearch_new">
+            <![CDATA[
+          SELECT
+              st.tag_id AS tagId,
+              st.media_series_id AS mediaSeriesId,
+              s.seriesName AS seriesName,
+              s.charge AS charge,
+              s.score AS score,
+              s.releaseYear AS releaseYear,
+              s.originalCountry AS originalCountry
+            FROM
+              media_series_tag st
+              LEFT JOIN media_series s
+                ON st.media_series_id = s.id
+            WHERE s.publish = 1
+              AND s.delFlag = '0'
+
+             <#if tagId??>
+                AND st.tag_id = :tagId
+             </#if>
+             <#if charge??>
+                and s.charge =:charge
+             </#if>
+              <#if score??>
+                and s.score=:score
+             </#if>
+              <#if releaseYear??>
+                and s.releaseYear=:releaseYear
+             </#if>
+
+        ]]>
+    </sql-query>
+
+    <sql-query name="updateAllLocation_new">
+        <![CDATA[
+            UPDATE media_series_tag mst LEFT JOIN media_tag mt ON mst.tag_id=mt.id SET location=0
+        ]]>
+    </sql-query>
+
+    <sql-query name="updateLocation_new" >
+        <![CDATA[
+            update media_series_tag set location=:location where media_series_id=:seriesId and tag_id=:tagId
+        ]]>
+    </sql-query>
+
+    <sql-query name="updateSubjectLocation_new" >
+        <![CDATA[
+            update app_media_subject_tag set location=:location where media_subject_id=:subjectId and tag_id=:tagId
+        ]]>
+    </sql-query>
+
+    <sql-query name="addMediaSeriesTag_new" >
+        <![CDATA[
+            insert into media_series_tag  (media_series_id,tag_id) values (:seriesId,:tagId )
+        ]]>
+    </sql-query>
+
+
+    <sql-query name="tagNowList_new">
+
+        <![CDATA[
+            select st.tag_id as tagId,st.media_series_id as mediaSeriesId,s.seriesName as seriesName,st.location as location
+                    from media_series_tag st left join media_series s on st.media_series_id=s.id
+                     WHERE  1=1
+                     <#if seriesId??>
+                    and media_series_id=:seriesId
+                </#if>
+                           order by st.location desc
+        ]]>
+    </sql-query>
+    <sql-query name="delTagSeries_new">
+        <![CDATA[
+            delete FROM media_series_tag  WHERE  media_series_id=:seriesId AND tag_id =:tagId
+        ]]>
+    </sql-query>
+
+    <sql-query name="insertData_new">
+        <![CDATA[
+            insert into media_series_tag (media_series_id,tag_id,location) values (:seriesId,:tagId,:location)
+
+        ]]>
+    </sql-query>
+    <sql-query name="findSeriesTagVo_new">
+        <![CDATA[
+            select st.tag_id as tagId,st.media_series_id as mediaSeriesId,s.seriesName as seriesName,st.location as location
+                    from media_series_tag st left join media_series s on st.media_series_id=s.id
+                     WHERE  1=1
+                     <#if seriesId??>
+                        and st.media_series_id=:seriesId
+                     </#if>
+                     <#if tagId??>
+                        and st.tag_id =:tagId
+                     </#if>
+            ]]>
+    </sql-query>
+    <sql-query name="findMediaTagInfo_new">
+        <![CDATA[
+            select id,tagName,publish,createBy,updateBy,createDate,updateDate,delFlag,remarks,type from media_tag where delFlag='0'
+             <#if tagName??>
+                and tagName like :tagName
+             </#if>
+              order by updateDate desc
+        ]]>
+    </sql-query>
+</dynamic-hibernate-statement>

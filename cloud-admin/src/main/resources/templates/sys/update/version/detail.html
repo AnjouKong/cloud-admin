@@ -1,0 +1,66 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">版本详情</a>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>基本信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="">
+                        版本名称：${obj.versionName!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="版本号">
+                        版本号：${obj.version!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="版本描述">
+                        版本描述：${obj.remarks!}
+                    </a>
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>策略信息：</b>
+                    </a>
+                    <%if(!isEmpty(obj.strategyList)){%>
+                    <% for(o in obj.strategyList){%>
+                    <a href="javascript:;" class="list-group-item" title="App信息">
+                        策略：
+                            ${o.name} &nbsp; &nbsp;
+                    </a>
+                    <% } %>
+                    <% } %>
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>App信息：</b>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="App信息">
+                        App名称：
+                        <%if(!isEmpty(attMain)){%>
+                            ${attMain.fdFileName}
+                        <% } %>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" title="App信息">
+                        下载地址：
+                        <%if(!isEmpty(attMain)){%>
+                            ${attMain.fdFilePath}
+                        <% } %>
+                    </a>
+                    <a href="javascript:;" class="list-group-item" >
+                        <b>依赖信息：</b>
+                    </a>
+                <%if(!isEmpty(dependList)){for(dep in dependList){%>
+                    <a href="javascript:;" class="list-group-item" title="版本依赖">
+                         依赖应用名称：${dep.dependLauncherName}
+                        <br/>
+                        依赖版本名称：${dep.dependVersionName}
+                    </a>
+                <% }} %>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

@@ -1,0 +1,293 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>商户名称</th>
+                    <th>房间号</th>
+                    <!--<th>收货人姓名</th>-->
+                    <!--<th>收货人电话</th>-->
+                    <th>订单标题</th>
+                    <th>订单编号</th>
+                    <th>订单创建时间</th>
+                    <th>订单通知时间</th>
+                    <th>订单状态</th>
+                    <th>支付状态</th>
+                    <th>订单价格</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="orderNo">商户名称</label>
+                <input type="text" id="tenantName" name="tenantName" onclick="this.value=''" class="form-control"
+                       placeholder="商户名称" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="orderNo">订单编号</label>
+                <input type="text" id="orderNo" name="orderNo" onclick="this.value=''" class="form-control"
+                       placeholder="订单编号" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="subject">商品名称</label>
+                <input type="text" id="subject" name="subject" onclick="this.value=''" class="form-control"
+                       placeholder="商品名称" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="payStatus">订单状态</label><br/>
+                <input type="checkbox" name="payStatus" value="Unpaid">未付款
+                <input type="checkbox" name="payStatus" value="Paid">已付款
+                <input type="checkbox" name="payStatus" value="Refund">已退款
+                <input type="checkbox" name="payStatus" value="Shipped">已发货
+
+                <input type="hidden" id="payStatus" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+
+<!-- 详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<!-- 退款申请 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">退款申请</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        <div class="row mb10">
+                            <div class="col-xs-12 form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">退款方式：</label>
+                                    <div class="col-xs-8" style=" padding-top: 7px;">
+                                        <input type="radio" name="refund" value="1" checked>全额退款 <br/>
+                                        <!-- <input type="radio" name="refund" value="0">自定义退款
+                                         <input type="text" id="money" name="" value="" data-parsley-required="true"
+                                                class="form-control" placeholder="请填写退款金额，不能大于支付款">-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在修改...">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching": false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/order/data",
+                "type": "post",
+                "data": function (d) {
+                    d.subject = $('#subject').val();
+                    d.orderNo = $('#orderNo').val();
+                    d.tenantName = $('#tenantName').val();
+
+                    var obj = document.getElementsByName("payStatus");
+                    var check_val = [];
+                    for(o in obj){
+                        if(obj[o].checked){
+                            check_val.push(obj[o].value);
+                        }
+                    }
+                    $('#payStatus').val(check_val);
+                    d.payStatus = $('#payStatus').val();
+
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "tenantName", "bSortable": true},
+                {"data": "roomId", "bSortable": true},
+                // {"data": "acceptName", "bSortable": true},
+                //{"data": "telPhone", "bSortable": true},
+                {"data": "subject", "bSortable": true},
+                {"data": "orderNo", "bSortable": true},
+                {"data": "createDateStr", "bSortable": true},
+                {"data": "notifyTime", "bSortable": true},
+                {"data": "status", "bSortable": true},
+                {"data": "payStatus", "bSortable": true},
+                {"data": "price", "bSortable": true}
+
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                            ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+                            '<li><a href="${base}/platform/operate/order/detail/' + row.id + '?orderNo=' + row.orderNo + '" data-pjax>详情</a></li>' +
+                            '<li><a href="${base}/platform/operate/order/goods?orderId=' + row.id + '" data-pjax>商品详情</a></li>' +
+                            '<li><a href="javascript:;" onclick="refund(\'' + row.id + '\',\'' + row.status + '\')">退款</a></li>' +
+                            '</ul></div>';
+                    },
+                    "targets": 9
+                }, {
+                    "render": function (data, type, row) {
+                        //订单状态 1生成订单,2支付订单,3取消订单(客户触发),4作废订单(管理员触发),5完成订单,6退款(订单完成后),7部分退款(订单完成后)
+                        if (data == "1") {
+                            return "生成订单";
+                        }
+                        if (data == "2") {
+                            return "支付订单";
+                        }
+                        if (data == "3") {
+                            return "取消订单";
+                        }
+                        if (data == "4") {
+                            return "作废订单";
+                        }
+                        if (data == "5") {
+                            return "完成订单";
+                        }
+                        if (data == "6") {
+                            return "退款";
+                        }
+                        if (data == "6") {
+                            return "部分退款";
+                        }
+                        else {
+                            return "";
+                        }
+                    },
+                    "targets": 6
+                }, {
+                    "render": function (data, type, row) {
+                        //支付状态 Unpaid：未付款、Paid：已付款、Shipped：已发货、3：确认收货、4：售后、error：付款异常（异常记录存储到remark）
+                        if (data == "Unpaid") {
+                            return "未付款";
+                        }
+                        if (data == "Paid") {
+                            return "已付款";
+                        }
+                        if (data == "Shipped") {
+                            return "已发货";
+                        }
+                        if (data == "3") {
+                            return "确认收货";
+                        }
+                        if (data == "4") {
+                            return "售后";
+                        }
+                        if (data == "error") {
+                            return "付款异常";
+                        }
+                        if (data == "Refund") {
+                            return "已退款";
+                        }
+                        else {
+                            return "";
+                        }
+                    },
+                    "targets": 7
+                }
+            ]
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+        <!--申请退款-->
+        <!--$("#refund").on('click', function () {-->
+        <!--$("#reason").val("");-->
+        <!--var dialog = $("#dialogUserRightDetail");-->
+        <!--dialog.modal("show");-->
+        <!--dialog.find("#ok").unbind("click");-->
+
+        <!--});-->
+    }
+    function refund(id, status) {
+        if (status != "2") {
+            Toast.warning("只能对支付订单进行退款操作！");
+            return false;
+        }
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#ok").unbind("click");
+        dialog.find("#ok").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/operate/order/refund/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    datatable.ajax.reload(null, false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<style type="text/css">
+    input {
+        vertical-align: text-bottom;
+    }
+</style>
+<%}%>

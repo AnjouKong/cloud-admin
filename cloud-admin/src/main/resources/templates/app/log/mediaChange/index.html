@@ -1,0 +1,120 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')"><i
+                    class="fa fa-sliders"></i> 筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>日志事件</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="sstartDate">开始时间</label>
+                <input type="text" id="sstartDate" name="sstartDate" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            ~~
+            <div class="form-group">
+                <label for="estartDate"></label>
+                <input type="text" id="estartDate" name="estartDate" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/operate/log/data",
+                "type": "post",
+                "data": function (d) {
+                    d.estartDate = $('#estartDate').val();
+                    d.sstartDate = $('#sstartDate').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "remarks", "bSortable": true},
+                {"data": "startDateStr", "bSortable": true},
+                {"data": "endDateStr", "bSortable": true}
+
+            ]
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+        //时间插件
+        $("#sstartDate").datetimepicker({
+            format: 'yyyy-mm-dd 00:00:00',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#sstartDate").datetimepicker("setEndDate",$("#sstartDate").val())
+        });
+        $("#estartDate").datetimepicker({
+            format: 'yyyy-mm-dd 23:59:59',
+            startView: 'decade',
+            minView:'month',
+            maxView:'decade',
+            language: 'zh-CN',
+            autoclose:true
+        }).on("click",function(){
+            $("#estartDate").datetimepicker("setStartDate",$("#estartDate").val())
+        });
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+    });
+
+</script>
+<%}%>

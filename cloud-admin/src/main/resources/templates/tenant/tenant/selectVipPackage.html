@@ -1,0 +1,79 @@
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="pull-right offscreen-right btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" onclick="_selectOn()">确定</a>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border" >
+            <table class="table table-bordered table-striped mg-t " id="levelDatatable" >
+                <thead>
+                <tr aria-multiline="false" >
+                    <th>套餐包</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+<script language="JavaScript">
+    var datatable_select;
+    function initdatatable_select() {
+       datatable_select = $('#levelDatatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/vip/package/data",
+                "type": "post",
+                "data": function (d) {
+
+                }
+            },
+            "order": [[0, ""]],
+            "columns": [
+                {"data": "packageName", "bSortable": false}
+            ]
+        });
+        datatable_select.on('click', 'tr', function () {
+        $("tbody tr").removeClass('selected');
+            $(this).toggleClass('selected');
+        });
+
+    }
+
+    function _selectOn() {
+        var chks = datatable_select.rows('.selected').data();
+
+        var confir = window.confirm("确定绑定此套餐包吗？")
+        if (chks.length != 0 && confir==true ) {
+
+            $.post("${base}/platform/vip/packageTenant/tenantToPackage", {tenantId:"${tenantId}",packageId: chks[0].id,packageName: chks[0].packageName}, function (data) {
+                if (data.code == 0) {
+                    console.log(data)
+                } else {
+                    Toast.error(data.msg);
+                }
+                $('#dialogUserDetail').modal('hide');
+            }, "json");
+        }else{
+            Toast.warning("请选择一个套餐！");
+        }
+    }
+    $(document).ready(function () {
+        initdatatable_select();
+    });
+
+</script>

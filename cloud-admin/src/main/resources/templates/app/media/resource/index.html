@@ -1,0 +1,126 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <div class="btn-group tool-button">
+            <a class="btn btn-primary navbar-btn" href="${base}/platform/media/list?levelId=${obj.levelId!}" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+        </div>
+        <div class="pull-right offscreen-right">
+            <button class="btn btn-primary navbar-btn" onclick="sublime.toggleFilter('.cd-panel')">
+                <i class="fa fa-sliders"></i> 高级筛选
+            </button>
+        </div>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <input id="unitid" type="hidden">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>媒资库标识</th>
+                    <th>节目分集数</th>
+                    <th>媒资库海报</th>
+            </table>
+        </div>
+    </div>
+</section>
+<div class="cd-panel from-right">
+    <header class="cd-panel-header">
+        <h4>高级筛选</h4>
+    </header>
+    <div class="cd-panel-container">
+        <div class="cd-panel-content shadow">
+            <div class="form-group">
+                <label for="programCode">媒资库标识</label>
+                <input type="text" id="programCode" name="programCode" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="programVolumnCount">节目分集数</label>
+                <input type="text" id="programVolumnCount" name="programVolumnCount" onclick="this.value=''" class="form-control" placeholder="" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="seriesID"></label>
+                <input type="hidden" id="seriesID" name="seriesID" value="${seriesID}"  class="form-control" placeholder="" autofocus>
+            </div>
+            <button id="searchBtn" type="button" class="btn btn-default">查询</button>
+        </div>
+    </div>
+</div>
+<!-- 用户详情 -->
+<div id="dialogUserDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<div id="dialogUserRightDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/static/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/media/resource/data",
+                "type": "post",
+                "data": function (d) {
+                    d.programCode = $('#programCode').val();
+                    d.programVolumnCount = $('#programVolumnCount').val();
+                    d.seriesID = $('#seriesID').val();
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                {"data": "programCode", "bSortable": true},
+                {"data": "programVolumnCount", "bSortable": true},
+                {"data": "programPictureUrl", "bSortable": true}
+            ]
+
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+    $(document).ready(function () {
+     var url ="${base}/platform/media/list?&levelId=${levelId!}&seriesName=${seriesName!}&sreleaseYear=${sreleaseYear!}&ereleaseYear=${ereleaseYear!}&screateTime=${screateTime!}"
+                            +"&ecreateTime=${ecreateTime!} &scharge=${scharge!}&echarge=${echarge!}&seriesKeyword=${seriesKeyword!}&originalCountry=${originalCountry!}"
+                            +"&categoryId=${categoryId!}&publish=${publish!}&status=${status!}";
+        $("#goback").attr("href",url)
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+        $("#dialogPaasword").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

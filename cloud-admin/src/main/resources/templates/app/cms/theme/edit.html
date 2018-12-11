@@ -1,0 +1,146 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/cms/theme" data-pjax id="goback"><i
+                class="ti-angle-left"></i> 返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/cms/theme/editDo" method="post">
+                <input id="id" name="id" type="hidden" value="${obj.id!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">名称</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="name" class="form-control" name="name"
+                                       data-parsley-required="true"
+                                       placeholder="名称" value="${obj.name!}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="version" class="col-sm-2 control-label">版本号</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="version" class="form-control" name="version"
+                                       data-parsley-required="true"
+                                       placeholder="版本号" value="${obj.version!}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="flag" class="col-sm-2 control-label">标识</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="flag" class="form-control" name="flag"
+                                       data-parsley-required="true"
+                                       placeholder="标识" value="${obj.flag!}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="callbackUrl" class="col-sm-2 control-label">回调事件</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="callbackUrl" id="callbackUrl">
+                                    <option value="">请选择回调地址</option>
+                                    <% for(url in service){ %>
+                                    <option value="${url.id}"
+                                    <%if(obj.callbackUrl==url.id){ %> selected <%}%> >${url.serviceName}
+                                    ${url.serviceUrl} </option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">语言设置</label>
+                            <input type="hidden" name="languageDic" id="languageDic">
+                            <div class="col-sm-8" id="language">
+                                <% for(dic in language){ %>
+                                <input type="checkbox" name="language" value="${dic.code}"
+                                <% for(l in resourceLanguage){
+                                if(l.language==dic.code){ %>
+                                checked
+                                <% } } %>
+                                > ${dic.name}
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">禁用</label>
+                            <div class="col-sm-8 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled"
+                                    <%if(obj.disabled){%>checked<%}%> class="js-switch-blue" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks" class="col-sm-2 control-label">描述</label>
+
+                            <div class="col-sm-8">
+                                <textarea id="remarks" name="remarks" class="form-control"
+                                          style="width:100%;height:150px;"
+                                          placeholder="字数不能超过2000字">${obj.remarks!}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-center">
+                            <label></label>
+
+                            <div>
+                                <button id="save" TYPE="button" class="btn btn-primary btn-block btn-lg btn-parsley"
+                                        data-loading-text="正在提交...">提 交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+    $(document).ready(function () {
+        myForm.init();
+        $("#save").on("click", function () {
+            var language = [];
+            $("#language input[name='language']:checked").each(function () {
+                var i = $(this).val();
+                language.push(i);
+            });
+            if (language == '') {
+                language.push("zh-Hans");
+            }
+            $("#languageDic").val(language);
+            $('#addForm').submit();
+        });
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+
+<%}%>
