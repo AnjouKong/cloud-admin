@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 租户基本描述
@@ -94,8 +95,17 @@ public class Tenancy extends TenantBaseModel implements Serializable {
     private Integer deviceNum;
     @Column(columnDefinition = "TINYINT", length = 1)
     private Boolean isImplement;
+    //试看时长
+    @Column
+    private Integer trialTime;
+    //提示语
+    @Column(columnDefinition = "text")
+    private String markedWords;
+    @Column
+    private String domain;
     @Transient
     private String[] languageDic;
+
 
     @Transient
     public String getCreateDateStr() {

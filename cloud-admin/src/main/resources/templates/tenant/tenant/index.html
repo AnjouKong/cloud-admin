@@ -28,6 +28,7 @@ layout("/layouts/platform.html"){
                     <th>实施状态</th>
                     <th>终端限制</th>
                     <th>代理地址</th>
+                    <th>试看时长</th>
                     <th>操作</th>
             </table>
         </div>
@@ -207,7 +208,8 @@ layout("/layouts/platform.html"){
                         {"data": "status", "bSortable": true},
                         {"data": "isImplement", "bSortable": true},
                         {"data": "deviceNum", "bSortable": true},
-                        {"data": "ip", "bSortable": false}
+                        {"data": "ip", "bSortable": false},
+                        {"data": "trialTime", "bSortable": false}
                     ],
                     "columnDefs": [
                         {
@@ -245,7 +247,7 @@ layout("/layouts/platform.html"){
                                     '<li class="divider"></li>' +
                                     '</ul></div>';
                             },
-                            "targets": 8
+                            "targets": 9
                         },
                         {
                             "render": function (data, type, row) {

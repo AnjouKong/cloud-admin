@@ -21,7 +21,7 @@
     //事件类型下拉列表
     function selectNum(){
         $(".selectNum").on("click","select",function(){
-            $("#packageNameGeneral,#actionGeneral,#packageNameSpecial,#actionSpecial,#sourceSpecial,#channelSpecial,#packageName,#action,#mediaName_search").val("");
+            $("#packageNameGeneral,#actionGeneral,#packageNameSpecial,#actionSpecial,#sourceSpecial,#channelSpecial,#packageName,#action").val("");
             $(".selectTab").show();
             $(".selectTab > div").hide();
             var dataTo = $(".selectNum").find("option:selected").attr("data-to");
@@ -668,7 +668,7 @@
             panelType(type);
             $(".speciesBox.addSpeciesTo").append(dragBox);
             $(".speciesBox.addSpeciesTo").find(".dragBox").addClass("childBox");
-            $(".speciesBox.addSpeciesTo").find(".dragBox").css({"width":"150px","height":"170px"});
+            $(".speciesBox.addSpeciesTo").find(".dragBox").last().css({"width":"150px","height":"170px"});
         }else{
             panelType(type);
             $(".drag").append(dragBox);
@@ -1108,7 +1108,13 @@
                     return;
                 };
             }
-
+            // 内容展示容器
+            if($("div[data-id='boxId']").attr("type")== "ShowUI"){
+                if($(".selectNum").find(".selClick").length < 1 || $(".selectNum").find(".selClick").css("display") == "none"){
+                    Toast.error("请选择一条点击事件");
+                    return;
+                };
+            }
             // 静态
             if($("#staticBackgroundPicForm .imgUpload").length){
                 backgImage = $("#staticBackgroundPicForm .imgUpload").text().split("已上传：")[1];
@@ -1614,6 +1620,7 @@
                     "height": pendantList.eq(p).height(),         //高
                     "parentLeft": pendantList.eq(p).position().left,     //相对父窗口位置
                     "parentTop": pendantList.eq(p).position().top,       //相对父窗口位置
+                    // 特定商户挂件字体颜色为空（宜必思尚品）
                     "fontColor": $("#sceneBasicInfoId").val() == "152D6TD1tH980NW6MbE" || $("#sceneBasicInfoId").val() == "S6bs2zXmaLQopyi4GSi" ? "" : pendantList.eq(p).css("color"),  //文字颜色
                     "fontSize": pendantList.eq(p).css("font-size"),   //字体大小
                     "icon": pendantList.eq(p).attr("iconStatic"),   //图标图片

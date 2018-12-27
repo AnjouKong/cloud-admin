@@ -36,7 +36,6 @@ public class HashCodeUtils {
         if (StringUtils.isNotBlank(idValue)) {
             hashCode += idValue.hashCode();
         }
-
         return hashCode;
     }
 

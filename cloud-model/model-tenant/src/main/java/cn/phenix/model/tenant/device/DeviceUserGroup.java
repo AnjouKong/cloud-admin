@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 设备组
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name="T_TENANT_DEVICE_USER_GROUP")
+@Table(name = "T_TENANT_DEVICE_USER_GROUP")
 public class DeviceUserGroup extends TenantBaseModel implements Serializable {
 
     private static final long serialVersionUID = 3362158825658433723L;
@@ -31,6 +32,8 @@ public class DeviceUserGroup extends TenantBaseModel implements Serializable {
      */
     @Column
     private String sceneId;
+
+    private BigDecimal priceRate= BigDecimal.valueOf(1);
 
     @Transient
     private String tenantName;

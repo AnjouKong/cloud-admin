@@ -176,6 +176,8 @@ public class TenancyController extends BaseController {
             areaName = area.getName();
         }
         tenancy.setAreaName(areaName);
+        String markedWords = tenancy.getMarkedWords();
+        tenancy.setMarkedWords(markedWords.replace("&lt;", "<").replace("&gt;", ">"));
         tenantService.save(tenancy);
         tenancyInfoService.save(tenancyInfo);
         //商户组织初始化，为了商户端组织使用
@@ -294,14 +296,15 @@ public class TenancyController extends BaseController {
         }
         String areaName;
         SysArea area = sysAreaService.get(tenancy.getAreaId());
+
         if ("4".equalsIgnoreCase(area.getType())) {
             areaName = area.getParent().getParent().getName() + area.getParent().getName() + area.getName();
-        } else if ("3".equalsIgnoreCase(area.getType())) {
-            areaName = area.getParent().getName() + area.getName();
         } else {
             areaName = area.getName();
         }
         tenancy.setAreaName(areaName);
+        String markedWords = tenancy.getMarkedWords();
+        tenancy.setMarkedWords(markedWords.replace("&lt;", "<").replace("&gt;", ">"));
         tenantService.save(tenancy);
         //扩展表信息
         tenancyInfo.setTenantId(tenancy.getId());

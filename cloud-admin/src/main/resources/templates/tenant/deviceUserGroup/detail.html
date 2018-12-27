@@ -42,6 +42,7 @@ layout("/layouts/platform.html"){
                                             <th>房间号</th>
                                             <th>服务IP</th>
                                             <th>省份</th>
+                                            <th>价格比率</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
@@ -114,7 +115,8 @@ layout("/layouts/platform.html"){
                 {"data": "versionId", "bSortable": false},
                 {"data": "roomId", "bSortable": false},
                 {"data": "serverIp", "bSortable": false},
-                {"data": "province", "bSortable": false}
+                {"data": "province", "bSortable": false},
+                {"data": "priceRate", "bSortable": false}
             ],
             "columnDefs": [
                 {
@@ -127,7 +129,7 @@ layout("/layouts/platform.html"){
                                 '</ul></div>';
 
                     },
-                    "targets": 8
+                    "targets": 9
                 }
             ]
         });

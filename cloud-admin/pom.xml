@@ -159,7 +159,7 @@
 
 
     <build>
-        <finalName>${artifactId}-${profileActive}-1.0.7</finalName>
+        <finalName>${artifactId}-${profileActive}-1.0.8</finalName>
         <sourceDirectory>src/main/source</sourceDirectory>
         <plugins>
             <plugin>

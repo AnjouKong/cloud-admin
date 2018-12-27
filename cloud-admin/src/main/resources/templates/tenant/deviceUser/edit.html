@@ -3,7 +3,8 @@ layout("/layouts/platform.html"){
 %>
 <header class="header navbar bg-white shadow">
     <div class="btn-group tool-button">
-        <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/deviceuser" data-pjax id="goback"><i class="ti-angle-left"></i> 返回</a>
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/operate/deviceuser" data-pjax id="goback"><i
+                class="ti-angle-left"></i> 返回</a>
     </div>
 </header>
 
@@ -24,7 +25,8 @@ layout("/layouts/platform.html"){
                             <label for="deviceSystem" class="col-sm-2 control-label">设备名</label>
 
                             <div class="col-sm-8">
-                                <input type="text" id="deviceSystem" value="${obj.deviceSystem!}" class="form-control" name="deviceSystem" data-parsley-required="true" placeholder="设备名">
+                                <input type="text" id="deviceSystem" value="${obj.deviceSystem!}" class="form-control"
+                                       name="deviceSystem" data-parsley-required="true" placeholder="设备名">
                             </div>
                         </div>
 
@@ -32,22 +34,24 @@ layout("/layouts/platform.html"){
                             <label for="deviceId" class="col-sm-2 control-label">设备ID</label>
 
                             <div class="col-sm-8">
-                                <input type="text" id="deviceId" value="${obj.deviceId!}" class="form-control" name="deviceId" data-parsley-required="true" placeholder="设备ID">
+                                <input type="text" id="deviceId" value="${obj.deviceId!}" class="form-control"
+                                       name="deviceId" data-parsley-required="true" placeholder="设备ID">
                             </div>
                         </div>
-                       <!-- <div class="form-group">
-                            <label for="deviceGroupCode" class="col-sm-2 control-label">设备组</label>
+                        <!-- <div class="form-group">
+                             <label for="deviceGroupCode" class="col-sm-2 control-label">设备组</label>
 
-                            <div class="col-sm-8">
-                                <input type="text" id="deviceGroupCode" value="${obj.deviceGroupCode!}" class="form-control" name="deviceGroupCode"  placeholder="设备组">
-                            </div>
-                        </div>
-                        -->
+                             <div class="col-sm-8">
+                                 <input type="text" id="deviceGroupCode" value="${obj.deviceGroupCode!}" class="form-control" name="deviceGroupCode"  placeholder="设备组">
+                             </div>
+                         </div>
+                         -->
                         <div class="form-group">
                             <label for="deviceGroupCode" class="col-sm-2 control-label">设备组</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input id="showDeviceGroupCode" type="text" value="${obj.groupName!}" class="form-control" placeholder="选择设备组" disabled />
+                                    <input id="showDeviceGroupCode" type="text" value="${obj.groupName!}"
+                                           class="form-control" placeholder="选择设备组" disabled/>
                                     <span class="input-group-btn">
                                           <a class="btn btn-primary"
                                              href="${base}/platform/operate/deviceuser/selectDeviceGroup?tenantId=${obj.tenantId!}"
@@ -55,7 +59,8 @@ layout("/layouts/platform.html"){
                                              data-target="#dialogSelectParentUnit"><i class="ti-plus"></i>选择</a>
                                     </span>
                                 </div>
-                                <input type="hidden" name="deviceGroupCode"  id="deviceGroupCode" value="${obj.deviceGroupCode!}">
+                                <input type="hidden" name="deviceGroupCode" id="deviceGroupCode"
+                                       value="${obj.deviceGroupCode!}">
                             </div>
                         </div>
                         <!--<div class="form-group">
@@ -70,50 +75,58 @@ layout("/layouts/platform.html"){
                                 <input type="text" id="deviceModel" value="${obj.deviceModel!}" class="form-control" name="deviceModel"  placeholder="设备型号">
                             </div>
                         </div>-->
-                        <input type="hidden" id="deviceManufacturer" value="${obj.deviceManufacturer!}" class="form-control" name="deviceManufacturer"  placeholder="设备厂商">
-                        <input type="hidden" id="deviceModel" value="${obj.deviceModel!}" class="form-control" name="deviceModel"  placeholder="设备型号">
+                        <input type="hidden" id="deviceManufacturer" value="${obj.deviceManufacturer!}"
+                               class="form-control" name="deviceManufacturer" placeholder="设备厂商">
+                        <input type="hidden" id="deviceModel" value="${obj.deviceModel!}" class="form-control"
+                               name="deviceModel" placeholder="设备型号">
 
                         <div class="form-group">
                             <label for="deviceIp" class="col-sm-2 control-label">设备IP</label>
                             <div class="col-sm-8">
-                                <input type="text" id="deviceIp" value="${obj.deviceIp!}" class="form-control" name="deviceIp"  placeholder="设备IP">
+                                <input type="text" id="deviceIp" value="${obj.deviceIp!}" class="form-control"
+                                       name="deviceIp" placeholder="设备IP">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="deviceMac" class="col-sm-2 control-label">设备Mac</label>
                             <div class="col-sm-8">
-                                <input type="text" id="deviceMac" value="${obj.deviceMac!}" class="form-control" name="deviceMac"  placeholder="设备Mac">
+                                <input type="text" id="deviceMac" value="${obj.deviceMac!}" class="form-control"
+                                       name="deviceMac" placeholder="设备Mac">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="versionId" class="col-sm-2 control-label">设备版本号</label>
                             <div class="col-sm-8">
-                                <input type="text" id="versionId" value="${obj.versionId!}" class="form-control" name="versionId"  placeholder="设备版本号">
+                                <input type="text" id="versionId" value="${obj.versionId!}" class="form-control"
+                                       name="versionId" placeholder="设备版本号">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="roomId" class="col-sm-2 control-label">房间号</label>
                             <div class="col-sm-8">
-                                <input type="text" id="roomId" value="${obj.roomId!}" class="form-control" name="roomId"  placeholder="房间号">
+                                <input type="text" id="roomId" value="${obj.roomId!}" class="form-control" name="roomId"
+                                       placeholder="房间号">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="serverIp" class="col-sm-2 control-label">服务IP</label>
                             <div class="col-sm-8">
-                                <input type="text" id="serverIp" value="${obj.serverIp!}" class="form-control" name="serverIp"  placeholder="服务IP">
+                                <input type="text" id="serverIp" value="${obj.serverIp!}" class="form-control"
+                                       name="serverIp" placeholder="服务IP">
                             </div>
                         </div>
                         <div class="form-group has-feedback">
                             <label class="col-sm-2 control-label">省份</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input id="province" type="text" class="form-control" placeholder="选择省份" disabled value="${obj.province!}"/>
+                                    <input id="province" type="text" class="form-control" placeholder="选择省份" disabled
+                                           value="${obj.province!}"/>
                                     <span class="input-group-btn">
 			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
                                                             data-target="#dialogSelectAreaUnit"><i class="ti-plus"></i>选择
                                                     </button>
 			                             		</span>
-                                    <input type="hidden" name="cityCode"  value="${obj.cityCode!}">
+                                    <input type="hidden" name="cityCode" value="${obj.cityCode!}">
                                     <input type="hidden" name="city" value="${obj.city!}">
                                     <input type="hidden" name="province" value="${obj.province!}">
                                 </div>
@@ -122,31 +135,50 @@ layout("/layouts/platform.html"){
                         <div class="form-group">
                             <label for="city" class="col-sm-2 control-label">城市</label>
                             <div class="col-sm-8">
-                                <input type="text" id="city" value="${obj.city!}" class="form-control" placeholder="城市" disabled>
+                                <input type="text" id="city" value="${obj.city!}" class="form-control" placeholder="城市"
+                                       disabled>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="cityCode" class="col-sm-2 control-label">城市编码</label>
                             <div class="col-sm-8">
-                                <input type="text" id="cityCode" value="${obj.cityCode!}" class="form-control"   placeholder="城市编码" disabled>
+                                <input type="text" id="cityCode" value="${obj.cityCode!}" class="form-control"
+                                       placeholder="城市编码" disabled>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">定位地址</label>
                             <div class="col-sm-8">
-                                <input type="text" id="address" value="${obj.address!}" class="form-control" name="address"  placeholder="定位地址">
+                                <input type="text" id="address" value="${obj.address!}" class="form-control"
+                                       name="address" placeholder="定位地址">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="longitude" class="col-sm-2 control-label">经度</label>
                             <div class="col-sm-8">
-                                <input type="text" id="longitude" value="${obj.longitude!}" class="form-control" name="longitude"  placeholder="经度">
+                                <input type="text" id="longitude" value="${obj.longitude!}" class="form-control"
+                                       name="longitude" placeholder="经度">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="latitude" class="col-sm-2 control-label">纬度</label>
                             <div class="col-sm-8">
-                                <input type="text" id="latitude" value="${obj.latitude!}" class="form-control" name="latitude"  placeholder="纬度">
+                                <input type="text" id="latitude" value="${obj.latitude!}" class="form-control"
+                                       name="latitude" placeholder="纬度">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="domain" class="col-sm-2 control-label">数据类型</label>
+
+                            <div class="col-sm-8">
+                                <select id="domain" name="domain" class="form-control">
+                                    <option value="0"
+                                    <%if(obj != null && obj.domain=="0"){%>selected<%}%>>dev</option>
+                                    <option value="1"
+                                    <%if(obj != null && obj.domain=="1"){%>selected<%}%>>demo</option>
+                                    <option value="2"
+                                    <%if(obj != null && obj.domain=="2"){%>selected<%}%>>prod</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -156,14 +188,15 @@ layout("/layouts/platform.html"){
                             <label class="col-sm-2 control-label">设备型号</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input id="specificationName" type="text" class="form-control" placeholder="选择品牌" disabled value="品牌:${version.brandName!},型号:${version.specificationName!}" />
-                                                <span class="input-group-btn">
+                                    <input id="specificationName" type="text" class="form-control" placeholder="选择品牌"
+                                           disabled value="品牌:${version.brandName!},型号:${version.specificationName!}"/>
+                                    <span class="input-group-btn">
 			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
                                                             data-target="#dialogSelectbrandUnit"><i class="ti-plus"></i>选择
                                                     </button>
 			                             		</span>
-                                    <input type="hidden" name="brandId"  >
-                                    <input type="hidden" name="specificationId" value="${extend.specificationId!}" >
+                                    <input type="hidden" name="brandId">
+                                    <input type="hidden" name="specificationId" value="${extend.specificationId!}">
                                 </div>
                             </div>
                         </div>
@@ -171,21 +204,25 @@ layout("/layouts/platform.html"){
                             <label class="col-sm-2 control-label">是否私有节点</label>
                             <div class="col-sm-8">
                                 <!--<input type="text" id="hasPrivate" value="${extend.hasPrivate!}" class="form-control" name="hasPrivate"  placeholder="">-->
-                                <input type="radio" name="hasPrivate" value="0"  <%if(!isEmpty(extend) && extend.hasPrivate=='0'){%>checked<%}%>>否
-                                <input type="radio" name="hasPrivate" value="1"  <%if(!isEmpty(extend) && extend.hasPrivate=='1'){%>checked<%}%>>是
+                                <input type="radio" name="hasPrivate" value="0" <%if(!isEmpty(extend) &&
+                                extend.hasPrivate=='0'){%>checked<%}%>>否
+                                <input type="radio" name="hasPrivate" value="1" <%if(!isEmpty(extend) &&
+                                extend.hasPrivate=='1'){%>checked<%}%>>是
                             </div>
                         </div>
-                        <div id="showPrivate"  hidden>
+                        <div id="showPrivate" hidden>
                             <div class="form-group">
                                 <label for="playIp" class="col-sm-2 control-label">播放缓存IP</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="playIp" value="${extend.playIp!}" class="form-control" name="playIp"  placeholder="">
+                                    <input type="text" id="playIp" value="${extend.playIp!}" class="form-control"
+                                           name="playIp" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="playPort" class="col-sm-2 control-label">播放缓存端口</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="playPort" value="${extend.playPort!}" class="form-control" name="playPort"  placeholder="">
+                                    <input type="text" id="playPort" value="${extend.playPort!}" class="form-control"
+                                           name="playPort" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -193,29 +230,34 @@ layout("/layouts/platform.html"){
                             <div class="form-group">
                                 <label for="proxyIp" class="col-sm-2 control-label">私有代理IP</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="proxyIp" value="${extend.proxyIp!}" class="form-control" name="proxyIp"  placeholder="">
+                                    <input type="text" id="proxyIp" value="${extend.proxyIp!}" class="form-control"
+                                           name="proxyIp" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="proxyPort" class="col-sm-2 control-label">私有代理端口</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="proxyPort" value="${extend.proxyPort!}" class="form-control" name="proxyPort"  placeholder="">
+                                    <input type="text" id="proxyPort" value="${extend.proxyPort!}" class="form-control"
+                                           name="proxyPort" placeholder="">
                                 </div>
                             </div>
-                        <!--</div>-->
-                        <!--<div id="showResourceProxy">-->
+                            <!--</div>-->
+                            <!--<div id="showResourceProxy">-->
                             <div class="form-group">
                                 <label for="proxyIp" class="col-sm-2 control-label">图片缓存IP</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="resourceProxyIp" value="${extend.resourceProxyIp!}" class="form-control" name="resourceProxyIp"  placeholder="">
+                                    <input type="text" id="resourceProxyIp" value="${extend.resourceProxyIp!}"
+                                           class="form-control" name="resourceProxyIp" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="proxyPort" class="col-sm-2 control-label">图片缓存端口</label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="resourceProxyPort" value="${extend.resourceProxyPort!}" class="form-control" name="resourceProxyPort"  placeholder="">
+                                    <input type="text" id="resourceProxyPort" value="${extend.resourceProxyPort!}"
+                                           class="form-control" name="resourceProxyPort" placeholder="">
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -224,7 +266,9 @@ layout("/layouts/platform.html"){
                     <div class="form-group text-center">
                         <label></label>
                         <div>
-                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提
+                                交
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -319,11 +363,12 @@ layout("/layouts/platform.html"){
             selectAreaMenu();
         });
     }
+
     function selectAreaMenu() {
         var tree = $.jstree.reference("#jsTreeAreaUnit");
         var node = tree.get_selected(true);
 
-       if(node[0].parent==="#"){
+        if (node[0].parent === "#") {
             $("#province").val(node[0].text)
             $("#city").val("省份下无此数据")
             $("#cityCode").val("省份下无此数据")
@@ -331,67 +376,69 @@ layout("/layouts/platform.html"){
             $("#unitAddForm input[name='province']").val(node[0].text);
             $("#unitAddForm input[name='cityCode']").val("");
             $("#unitAddForm input[name='city']").val("");
-        }else{
-            $("#province").val($("#"+node[0].parent+"_anchor").text())
+        } else {
+            $("#province").val($("#" + node[0].parent + "_anchor").text())
             $("#city").val(node[0].text)
             $("#cityCode").val(node[0].original.areaCode)
 
-            $("#unitAddForm input[name='province']").val($("#"+node[0].parent+"_anchor").text());
+            $("#unitAddForm input[name='province']").val($("#" + node[0].parent + "_anchor").text());
             $("#unitAddForm input[name='city']").val(node[0].text);
             $("#unitAddForm input[name='cityCode']").val(node[0].original.areaCode);
         }
         $("#dialogSelectAreaUnit").modal("hide");
     }
+
     //选择父菜单
     function selectBrandMenu() {
         var tree = $.jstree.reference("#jsTreeBrandUnit");
         var node = tree.get_selected(true);
-         if(node[0].parent == "#"){
+        if (node[0].parent == "#") {
             Toast.error("请选择型号！");
             return false;
         }
 
-        $("#unitAddForm #specificationName").val("品牌:"+tree.get_node(node[0].parent).text+",型号:"+node[0].text);
+        $("#unitAddForm #specificationName").val("品牌:" + tree.get_node(node[0].parent).text + ",型号:" + node[0].text);
         $("#unitAddForm input[name='brandId']").val(node[0].parent);
         $("#unitAddForm input[name='specificationId']").val(node[0].id);
 
         $("#dialogSelectbrandUnit").modal("hide");
     }
-    $(document).ready(function () {
-         initBrandTreeView();
-         initAreaTreeView();
 
-         if("${extend.hasPrivate!}"=="1"){
-            document.getElementById('showPrivate').style.display='block';
-            document.getElementById('showProxy').style.display='block';
-         }
-         if("${extend.hasPrivate!}"=="0"){
-            document.getElementById('showPrivate').style.display='none';
-            document.getElementById('showProxy').style.display='none';
+    $(document).ready(function () {
+        initBrandTreeView();
+        initAreaTreeView();
+
+        if ("${extend.hasPrivate!}" == "1") {
+            document.getElementById('showPrivate').style.display = 'block';
+            document.getElementById('showProxy').style.display = 'block';
+        }
+        if ("${extend.hasPrivate!}" == "0") {
+            document.getElementById('showPrivate').style.display = 'none';
+            document.getElementById('showProxy').style.display = 'none';
             $("#playIp").val("");
             $("#playPort").val("");
             $("#proxyIp").val("");
             $("#proxyPort").val("");
             $("#resourceProxyPort").val("");
             $("#resourceProxyIp").val("");
-         }
+        }
 
-         $('input[type=radio][name=hasPrivate]').change(function() {
-                if (this.value == '0') {
-                   document.getElementById('showPrivate').style.display='none'
-                   document.getElementById('showProxy').style.display='none'
-                    $("#playIp").val("");
-                    $("#playPort").val("");
-                    $("#proxyIp").val("");
-                    $("#proxyPort").val("");
-                    $("#resourceProxyPort").val("");
-                    $("#resourceProxyIp").val("");
-                }
-                else if (this.value == '1') {
-                   document.getElementById('showPrivate').style.display='block'
-                   document.getElementById('showProxy').style.display='block'
-                }
-         });
+        $('input[type=radio][name=hasPrivate]').change(function () {
+            if (this.value == '0') {
+                document.getElementById('showPrivate').style.display = 'none'
+                document.getElementById('showProxy').style.display = 'none'
+                $("#playIp").val("");
+                $("#playPort").val("");
+                $("#proxyIp").val("");
+                $("#proxyPort").val("");
+                $("#resourceProxyPort").val("");
+                $("#resourceProxyIp").val("");
+            }
+            else if (this.value == '1') {
+                document.getElementById('showPrivate').style.display = 'block'
+                document.getElementById('showProxy').style.display = 'block'
+            }
+        });
 
         $('#unitAddForm').ajaxForm({
             dataType: 'json',

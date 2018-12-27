@@ -99,6 +99,8 @@ public class DeviceUser extends TenantBaseModel implements Serializable {
     //扩展json(存储设备的信息，json格式)
     @Column(length = 2000)
     private String extensionJson;
+    @Column
+    private String domain;
 
     @Transient
     private String tenantName;
